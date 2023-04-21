@@ -21,6 +21,7 @@ using std::endl;
 using std::setw;
 
 #include "doc_character.hpp"
+#include "app_globals.hpp"
 
 void DocCharacter::setChar(const char character)
 {
@@ -61,9 +62,16 @@ void DocCharacter::toString()
          << endl;
 }
 
+int DocCharacter::getMemSize()
+{
+    return sizeof((*this));
+}
+
 DocCharacter::~DocCharacter()
 {
-    cout << "[DocCharacter] [destUID=" << CSAObject::getSerialVersionUID() << "]" << endl;
+    if(AppGlobals::getInstance().getEnableObjDelLog() == true) {
+        cout << "[DocCharacter] [destUID=" << CSAObject::getSerialVersionUID() << "]" << endl;
+    }
 }
 
 DocCharacter::DocCharacter(char character, DocCharacter * nextCharPtr, DocCharacter * previousCharPtr):

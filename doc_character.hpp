@@ -33,6 +33,7 @@ class DocCharacter : public CSAObject
         void setNextCharPtr(DocCharacter *);
         void setPreviousCharPtr(DocCharacter *);
         virtual void toString(); // Yes, you know, Java feelings rs
+        virtual int getMemSize();
 
     private:
 

@@ -35,19 +35,34 @@ class DocRow : public CSAObject
         void setStartCharPtr(DocCharacter *);
         void setNextRowPtr(DocRow *);
         void setPreviousRowPtr(DocRow *);
+        int getSize();
+
 
         DocCharacter * charPtrAt(int);
         DocCharacter * charPtrAtEnd();
 
         DocRow & deletePtrAt(int);
         DocRow & append(DocCharacter *);
+        DocRow & append(const char[]);
+        DocRow & append(DocCharacter *, int);
+        DocRow & append(const char[], int);
 
-        void toString(); // Yes, you know, Java feelings rs
+        void fromCharArray(const char []);
+        void readAllChars ();
+        void deleteAllChars();
+
+        virtual void toString(); // Yes, you know, Java feelings rs
+        virtual int getMemSize();
 
     private:
 
-        static DocCharacter * charPtrAt(DocCharacter *, int);
-        static DocCharacter * charPtrAtEnd (DocCharacter *);
+        int getSize (const DocCharacter * startCharPtr);
+
+        DocCharacter * charPtrAt(DocCharacter *, int);
+        DocCharacter * charPtrAtEnd (DocCharacter *);
+        void fromCharArray(const char [], DocRow &);
+        void readAllChars (const DocCharacter * startCharPtr);
+        void deleteAllChars(const DocCharacter * startCharPtr);
 
         DocCharacter * _startCharPtr;
         DocRow * _nextRowPtr;

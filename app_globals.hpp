@@ -13,28 +13,30 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef CSAOBJECT
-#define CSAOBJECT
+#ifndef APPGLOBALS
+#define APPGLOBALS
+
 
 /*
-  Defines general methods and atributes for all objects of the app
-  This is a Abstract Class
+  Global settings class
 */
-class CSAObject
+class AppGlobals
 {
     public:
-        CSAObject();
-        ~CSAObject();
+        ~AppGlobals();
 
-        int getSerialVersionUID();
-        static void updateSerialUIDCounter();   // For explanation, this will not work on concurrency...
-        virtual void toString() = 0;            // Pure virtual
-        virtual int getMemSize() = 0;           // Pure virtual
+        static AppGlobals & getInstance();
+
+        void setEnableObjDelLog(const bool);
+        bool getEnableObjDelLog() const;
 
     private:
-        static int serialVersionUIDCounter;
-        int serialVersionUID = 0;
+        AppGlobals();
 
+        static AppGlobals* _me;
+
+        bool _enableObjDelLog;
 };
 
-#endif
+#endif // DOCCHARACTER
+

@@ -20,7 +20,11 @@ using std::endl;
 #include <iomanip>
 using std::setw;
 
+#include <cstring>
+using std::strlen;
+
 #include "doc_row.hpp"
+#include "app_globals.hpp"
 
 void DocRow::setStartCharPtr(DocCharacter * startCharPtr)
 {
@@ -54,7 +58,7 @@ DocRow* DocRow::getNextRowPtr() const
 
 DocCharacter * DocRow::charPtrAtEnd()
 {
-    return DocRow::charPtrAtEnd(getStartCharPtr());
+    return charPtrAtEnd(getStartCharPtr());
 }
 
 DocCharacter * DocRow::charPtrAtEnd(DocCharacter * startCharPtr)
@@ -65,7 +69,7 @@ DocCharacter * DocRow::charPtrAtEnd(DocCharacter * startCharPtr)
         return 0;
     }
 
-    currentCharPtr = DocRow::charPtrAtEnd((*startCharPtr).getNextCharPtr());
+    currentCharPtr = charPtrAtEnd((*startCharPtr).getNextCharPtr());
     if (currentCharPtr == 0)
     {
         return startCharPtr;
@@ -74,7 +78,7 @@ DocCharacter * DocRow::charPtrAtEnd(DocCharacter * startCharPtr)
 
 DocCharacter * DocRow::charPtrAt(int pos)
 {
-    return DocRow::charPtrAt(getStartCharPtr(), pos);
+    return charPtrAt(getStartCharPtr(), pos);
 }
 
 
@@ -86,7 +90,7 @@ DocCharacter * DocRow::charPtrAt(DocCharacter * startCharPtr, int pos)
         return 0;
     }
 
-    currentCharPtr = DocRow::charPtrAt((*startCharPtr).getNextCharPtr(), --pos);
+    currentCharPtr = charPtrAt((*startCharPtr).getNextCharPtr(), --pos);
     if (currentCharPtr == 0)
     {
         return startCharPtr;
@@ -99,7 +103,7 @@ DocRow & DocRow::deletePtrAt(int pos)
     DocCharacter *nextCharPtr = 0;
     DocCharacter *previousCharPtr = 0;
 
-    currentCharPtr = DocRow::charPtrAt(getStartCharPtr(), pos);
+    currentCharPtr = charPtrAt(getStartCharPtr(), pos);
     if (currentCharPtr == 0)
     {
         cout << "[DOC ROW] [Error] [Position not found:" << pos << "]" << endl;
@@ -133,17 +137,161 @@ DocRow & DocRow::deletePtrAt(int pos)
 
 }
 
-DocRow & DocRow::append(DocCharacter * charPtr)
+DocRow & DocRow::append(const char charSequence[])
 {
-    DocCharacter * lastCharPtr = DocRow::charPtrAtEnd(getStartCharPtr());
+   return append(charSequence, -1);
+}
 
-    (*lastCharPtr).setNextCharPtr(charPtr);
-    (*charPtr).setPreviousCharPtr(lastCharPtr);
-    (*lastCharPtr).setChar((*charPtr).getChar());
-    (*charPtr).setChar('\0');
-    (*charPtr).setNextCharPtr(0);
+DocRow & DocRow::append(const char charSequence[], int pos)
+{
+    DocCharacter * newChar = 0;
+    for (int i=0; i< strlen(charSequence); i++)
+    {
+        if (charSequence[i] != '\0')
+        {
+            newChar = new DocCharacter(charSequence[i]);
+            if (pos >= 0)
+            {
+                append(newChar, pos);
+                pos++;
+            } else {
+                append(newChar);
+            }
+        }
+    }
 
     return (*this);
+}
+
+DocRow & DocRow::append(DocCharacter * charPtr)
+{
+    return append(charPtr, -1);
+}
+
+DocRow & DocRow::append(DocCharacter * charPtr, int pos)
+{
+    DocCharacter * lastCharPtr = 0;
+    if (pos < 0)
+    {
+        lastCharPtr = charPtrAtEnd(getStartCharPtr());
+
+        (*lastCharPtr).setNextCharPtr(charPtr);
+        (*charPtr).setPreviousCharPtr(lastCharPtr);
+        (*lastCharPtr).setChar((*charPtr).getChar());
+        (*charPtr).setChar('\0');
+        (*charPtr).setNextCharPtr(0);
+
+    } else {
+        lastCharPtr = charPtrAt(pos);
+
+        (*charPtr).setNextCharPtr((*lastCharPtr).getNextCharPtr());
+        (*lastCharPtr).setNextCharPtr(charPtr);
+        (*charPtr).setPreviousCharPtr(lastCharPtr);
+        (*lastCharPtr).setChar((*charPtr).getChar());
+
+    }
+
+    return (*this);
+}
+
+void DocRow::fromCharArray(const char charArray [])
+{
+    fromCharArray(charArray, (*this));
+}
+
+void DocRow::fromCharArray(const char charArray [], DocRow &docRow)
+{
+    DocCharacter *startRowPtr = 0;
+    DocCharacter *dc = 0;
+    DocCharacter *previousPtr = 0;
+
+    for (int i = 0; i<strlen(charArray)+1; i++) {
+        dc = new DocCharacter(charArray[i]);
+
+        if (startRowPtr == 0) {
+            startRowPtr = dc;
+        } else {
+            (*previousPtr).setNextCharPtr(dc);
+            (*dc).setPreviousCharPtr(previousPtr);
+        }
+        previousPtr = dc;
+    }
+
+    docRow.setStartCharPtr(startRowPtr);
+}
+
+void DocRow::readAllChars ()
+{
+    readAllChars(getStartCharPtr());
+}
+
+void DocRow::readAllChars (const DocCharacter * startCharPtr)
+{
+    static int fuse = 10000;
+
+    fuse--;
+    if (fuse < 0)
+        return;
+
+    if (startCharPtr != 0) {
+        if ((*startCharPtr).getChar() != '\0')
+        {
+            cout << (*startCharPtr).getChar();
+        }
+    } else {
+        fuse = 10000;
+        return;
+    }
+
+    readAllChars((*startCharPtr).getNextCharPtr());
+}
+
+int DocRow::getSize()
+{
+    return getSize(getStartCharPtr());
+}
+
+int DocRow::getSize (const DocCharacter * startCharPtr)
+{
+    static int fuse = 10000;
+    int total = 0;
+
+    fuse--;
+    if (fuse < 0)
+        return 0;
+
+    if (startCharPtr != 0) {
+        total = sizeof((*startCharPtr));
+    } else {
+        fuse = 10000;
+        return total;
+    }
+
+    return total + getSize((*startCharPtr).getNextCharPtr());
+}
+
+
+void DocRow::deleteAllChars()
+{
+    deleteAllChars(getStartCharPtr());
+}
+
+void DocRow::deleteAllChars (const DocCharacter * startCharPtr)
+{
+    static int fuse = 10000;
+
+    fuse--;
+    if (fuse < 0)
+        return;
+
+    if (startCharPtr != 0) {
+        deleteAllChars((*startCharPtr).getNextCharPtr());
+        delete startCharPtr;
+    } else {
+        fuse = 10000;
+        return;
+    }
+
 }
 
 
@@ -156,9 +304,16 @@ void DocRow::toString()
          << endl;
 }
 
+int DocRow::getMemSize()
+{
+    return sizeof((*this)) + getSize();
+}
+
 DocRow::~DocRow()
 {
-    cout << "[DocRow] [destUID=" << CSAObject::getSerialVersionUID() << "]" << endl;
+    if(AppGlobals::getInstance().getEnableObjDelLog() == true) {
+        cout << "[DocRow] [destUID=" << CSAObject::getSerialVersionUID() << "]" << endl;
+    }
 }
 
 DocRow::DocRow(DocCharacter * startCharPtr, DocRow * nextRowPtr, DocRow * previousRowPtr):
