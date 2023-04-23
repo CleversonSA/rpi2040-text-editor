@@ -25,7 +25,7 @@ class Document: public CSAObject
         Document();
         ~Document();
 
-        void setDocFileName(char *);
+        void setDocFileName(const char []);
         char * getDocFileName() const;
         void setDocRow(const int);
         int getDocRow() const;
@@ -35,6 +35,8 @@ class Document: public CSAObject
         int getDocRowEOF() const;
         void setStartRowPtr(DocRow *);
         DocRow * getStartRowPtr() const;
+        void setCurrentRowPtr(DocRow *);
+        DocRow * getCurrentRowPtr() const;
 
         DocRow * rowAt(int);
         Document & addNewLine();
@@ -51,6 +53,7 @@ class Document: public CSAObject
     private:
 
         DocRow * _startRowPtr;
+        DocRow * _currentRowPtr;
         int _docRow;
         int _docCol;
         int _docRowEOF;

@@ -74,6 +74,8 @@ DocCharacter * DocRow::charPtrAtEnd(DocCharacter * startCharPtr)
     {
         return startCharPtr;
     }
+
+    return currentCharPtr;
 }
 
 DocCharacter * DocRow::charPtrAt(int pos)
@@ -95,6 +97,8 @@ DocCharacter * DocRow::charPtrAt(DocCharacter * startCharPtr, int pos)
     {
         return startCharPtr;
     }
+
+    return currentCharPtr;
 }
 
 DocRow & DocRow::deletePtrAt(int pos)
@@ -137,6 +141,13 @@ DocRow & DocRow::deletePtrAt(int pos)
 
 }
 
+DocRow & DocRow::append(const char character)
+{
+   DocCharacter *dc = new DocCharacter(character);
+
+   return append(dc);
+}
+
 DocRow & DocRow::append(const char charSequence[])
 {
    return append(charSequence, -1);
@@ -173,7 +184,7 @@ DocRow & DocRow::append(DocCharacter * charPtr, int pos)
     DocCharacter * lastCharPtr = 0;
     if (pos < 0)
     {
-        lastCharPtr = charPtrAtEnd(getStartCharPtr());
+        lastCharPtr = charPtrAtEnd(_startCharPtr);
 
         (*lastCharPtr).setNextCharPtr(charPtr);
         (*charPtr).setPreviousCharPtr(lastCharPtr);
@@ -244,6 +255,33 @@ void DocRow::readAllChars (const DocCharacter * startCharPtr)
     }
 
     readAllChars((*startCharPtr).getNextCharPtr());
+}
+
+int DocRow::getLength () const
+{
+    return getLength(getStartCharPtr(), 0);
+}
+
+int DocRow::getLength (const DocCharacter * startCharPtr, int qtLength) const
+{
+    static int fuse = 10000;
+
+    fuse--;
+    if (fuse < 0)
+        return -1;
+
+    if (startCharPtr != 0) {
+        if ((*startCharPtr).getChar() != '\0')
+        {
+            return getLength((*startCharPtr).getNextCharPtr(), ++qtLength);
+        } else {
+            return qtLength;
+        }
+    } else {
+        fuse = 10000;
+        return qtLength;
+    }
+
 }
 
 int DocRow::getSize()
@@ -322,6 +360,8 @@ _nextRowPtr(nextRowPtr),
 _previousRowPtr(previousRowPtr),
 _startCharPtr(startCharPtr)
 {
+    DocCharacter *dc = new DocCharacter('\0');
 
+    setStartCharPtr(dc);
 }
 

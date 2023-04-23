@@ -22,15 +22,18 @@ using std::setw;
 
 #include <cstring>
 using std::strlen;
+using std::strcpy;
 
 #include "doc_row.hpp"
 #include "document.hpp"
 #include "app_globals.hpp"
 
 
-void Document::setDocFileName(char * docFileName)
+void Document::setDocFileName(const char filename[] )
 {
-    _docFileName = docFileName;
+    _docFileName = new char[strlen(filename)];
+
+    strcpy(_docFileName, filename);
 }
 
 char * Document::getDocFileName() const
@@ -78,20 +81,128 @@ DocRow * Document::getStartRowPtr() const
     return _startRowPtr;
 }
 
+Document & Document::addNewLine()
+{
+    DocRow * newLinePtr = new DocRow;
+    DocRow * lastLinePtr = 0;
+
+    lastLinePtr = rowAt(-1);
+    (*lastLinePtr).setNextRowPtr(newLinePtr);
+    (*newLinePtr).setPreviousRowPtr(lastLinePtr);
+    (*newLinePtr).setNextRowPtr(0);
+
+    setDocCol(0);
+    setDocRowEOF(getDocRowEOF() + 1);
+    setDocRow(getDocRowEOF());
+    setCurrentRowPtr(newLinePtr);
+
+    return (*this);
+}
+
 
 DocRow * Document::rowAt(int row)
 {
-    return 0;
+    return rowAt(getStartRowPtr(), row);
 }
 
-DocRow * Document::rowAt(DocRow *, int)
+DocRow * Document::rowAt(DocRow * docRowPtr, int offset)
 {
-    return 0;
+
+    DocRow * foundRowPtr = 0;
+
+    if (offset > 10000 || docRowPtr == 0) {
+        return 0;
+    }
+
+    if (offset == 0) {
+        return docRowPtr;
+    } else if (offset < 0) {
+        foundRowPtr = rowAt((*docRowPtr).getNextRowPtr(), -1);
+
+        if(foundRowPtr == 0) {
+            return docRowPtr;
+        }
+    } else {
+        foundRowPtr = rowAt((*docRowPtr).getNextRowPtr(), --offset);
+
+        if(foundRowPtr == 0) {
+            return docRowPtr;
+        }
+    }
 }
 
-
-Document & Document::addNewLine()
+Document & Document::cursorMoveUp()
 {
+    setDocCol(0);
+    setDocRow(getDocRow() - 1);
+
+    if (getDocRow() < 0)
+    {
+        setDocRow(0);
+    }
+
+    if ((*getCurrentRowPtr()).getPreviousRowPtr() != 0)
+    {
+        setCurrentRowPtr((*getCurrentRowPtr()).getPreviousRowPtr());
+    }
+
+    return (*this);
+}
+
+Document & Document::cursorMoveDown()
+{
+    setDocCol(0);
+    setDocRow(getDocRow() + 1);
+
+    if (getDocRow() > getDocRowEOF())
+    {
+        setDocRow(getDocRowEOF());
+    }
+
+    if ((*getCurrentRowPtr()).getNextRowPtr() != 0)
+    {
+        setCurrentRowPtr((*getCurrentRowPtr()).getNextRowPtr());
+    }
+
+    return (*this);
+}
+
+Document & Document::cursorMoveLeft()
+{
+    setDocCol(getDocCol() - 1);
+    if (getDocCol() < 0)
+    {
+        cursorMoveUp();
+    }
+
+    return (*this);
+}
+
+Document & Document::cursorMoveRight()
+{
+    setDocCol(getDocCol() + 1);
+
+    if (getDocCol() > (*getCurrentRowPtr()).getLength())
+    {
+        cursorMoveDown();
+    }
+
+    return (*this);
+}
+
+Document & Document::type(const char text[])
+{
+    for (int i = 0; i<strlen(text); i++)
+    {
+        if (text[i] == '\n')
+        {
+           addNewLine();
+        } else if (text[i] != '\0')
+        {
+            (*getCurrentRowPtr()).append(text[i]);
+        }
+    }
+
     return (*this);
 }
 
@@ -100,29 +211,15 @@ Document & Document::triggerBackspace()
     return (*this);
 }
 
-Document & Document::cursorMoveUp()
+
+void Document::setCurrentRowPtr(DocRow * docRow)
 {
-    return (*this);
+    _currentRowPtr = docRow;
 }
 
-Document & Document::cursorMoveDown()
+DocRow * Document::getCurrentRowPtr() const
 {
-    return (*this);
-}
-
-Document & Document::cursorMoveLeft()
-{
-    return (*this);
-}
-
-Document & Document::cursorMoveRight()
-{
-    return (*this);
-}
-
-Document & Document::type(const char text[])
-{
-    return (*this);
+    return _currentRowPtr;
 }
 
 void Document::toString()
@@ -149,7 +246,8 @@ _startRowPtr(0),
 _docRow(0),
 _docCol(0),
 _docRowEOF(0),
-_docFileName({"new_file.txt"})
+_docFileName({"new_file.txt"}),
+_currentRowPtr(0)
 {
     addNewLine();
 }

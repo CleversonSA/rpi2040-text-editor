@@ -36,12 +36,14 @@ class DocRow : public CSAObject
         void setNextRowPtr(DocRow *);
         void setPreviousRowPtr(DocRow *);
         int getSize();
+        int getLength() const;
 
 
         DocCharacter * charPtrAt(int);
         DocCharacter * charPtrAtEnd();
 
         DocRow & deletePtrAt(int);
+        DocRow & append(const char);
         DocRow & append(DocCharacter *);
         DocRow & append(const char[]);
         DocRow & append(DocCharacter *, int);
@@ -62,6 +64,7 @@ class DocRow : public CSAObject
         DocCharacter * charPtrAtEnd (DocCharacter *);
         void fromCharArray(const char [], DocRow &);
         void readAllChars (const DocCharacter * startCharPtr);
+        int getLength(const DocCharacter * startCharPtr, int) const;
         void deleteAllChars(const DocCharacter * startCharPtr);
 
         DocCharacter * _startCharPtr;
