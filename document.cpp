@@ -83,22 +83,50 @@ DocRow * Document::getStartRowPtr() const
 
 Document & Document::addNewLine()
 {
+    return addNewLine(-1);
+}
+
+Document & Document::addNewLine(int pos)
+{
     DocRow * newLinePtr = new DocRow;
     DocRow * lastLinePtr = 0;
 
-    lastLinePtr = rowAt(-1);
-    (*lastLinePtr).setNextRowPtr(newLinePtr);
-    (*newLinePtr).setPreviousRowPtr(lastLinePtr);
-    (*newLinePtr).setNextRowPtr(0);
+    if (pos < 0 || getDocRowEOF() == 0)
+    {
+        if (getDocRowEOF() > 0) {
+            lastLinePtr = rowAt(-1);
+            (*lastLinePtr).setNextRowPtr(newLinePtr);
+            (*newLinePtr).setPreviousRowPtr(lastLinePtr);
+            (*newLinePtr).setNextRowPtr(0);
+        } else {
+            setStartRowPtr(newLinePtr);
+        }
+        setDocCol(0);
+        setDocRowEOF(getDocRowEOF() + 1);
+        setDocRow(getDocRowEOF());
+        setCurrentRowPtr(newLinePtr);
 
-    setDocCol(0);
-    setDocRowEOF(getDocRowEOF() + 1);
-    setDocRow(getDocRowEOF());
-    setCurrentRowPtr(newLinePtr);
+    } else {
+
+        if (pos > getDocRowEOF()) {
+            pos = getDocRowEOF();
+        }
+
+        lastLinePtr = rowAt(pos);
+        (*newLinePtr).setNextRowPtr((*lastLinePtr).getNextRowPtr());
+        (*lastLinePtr).setNextRowPtr(newLinePtr);
+        (*newLinePtr).setPreviousRowPtr(lastLinePtr);
+
+        setDocCol(0);
+        setDocRowEOF(getDocRowEOF() + 1);
+        setDocRow(getDocRow()+1);
+        setCurrentRowPtr(newLinePtr);
+
+    }
+
 
     return (*this);
 }
-
 
 DocRow * Document::rowAt(int row)
 {
@@ -167,6 +195,13 @@ Document & Document::cursorMoveDown()
     return (*this);
 }
 
+Document & Document::cursorMoveStartOfLine()
+{
+    setDocCol(0);
+
+    return (*this);
+}
+
 Document & Document::cursorMoveLeft()
 {
     setDocCol(getDocCol() - 1);
@@ -190,6 +225,13 @@ Document & Document::cursorMoveRight()
     return (*this);
 }
 
+Document & Document::cursorMoveEndLine()
+{
+    setDocCol((*getCurrentRowPtr()).getLength());
+
+    return (*this);
+}
+
 Document & Document::type(const char text[])
 {
     for (int i = 0; i<strlen(text); i++)
@@ -199,7 +241,8 @@ Document & Document::type(const char text[])
            addNewLine();
         } else if (text[i] != '\0')
         {
-            (*getCurrentRowPtr()).append(text[i]);
+            (*getCurrentRowPtr()).append(text[i], getDocCol());
+            setDocCol(getDocCol()+1);
         }
     }
 
@@ -208,6 +251,30 @@ Document & Document::type(const char text[])
 
 Document & Document::triggerBackspace()
 {
+    DocCharacter * deadCandidatePtr = 0;
+    DocCharacter * previousCharPtr = 0;
+    DocCharacter * nextCharPtr = 0;
+
+    deadCandidatePtr = (*getCurrentRowPtr()).charPtrAt(getDocCol());
+
+    nextCharPtr = (*deadCandidatePtr).getNextCharPtr();
+    if (nextCharPtr != 0)
+    {
+        previousCharPtr = (*deadCandidatePtr).getPreviousCharPtr();
+        if ( previousCharPtr != 0)
+        {
+            (*previousCharPtr).setNextCharPtr((*deadCandidatePtr).getNextCharPtr());
+            (*nextCharPtr).setPreviousCharPtr(previousCharPtr);
+        } else {
+            (*nextCharPtr).setPreviousCharPtr(0);
+        }
+        delete deadCandidatePtr;
+        setDocCol(getDocCol() - 1);
+    } else {
+        (*nextCharPtr).setChar('\0');
+        setDocCol(0);
+    }
+
     return (*this);
 }
 

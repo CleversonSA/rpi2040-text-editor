@@ -141,6 +141,13 @@ DocRow & DocRow::deletePtrAt(int pos)
 
 }
 
+DocRow & DocRow::append(const char character, int pos)
+{
+   DocCharacter *dc = new DocCharacter(character);
+
+   return append(dc, pos);
+}
+
 DocRow & DocRow::append(const char character)
 {
    DocCharacter *dc = new DocCharacter(character);
@@ -161,7 +168,7 @@ DocRow & DocRow::append(const char charSequence[], int pos)
         if (charSequence[i] != '\0')
         {
             newChar = new DocCharacter(charSequence[i]);
-            if (pos >= 0)
+            if (pos > 0)
             {
                 append(newChar, pos);
                 pos++;
@@ -182,6 +189,8 @@ DocRow & DocRow::append(DocCharacter * charPtr)
 DocRow & DocRow::append(DocCharacter * charPtr, int pos)
 {
     DocCharacter * lastCharPtr = 0;
+    char aux = '\0';
+
     if (pos < 0)
     {
         lastCharPtr = charPtrAtEnd(_startCharPtr);
@@ -198,7 +207,9 @@ DocRow & DocRow::append(DocCharacter * charPtr, int pos)
         (*charPtr).setNextCharPtr((*lastCharPtr).getNextCharPtr());
         (*lastCharPtr).setNextCharPtr(charPtr);
         (*charPtr).setPreviousCharPtr(lastCharPtr);
+        aux = (*lastCharPtr).getChar();
         (*lastCharPtr).setChar((*charPtr).getChar());
+        (*charPtr).setChar(aux);
 
     }
 
@@ -331,7 +342,6 @@ void DocRow::deleteAllChars (const DocCharacter * startCharPtr)
     }
 
 }
-
 
 void DocRow::toString()
 {

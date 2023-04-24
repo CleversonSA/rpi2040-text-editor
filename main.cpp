@@ -16,18 +16,20 @@ int getMemSize(CSAObject *);
 
 int main()
 {
-    //Document doc;
+    Document doc;
 
-    DocRow linha;
-
-    linha.append('o').append('l').append('a');
-
-    linha.readAllChars();
+    doc.type({"Ola, essa e a linha 1"});
+    (*doc.getCurrentRowPtr()).readAllChars();
     cout << endl;
 
-    //doc.type({"Olá, essa é a linha 1\nAgora é a linha 2\nAgora é a linha 3\nAgora é a linha 4\0"});
-    //doc.cursorMoveUp().cursorMoveUp().cursorMoveUp().cursorMoveUp();
-    //(*doc.getCurrentRowPtr()).readAllChars();
+
+    doc.cursorMoveStartOfLine().cursorMoveRight().cursorMoveRight().cursorMoveRight().cursorMoveRight();
+    doc.triggerBackspace().triggerBackspace();
+    (*doc.getCurrentRowPtr()).readAllChars();
+    cout << endl;
+
+
+
     cout << "\nFinalizado!" << endl;
 
     return 0;

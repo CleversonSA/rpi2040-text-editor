@@ -40,11 +40,14 @@ class Document: public CSAObject
 
         DocRow * rowAt(int);
         Document & addNewLine();
+        Document & addNewLine(int pos);
         Document & triggerBackspace();
         Document & cursorMoveUp();
         Document & cursorMoveDown();
         Document & cursorMoveLeft();
         Document & cursorMoveRight();
+        Document & cursorMoveEndLine();
+        Document & cursorMoveStartOfLine();
         Document & type(const char[]);
 
         virtual void toString();
