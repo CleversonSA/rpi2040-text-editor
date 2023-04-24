@@ -23,8 +23,8 @@ int main()
     cout << endl;
 
 
-    doc.cursorMoveStartOfLine().cursorMoveRight().cursorMoveRight().cursorMoveRight().cursorMoveRight();
-    doc.triggerBackspace().triggerBackspace();
+    doc.cursorMoveStartOfLine();
+    doc.triggerBackspace();
     (*doc.getCurrentRowPtr()).readAllChars();
     cout << endl;
 

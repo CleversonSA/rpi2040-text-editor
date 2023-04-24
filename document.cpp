@@ -267,6 +267,7 @@ Document & Document::triggerBackspace()
             (*nextCharPtr).setPreviousCharPtr(previousCharPtr);
         } else {
             (*nextCharPtr).setPreviousCharPtr(0);
+            (*getCurrentRowPtr()).setStartCharPtr(nextCharPtr);
         }
         delete deadCandidatePtr;
         setDocCol(getDocCol() - 1);
