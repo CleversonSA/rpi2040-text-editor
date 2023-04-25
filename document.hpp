@@ -49,6 +49,7 @@ class Document: public CSAObject
         Document & cursorMoveEndLine();
         Document & cursorMoveStartOfLine();
         Document & type(const char[]);
+        Document & joinNextLine();
 
         virtual void toString();
         virtual int getMemSize();

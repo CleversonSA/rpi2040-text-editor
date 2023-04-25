@@ -249,6 +249,40 @@ Document & Document::type(const char text[])
     return (*this);
 }
 
+Document & Document::joinNextLine()
+{
+    DocRow *nextLinePtr = 0;
+    DocRow *afterNextLinePtr = 0;
+    DocCharacter * lastCurrentCharPtr = 0;
+    DocCharacter * firstNextCharPtr = 0;
+
+    nextLinePtr = (*getCurrentRowPtr()).getNextRowPtr();
+    if (nextLinePtr == 0) {
+        return (*this);
+    }
+
+    lastCurrentCharPtr = (*getCurrentRowPtr()).charPtrAtEnd();
+    firstNextCharPtr = (*nextLinePtr).getStartCharPtr();
+
+    (*lastCurrentCharPtr).setNextCharPtr(firstNextCharPtr);
+    (*firstNextCharPtr).setPreviousCharPtr(lastCurrentCharPtr);
+    //Gambiarra! :) Why not?
+    (*lastCurrentCharPtr).setChar(' ');
+
+
+    afterNextLinePtr = (*nextLinePtr).getNextRowPtr();
+    if (afterNextLinePtr != 0)
+    {
+        cout << "Fuuudei!" << endl;
+        (*getCurrentRowPtr()).setNextRowPtr(afterNextLinePtr);
+        (*afterNextLinePtr).setPreviousRowPtr(getCurrentRowPtr());
+    } else {
+        (*getCurrentRowPtr()).setNextRowPtr(afterNextLinePtr);
+    }
+
+    delete nextLinePtr;
+}
+
 Document & Document::triggerBackspace()
 {
     DocCharacter * deadCandidatePtr = 0;
@@ -265,12 +299,13 @@ Document & Document::triggerBackspace()
         {
             (*previousCharPtr).setNextCharPtr((*deadCandidatePtr).getNextCharPtr());
             (*nextCharPtr).setPreviousCharPtr(previousCharPtr);
+            setDocCol(getDocCol() - 1);
+            delete deadCandidatePtr;
         } else {
-            (*nextCharPtr).setPreviousCharPtr(0);
-            (*getCurrentRowPtr()).setStartCharPtr(nextCharPtr);
+            cursorMoveUp();
+            setDocCol((*getCurrentRowPtr()).getLength());
+            joinNextLine();
         }
-        delete deadCandidatePtr;
-        setDocCol(getDocCol() - 1);
     } else {
         (*nextCharPtr).setChar('\0');
         setDocCol(0);

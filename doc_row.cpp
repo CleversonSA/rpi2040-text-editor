@@ -346,6 +346,7 @@ void DocRow::deleteAllChars (const DocCharacter * startCharPtr)
 void DocRow::toString()
 {
     cout << "[DocRow] [UID=" << CSAObject::getSerialVersionUID() << "] [SIZE=" << sizeof((*this)) <<"] "
+         << "[Addr=" << &(*this) << "] "
          << "[startCharPtr=" << getStartCharPtr() << "] "
          << "[previousRowPtr=" << getPreviousRowPtr() << "] "
          << "[nextRowPtr=" << getNextRowPtr() << "] "

@@ -18,17 +18,38 @@ int main()
 {
     Document doc;
 
-    doc.type({"Ola, essa e a linha 1"});
+    doc.type({"Ola, essa e a linha 1!\nAqui está a linha 2"});
+
+    doc
+        .cursorMoveUp()
+        .cursorMoveUp();
     (*doc.getCurrentRowPtr()).readAllChars();
     cout << endl;
 
-
-    doc.cursorMoveStartOfLine();
-    doc.triggerBackspace();
+    doc
+        .cursorMoveDown()
+        .cursorMoveStartOfLine()
+        .triggerBackspace();
     (*doc.getCurrentRowPtr()).readAllChars();
     cout << endl;
 
+    doc
+        .cursorMoveEndLine()
+        .addNewLine()
+        .type({"Tem mais lixo aqui embaixo na linha 2!"})
+        .addNewLine()
+        .type({"E aqui na linha 3 tambem"})
+        .cursorMoveUp()
+        .cursorMoveStartOfLine()
+        .triggerBackspace()
+        .triggerBackspace();
+    (*doc.getCurrentRowPtr()).readAllChars();
+    cout << endl;
 
+    doc
+        .cursorMoveDown();
+    (*doc.getCurrentRowPtr()).readAllChars();
+    cout << endl;
 
     cout << "\nFinalizado!" << endl;
 
