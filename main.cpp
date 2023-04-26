@@ -11,46 +11,32 @@ using std::strlen;
 #include "app_globals.hpp"
 #include "document.hpp"
 #include "text_engine.hpp"
+#include "framebuffer.hpp"
 
 int getMemSize(CSAObject *);
 
 int main()
 {
-    Document doc;
 
-    doc.type({"Ola, essa e a linha 1!\nAqui está a linha 2"});
+    FrameBuffer fb(4,20);
 
-    doc
-        .cursorMoveUp()
-        .cursorMoveUp();
-    (*doc.getCurrentRowPtr()).readAllChars();
-    cout << endl;
+    fb.toString();
 
-    doc
+    fb
+        .write('O')
+        .write('l')
+        .write('a')
         .cursorMoveDown()
-        .cursorMoveStartOfLine()
-        .triggerBackspace();
-    (*doc.getCurrentRowPtr()).readAllChars();
-    cout << endl;
+        .write(' ')
+        .write(' ')
+        .write(' ')
+        .write('M')
+        .write('u')
+        .write('n')
+        .write('d')
+        .write('o');
 
-    doc
-        .cursorMoveEndLine()
-        .addNewLine()
-        .type({"Tem mais lixo aqui embaixo na linha 2!"})
-        .addNewLine()
-        .type({"E aqui na linha 3 tambem"})
-        .cursorMoveUp()
-        .cursorMoveStartOfLine()
-        .triggerBackspace()
-        .triggerBackspace();
-    (*doc.getCurrentRowPtr()).readAllChars();
-    cout << endl;
-
-    doc
-        .cursorMoveDown();
-    (*doc.getCurrentRowPtr()).readAllChars();
-    cout << endl;
-
+    fb.toString();
     cout << "\nFinalizado!" << endl;
 
     return 0;

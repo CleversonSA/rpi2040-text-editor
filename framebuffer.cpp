@@ -234,7 +234,20 @@ int FrameBuffer::getMaxCols() const
 void FrameBuffer::toString()
 {
     cout << "[FrameBuffer] [UID=" << CSAObject::getSerialVersionUID() << "] [SIZE=" << sizeof((*this)) <<"] "
-         << endl;
+         << "[maxCols=" << getMaxCols() << "] "
+         << "[maxRows=" << getMaxRows() << "] "
+         << "[row=" << getRow() << "] "
+         << "[col=" << getCol() << "] "
+         << "[screen=";
+         for (int i=0; i<_maxRows; i++)
+         {
+             for (int j=0; j<_maxCols; j++)
+             {
+                 cout << _screen[i][j];
+             }
+             cout << "|";
+         }
+         cout << "]" << endl;
 }
 
 int FrameBuffer::getMemSize()
