@@ -158,6 +158,35 @@ FrameBuffer & FrameBuffer::cursorMoveUp()
     return (*this);
 }
 
+FrameBuffer & FrameBuffer::gotoXY(const int row, const int col)
+{
+    if (row <= 0) {
+        setRow(0);
+    } else if (row >= getMaxRows()) {
+        setRow(getMaxRows() - 1);
+    } else {
+        setRow(row);
+    }
+
+    if (col < 0) {
+        setCol(0);
+    } else if (col >= getMaxCols()) {
+        setCol(getMaxCols() - 1);
+    } else {
+        setCol(col);
+    }
+
+    return (*this);
+}
+
+FrameBuffer & FrameBuffer::write(const char character)
+{
+   _screen[getRow()][getCol()] = character;
+   cursorMoveRight();
+
+   return (*this);
+}
+
 int FrameBuffer::getRow() const
 {
     return _row;
