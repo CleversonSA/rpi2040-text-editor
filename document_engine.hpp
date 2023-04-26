@@ -18,7 +18,8 @@ limitations under the License.
 
 #include "csa_object.hpp"
 #include "doc_character.hpp"
-
+#include "document.hpp"
+#include "doc_character.hpp"
 /*
   The abstract document engine processing
 */
@@ -28,8 +29,24 @@ class DocumentEngine : public CSAObject
         DocumentEngine();
         ~DocumentEngine();
 
-    private:
+        void setDocument(Document *);
+        Document * getDocument() const;
 
+        void render();
+
+        virtual void renderLineBreak() = 0;
+        virtual void renderCarriageReturn() = 0;
+        virtual void renderCursor() = 0;
+        virtual void renderTabulation() = 0;
+        virtual void renderLineOverflowIndicator() = 0;
+        virtual void renderLineWithOverflowIndicator() = 0;
+        virtual void renderEOF() = 0;
+        virtual void renderCharacter(DocCharacter) = 0;
+        virtual void renderColRow() = 0;
+
+
+    private:
+        Document * _document;
 };
 
 #endif // DOCCHARACTER
