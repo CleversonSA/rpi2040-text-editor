@@ -37,7 +37,7 @@ char * FrameBuffer::getScreenRow(const int row) const
         charCols++;
     }
 
-    charCols = charCols - (_maxCols - 1);
+    charCols = charCols - (_maxCols);
 
     return charCols;
 }
@@ -174,6 +174,15 @@ FrameBuffer & FrameBuffer::gotoXY(const int row, const int col)
         setCol(getMaxCols() - 1);
     } else {
         setCol(col);
+    }
+
+    return (*this);
+}
+
+FrameBuffer & FrameBuffer::write(const char characters[], const int len)
+{
+    for (int i=0; i<len; i++){
+        write(characters[i]);
     }
 
     return (*this);

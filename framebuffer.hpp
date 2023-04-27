@@ -40,6 +40,8 @@ class FrameBuffer: public CSAObject
         char * getScreenRow(const int) const;
 
         FrameBuffer & gotoXY(const int, const int);
+
+        FrameBuffer & write(const char [], const int);
         FrameBuffer & write(const char);
         FrameBuffer & cursorMoveBegin();
         FrameBuffer & cursorMoveUp();
