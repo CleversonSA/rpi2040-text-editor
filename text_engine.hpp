@@ -17,6 +17,7 @@ limitations under the License.
 #define TEXTENGINE
 
 #include "document_engine.hpp"
+#include "framebuffer.hpp"
 
 /*
   The abstract document engine processing
@@ -24,14 +25,33 @@ limitations under the License.
 class TextEngine : public DocumentEngine
 {
     public:
-        TextEngine();
+        TextEngine(FrameBuffer *);
         ~TextEngine();
+
+        void setFrameBuffer (FrameBuffer *);
+        FrameBuffer * getFrameBuffer() const;
+
+        virtual bool isCursorAtEndOfViewLine() const;
+        virtual bool isCursorAtBottomOfView() const;
+
+        virtual void renderClearView();
+        virtual void renderLineBreak();
+        virtual void renderCarriageReturn();
+        virtual void renderCursor();
+        virtual void renderTabulation();
+        virtual void renderLineOverflowIndicator();
+        virtual void renderLineWithOverflowIndicator();
+        virtual void renderEmptyLineIndicator();
+        virtual void renderLineWithContentIndicator();
+        virtual void renderEOF();
+        virtual void renderCharacter(DocCharacter *);
+        virtual void renderColRow();
 
         virtual void toString(); // Yes, you know, Java feelings rs
         virtual int getMemSize();
 
     private:
-
+        FrameBuffer *_framebuffer;
 };
 
 #endif // DOCCHARACTER

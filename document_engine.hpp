@@ -34,12 +34,18 @@ class DocumentEngine : public CSAObject
 
         void render();
 
+        virtual bool isCursorAtEndOfViewLine() const = 0;
+        virtual bool isCursorAtBottomOfView() const = 0;
+
+        virtual void renderClearView() = 0;
         virtual void renderLineBreak() = 0;
         virtual void renderCarriageReturn() = 0;
         virtual void renderCursor() = 0;
         virtual void renderTabulation() = 0;
         virtual void renderLineOverflowIndicator() = 0;
         virtual void renderLineWithOverflowIndicator() = 0;
+        virtual void renderEmptyLineIndicator() = 0;
+        virtual void renderLineWithContentIndicator() = 0;
         virtual void renderEOF() = 0;
         virtual void renderCharacter(DocCharacter) = 0;
         virtual void renderColRow() = 0;

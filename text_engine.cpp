@@ -22,9 +22,149 @@ using std::setw;
 
 #include <cstring>
 using std::strlen;
+using std::sprintf;
 
 #include "text_engine.hpp"
 #include "app_globals.hpp"
+#include "framebuffer.hpp"
+
+bool TextEngine::isCursorAtBottomOfView() const
+{
+    if ((*_framebuffer).getRow() == (*_framebuffer).getMaxRows() - 2)
+    {
+        return true;
+    }
+    return false;
+}
+
+bool TextEngine::isCursorAtEndOfViewLine() const
+{
+    if ((*_framebuffer).getCol() == (*_framebuffer).getMaxCols() - 2)
+    {
+        return true;
+    }
+    return false;
+}
+
+void TextEngine::renderClearView()
+{
+    (*_framebuffer).clearScreen();
+}
+
+void TextEngine::setFrameBuffer (FrameBuffer *fb)
+{
+    _framebuffer = fb;
+}
+
+FrameBuffer * TextEngine::getFrameBuffer() const
+{
+    return _framebuffer;
+}
+
+void TextEngine::renderLineBreak()
+{
+    if ((*_framebuffer).getRow() == ((*_framebuffer).getMaxRows() - 1))
+    {
+        (*_framebuffer)
+            .clearScreen()
+            .cursorMoveBegin();
+    } else {
+        (*_framebuffer)
+            .cursorMoveDown()
+            .clearLine()
+            .cursorMoveStartOfLine();
+    }
+}
+
+void TextEngine::renderCarriageReturn()
+{
+   (*_framebuffer)
+        .cursorMoveStartOfLine();
+}
+
+void TextEngine::renderCursor()
+{
+    (*_framebuffer)
+        .write('_');
+}
+
+void TextEngine::renderTabulation()
+{
+    (*_framebuffer)
+        .write(' ');
+}
+
+void TextEngine::renderLineOverflowIndicator()
+{
+    (*_framebuffer)
+        .gotoXY((*_framebuffer).getRow(), (*_framebuffer).getMaxCols() - 1)
+        .fixedWrite('>');
+}
+
+void TextEngine::renderLineWithOverflowIndicator()
+{
+    (*_framebuffer)
+        .gotoXY((*_framebuffer).getRow(), 0)
+        .fixedWrite('+');
+}
+
+void TextEngine::renderEmptyLineIndicator()
+{
+    (*_framebuffer)
+        .gotoXY((*_framebuffer).getRow(), 0)
+        .fixedWrite('~');
+}
+
+void TextEngine::renderLineWithContentIndicator()
+{
+    (*_framebuffer)
+        .gotoXY((*_framebuffer).getRow(), 0)
+        .fixedWrite('.');
+}
+
+void TextEngine::renderEOF()
+{
+
+}
+
+void TextEngine::renderCharacter(DocCharacter *dc)
+{
+    if ((*dc).getChar() == '\0')
+    {
+        (*_framebuffer)
+            .write(' ');
+    } else {
+        (*_framebuffer)
+            .write((*dc).getChar());
+    }
+}
+
+void TextEngine::renderColRow()
+{
+    char number_array[5 + sizeof(char)];
+
+    (*_framebuffer)
+      .gotoXY((*_framebuffer).getMaxRows() - 1, (*_framebuffer).getMaxCols()-10);
+
+    sprintf(number_array, "%d", (*_framebuffer).getRow()+1);
+
+    (*_framebuffer)
+        .write('[')
+        .write(number_array[0])
+        .write(number_array[1])
+        .write(number_array[2])
+        .write(number_array[3]);
+
+    sprintf(number_array, "%d", (*_framebuffer).getCol()+1);
+
+    (*_framebuffer)
+        .write(',')
+        .write(number_array[0])
+        .write(number_array[1])
+        .write(number_array[2])
+        .write(number_array[3])
+        .write(']');
+}
 
 void TextEngine::toString()
 {
@@ -44,8 +184,9 @@ TextEngine::~TextEngine()
     }
 }
 
-TextEngine::TextEngine():
-DocumentEngine()
+TextEngine::TextEngine(FrameBuffer *framebuffer):
+DocumentEngine(),
+_framebuffer(framebuffer)
 {
 
 }

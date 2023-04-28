@@ -27,6 +27,32 @@ using std::strlen;
 #include "framebuffer.hpp"
 #include "app_globals.hpp"
 
+FrameBuffer & FrameBuffer::fixedWrite(const char character)
+{
+    _screen[_row][_col] = character;
+    return (*this);
+}
+
+bool FrameBuffer::isAtBottom() const
+{
+    return (getRow() == getMaxRows());
+}
+
+bool FrameBuffer::isAtTop() const
+{
+    return (getRow() == 0);
+}
+
+bool FrameBuffer::isAtStartOfLine() const
+{
+    return (getCol() == 0);
+}
+
+bool FrameBuffer::isAtEndOfLine() const
+{
+    return (getCol() == getMaxCols());
+}
+
 char * FrameBuffer::getScreenRow(const int row) const
 {
     char * charCols = new char[getMaxCols()];

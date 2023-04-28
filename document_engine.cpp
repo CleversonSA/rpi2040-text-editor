@@ -26,7 +26,18 @@ using std::strlen;
 #include "document_engine.hpp"
 #include "app_globals.hpp"
 
+void DocumentEngine::render()
+{
+    renderClearView();
+    (*_document)
+        .setDocCol(0)
+        .setDocRow(0);
 
+    for (int r = 0; r < getDocRowEOF(); r++)
+    {
+
+    }
+}
 DocumentEngine::~DocumentEngine()
 {
     if(AppGlobals::getInstance().getEnableObjDelLog() == true) {

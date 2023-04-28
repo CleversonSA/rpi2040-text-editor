@@ -38,11 +38,15 @@ class FrameBuffer: public CSAObject
         int getRow() const;
 
         char * getScreenRow(const int) const;
+        bool isAtBottom() const;
+        bool isAtTop() const;
+        bool isAtStartOfLine() const;
+        bool isAtEndOfLine() const;
 
         FrameBuffer & gotoXY(const int, const int);
-
         FrameBuffer & write(const char [], const int);
         FrameBuffer & write(const char);
+        FrameBuffer & fixedWrite(const char);
         FrameBuffer & cursorMoveBegin();
         FrameBuffer & cursorMoveUp();
         FrameBuffer & cursorMoveDown();
