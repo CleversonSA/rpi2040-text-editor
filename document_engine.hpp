@@ -26,7 +26,7 @@ limitations under the License.
 class DocumentEngine : public CSAObject
 {
     public:
-        DocumentEngine();
+        DocumentEngine(Document *);
         ~DocumentEngine();
 
         void setDocument(Document *);
@@ -38,6 +38,7 @@ class DocumentEngine : public CSAObject
         virtual bool isCursorAtBottomOfView() const = 0;
 
         virtual void renderClearView() = 0;
+        virtual void renderClearLine() = 0;
         virtual void renderLineBreak() = 0;
         virtual void renderCarriageReturn() = 0;
         virtual void renderCursor() = 0;
@@ -47,7 +48,7 @@ class DocumentEngine : public CSAObject
         virtual void renderEmptyLineIndicator() = 0;
         virtual void renderLineWithContentIndicator() = 0;
         virtual void renderEOF() = 0;
-        virtual void renderCharacter(DocCharacter) = 0;
+        virtual void renderCharacter(DocCharacter *) = 0;
         virtual void renderColRow() = 0;
 
 

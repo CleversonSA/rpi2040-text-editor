@@ -12,6 +12,7 @@ using std::strlen;
 #include "document.hpp"
 #include "text_engine.hpp"
 #include "framebuffer.hpp"
+#include "text_engine.hpp"
 
 int getMemSize(CSAObject *);
 void frameBufferToConsole(FrameBuffer *fb);
@@ -19,26 +20,25 @@ void frameBufferToConsole(FrameBuffer *fb);
 int main()
 {
 
-    system("cls");
-
-    char l1[21] = {"+------------------+"};
-    char l2[21] = {"|                  |"};
-    char l3[21] = {"|  Abestado!!!     |"};
-    char l4[21] = {"+------------------+"};
+    //system("cls");
 
     FrameBuffer fb(4,20);
+    Document doc;
+    TextEngine textEngine(&doc, &fb);
 
-    fb.toString();
+    doc
+        .type({"Lorem ipsum dolor sit amet\nconsectetur adipiscing elit.\n\n\n"})
+        .type({"Etiam ut ligula ante. In nec ante velit.\n Sed convallis volutpat lectus sit amet ultrices. Praesent eu interdum mi.\n"})
+        .type({"Quisque varius\n congue finibus.\n Etiam et nisl\n sagittis, sollicitudin\n eros id, cursus turpis.\n Morbi consequat \n"})
+        .type({"quis nisl sed posuere. Sed eu euismod justo. Phasellus lectus tortor, porttitor a bibendum non, venenatis eget lacus. Duis a neque a nunc pulvinar volutpat et non purus. Morbi tempus condimentum dolor non luctus. Maecenas tristique pharetra nibh laoreet porta. Cras sodales varius risus eget volutpat. Morbi rhoncus mollis nulla, vel ultricies lacus posuere et."})
+        .type({"In efficitur metus nisl, quis consectetur ipsum fringilla a.\n Integer faucibus elementum sapien, vel\n ultrices ipsum hendrerit \n"})
+        .type({"eget. In vitae mattis lectus. Proin id est egestas lorem faucibus aliquet.\n"})
+        .type({"Sed placerat molestie orci, nec mollis velit cursus tempor. "});
 
-    fb
-        .write(l1, 20)
-        .write(l2, 20)
-        .write(l3, 20)
-        .write(l4, 20)
-        .gotoXY(0,2)
-        .write({":)"}, 2);
+    doc.cursorMoveBegin();
+    textEngine.render();
 
-    frameBufferToConsole(&fb);
+    //frameBufferToConsole(&fb);
 
     cout << "\nFinalizado!" << endl;
 

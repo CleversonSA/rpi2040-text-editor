@@ -232,6 +232,16 @@ Document & Document::cursorMoveEndLine()
     return (*this);
 }
 
+Document & Document::cursorMoveBegin()
+{
+    setDocCol(0);
+    setDocRow(0);
+    setCurrentRowPtr(getStartRowPtr());
+
+    return (*this);
+}
+
+
 Document & Document::type(const char text[])
 {
     for (int i = 0; i<strlen(text); i++)

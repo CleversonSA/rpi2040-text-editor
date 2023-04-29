@@ -30,8 +30,11 @@ using std::sprintf;
 
 bool TextEngine::isCursorAtBottomOfView() const
 {
+    cout << (*_framebuffer).getRow() << " | " << (*_framebuffer).getMaxRows() - 2 << endl;
+
     if ((*_framebuffer).getRow() == (*_framebuffer).getMaxRows() - 2)
     {
+        cout << "Bottom view reached" << endl;
         return true;
     }
     return false;
@@ -41,6 +44,7 @@ bool TextEngine::isCursorAtEndOfViewLine() const
 {
     if ((*_framebuffer).getCol() == (*_framebuffer).getMaxCols() - 2)
     {
+        cout << "End of Line view reached" << endl;
         return true;
     }
     return false;
@@ -49,6 +53,11 @@ bool TextEngine::isCursorAtEndOfViewLine() const
 void TextEngine::renderClearView()
 {
     (*_framebuffer).clearScreen();
+}
+
+void TextEngine::renderClearLine()
+{
+    (*_framebuffer).clearLine();
 }
 
 void TextEngine::setFrameBuffer (FrameBuffer *fb)
@@ -152,8 +161,7 @@ void TextEngine::renderColRow()
         .write('[')
         .write(number_array[0])
         .write(number_array[1])
-        .write(number_array[2])
-        .write(number_array[3]);
+        .write(number_array[2]);
 
     sprintf(number_array, "%d", (*_framebuffer).getCol()+1);
 
@@ -162,7 +170,6 @@ void TextEngine::renderColRow()
         .write(number_array[0])
         .write(number_array[1])
         .write(number_array[2])
-        .write(number_array[3])
         .write(']');
 }
 
@@ -184,8 +191,8 @@ TextEngine::~TextEngine()
     }
 }
 
-TextEngine::TextEngine(FrameBuffer *framebuffer):
-DocumentEngine(),
+TextEngine::TextEngine(Document * document, FrameBuffer *framebuffer):
+DocumentEngine(document),
 _framebuffer(framebuffer)
 {
 

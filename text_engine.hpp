@@ -17,6 +17,7 @@ limitations under the License.
 #define TEXTENGINE
 
 #include "document_engine.hpp"
+#include "document.hpp"
 #include "framebuffer.hpp"
 
 /*
@@ -25,7 +26,7 @@ limitations under the License.
 class TextEngine : public DocumentEngine
 {
     public:
-        TextEngine(FrameBuffer *);
+        TextEngine(Document *, FrameBuffer *);
         ~TextEngine();
 
         void setFrameBuffer (FrameBuffer *);
@@ -35,6 +36,7 @@ class TextEngine : public DocumentEngine
         virtual bool isCursorAtBottomOfView() const;
 
         virtual void renderClearView();
+        virtual void renderClearLine();
         virtual void renderLineBreak();
         virtual void renderCarriageReturn();
         virtual void renderCursor();

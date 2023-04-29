@@ -48,6 +48,7 @@ class Document: public CSAObject
         Document & cursorMoveRight();
         Document & cursorMoveEndLine();
         Document & cursorMoveStartOfLine();
+        Document & cursorMoveBegin();
         Document & type(const char[]);
         Document & joinNextLine();
 
