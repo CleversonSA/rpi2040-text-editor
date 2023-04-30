@@ -30,9 +30,7 @@ using std::strlen;
 
 void DocumentEngine::render()
 {
-    bool hasLineOverflow = false;
-    bool hasRowOverflow = false;
-    bool interruptRender = false;
+    bool hasLineContent = false;
     int lastDocRow = (*getDocument()).getDocRow();
     int lastDocCol = (*getDocument()).getDocCol();
 
@@ -40,48 +38,53 @@ void DocumentEngine::render()
     (*_document)
         .cursorMoveBegin();
 
+
     for (int r = 0; r < (*getDocument()).getDocRowEOF(); r++)
     {
         DocRow * rPtr = (*getDocument()).getCurrentRowPtr();
-        hasLineOverflow = false;
-        interruptRender = false;
+
+        if (isCursorAtBottomOfView()
+            && (lastDocRow < r)) {
+            break;
+        }
+
+        if (isCursorAtBottomOfView()) {
+            renderClearView();
+        }
 
         renderEmptyLineIndicator();
+        hasLineContent = false;
 
         for (int c = 0; c < (*rPtr).getLength(); c++ )
         {
             // FIXME Slow as f*ck, please do it with a iterator
             DocCharacter * cPtr = (*rPtr).charPtrAt(c);
 
-            if((isCursorAtEndOfViewLine()
-               && isCursorAtBottomOfView()
-               && ((*getDocument()).getDocRow() < lastDocRow))
-               || hasRowOverflow == true)
+            if(isCursorAtEndOfViewLine())
             {
-                renderClearView();
-                hasRowOverflow = true;
-                cout << "Line overflow reached" << endl;
-            } else if (isCursorAtEndOfViewLine()
-               && isCursorAtBottomOfView()) {
-                interruptRender = true;
-                cout << "Interrupted render" << endl;
-                break;
-            }
-
-
-            if(isCursorAtEndOfViewLine() || hasLineOverflow) {
                 renderLineOverflowIndicator();
-                renderLineWithContentIndicator();
-                renderCarriageReturn();
-                renderClearLine();
-                hasLineOverflow = true;
+                renderLineWithOverflowIndicator();
+                if ((lastDocCol < c)
+                    || (lastDocRow != r))
+                {
+                    break;
+                } else {
+                    renderCarriageReturn();
+                    renderClearLine();
+                }
+            } else {
+                if (!hasLineContent)
+                {
+                    renderLineWithContentIndicator();
+                    renderCarriageReturn();
+                    hasLineContent = true;
+                }
             }
 
             switch((*cPtr).getChar())
             {
             case '\0':
             case '\n':
-                renderLineBreak();
                 break;
             case '\t':
                 renderTabulation();
@@ -96,7 +99,9 @@ void DocumentEngine::render()
                 break;
             }
 
-            if ((*getDocument()).getDocRow() == r && (*getDocument()).getDocCol() == c)
+            if (lastDocRow == r &&
+                ((lastDocCol == (c+1))
+                 || (lastDocCol == c)))
             {
                 renderCursor();
             }
@@ -104,17 +109,16 @@ void DocumentEngine::render()
             (*getDocument()).cursorMoveRight();
         }
 
-        if (interruptRender == true)
-        {
-            break;
-        }
+        (*getDocument())
+            .cursorMoveDown()
+            .cursorMoveStartOfLine();
+        renderLineBreak();
 
-        (*getDocument()).cursorMoveDown();
-        (*getDocument()).getCurrentRowPtr()->toString
-        ();
     }
 
     renderEOF();
+    (*getDocument()).setDocCol(lastDocCol);
+    (*getDocument()).setDocRow(lastDocRow);
     renderColRow();
 
 }

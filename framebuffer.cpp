@@ -75,6 +75,8 @@ FrameBuffer & FrameBuffer::clearLine()
     {
         _screen[_row][i] = '\0';
     }
+
+    return (*this);
 }
 
 FrameBuffer & FrameBuffer::clearScreen()
@@ -86,6 +88,8 @@ FrameBuffer & FrameBuffer::clearScreen()
             _screen[j][i] = '\0';
         }
     }
+
+    return (*this);
 }
 
 FrameBuffer & FrameBuffer::cursorMoveBegin()
@@ -103,7 +107,7 @@ FrameBuffer & FrameBuffer::cursorMoveDown()
 
     if (getRow() > (getMaxRows() - 1))
     {
-        setRow(getMaxRows() - 1);
+        setRow((getMaxRows() - 1));
     }
 
     return (*this);

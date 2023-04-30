@@ -20,14 +20,13 @@ void frameBufferToConsole(FrameBuffer *fb);
 int main()
 {
 
-    //system("cls");
-
     FrameBuffer fb(4,20);
     Document doc;
     TextEngine textEngine(&doc, &fb);
 
+
     doc
-        .type({"Lorem ipsum dolor sit amet\nconsectetur adipiscing elit.\n\n\n"})
+        .type({"Lorem ipsum dolor sit amet\nconsectetur adipiscing elit.\n"})
         .type({"Etiam ut ligula ante. In nec ante velit.\n Sed convallis volutpat lectus sit amet ultrices. Praesent eu interdum mi.\n"})
         .type({"Quisque varius\n congue finibus.\n Etiam et nisl\n sagittis, sollicitudin\n eros id, cursus turpis.\n Morbi consequat \n"})
         .type({"quis nisl sed posuere. Sed eu euismod justo. Phasellus lectus tortor, porttitor a bibendum non, venenatis eget lacus. Duis a neque a nunc pulvinar volutpat et non purus. Morbi tempus condimentum dolor non luctus. Maecenas tristique pharetra nibh laoreet porta. Cras sodales varius risus eget volutpat. Morbi rhoncus mollis nulla, vel ultricies lacus posuere et."})
@@ -35,11 +34,13 @@ int main()
         .type({"eget. In vitae mattis lectus. Proin id est egestas lorem faucibus aliquet.\n"})
         .type({"Sed placerat molestie orci, nec mollis velit cursus tempor. "});
 
-    doc.cursorMoveBegin();
+    doc
+        .cursorMoveBegin();
+
     textEngine.render();
 
-    //frameBufferToConsole(&fb);
 
+    frameBufferToConsole(&fb);
     cout << "\nFinalizado!" << endl;
 
     return 0;
@@ -63,7 +64,7 @@ void frameBufferToConsole(FrameBuffer *fb)
         {
             if ((*screenLine) == '\0')
             {
-                cout << ".";
+                cout << " ";
             } else {
                 cout << (*screenLine);
             }

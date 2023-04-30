@@ -30,11 +30,8 @@ using std::sprintf;
 
 bool TextEngine::isCursorAtBottomOfView() const
 {
-    cout << (*_framebuffer).getRow() << " | " << (*_framebuffer).getMaxRows() - 2 << endl;
-
-    if ((*_framebuffer).getRow() == (*_framebuffer).getMaxRows() - 2)
+    if ((*getFrameBuffer()).getRow() >= (*getFrameBuffer()).getMaxRows() - 1)
     {
-        cout << "Bottom view reached" << endl;
         return true;
     }
     return false;
@@ -42,9 +39,8 @@ bool TextEngine::isCursorAtBottomOfView() const
 
 bool TextEngine::isCursorAtEndOfViewLine() const
 {
-    if ((*_framebuffer).getCol() == (*_framebuffer).getMaxCols() - 2)
+    if ((*getFrameBuffer()).getCol() >= (*getFrameBuffer()).getMaxCols() - 2)
     {
-        cout << "End of Line view reached" << endl;
         return true;
     }
     return false;
@@ -52,12 +48,15 @@ bool TextEngine::isCursorAtEndOfViewLine() const
 
 void TextEngine::renderClearView()
 {
-    (*_framebuffer).clearScreen();
+    (*getFrameBuffer())
+        .clearScreen()
+        .cursorMoveBegin();
+
 }
 
 void TextEngine::renderClearLine()
 {
-    (*_framebuffer).clearLine();
+    (*getFrameBuffer()).clearLine();
 }
 
 void TextEngine::setFrameBuffer (FrameBuffer *fb)
@@ -72,62 +71,65 @@ FrameBuffer * TextEngine::getFrameBuffer() const
 
 void TextEngine::renderLineBreak()
 {
-    if ((*_framebuffer).getRow() == ((*_framebuffer).getMaxRows() - 1))
+    if ((*getFrameBuffer()).getRow() == ((*getFrameBuffer()).getMaxRows() - 1))
     {
-        (*_framebuffer)
+        (*getFrameBuffer())
             .clearScreen()
-            .cursorMoveBegin();
+            .cursorMoveBegin()
+            .cursorMoveRight();
     } else {
-        (*_framebuffer)
+        (*getFrameBuffer())
             .cursorMoveDown()
             .clearLine()
-            .cursorMoveStartOfLine();
+            .cursorMoveStartOfLine()
+            .cursorMoveRight();
     }
 }
 
 void TextEngine::renderCarriageReturn()
 {
-   (*_framebuffer)
-        .cursorMoveStartOfLine();
+   (*getFrameBuffer())
+        .cursorMoveStartOfLine()
+        .cursorMoveRight();
 }
 
 void TextEngine::renderCursor()
 {
-    (*_framebuffer)
+    (*getFrameBuffer())
         .write('_');
 }
 
 void TextEngine::renderTabulation()
 {
-    (*_framebuffer)
+    (*getFrameBuffer())
         .write(' ');
 }
 
 void TextEngine::renderLineOverflowIndicator()
 {
-    (*_framebuffer)
-        .gotoXY((*_framebuffer).getRow(), (*_framebuffer).getMaxCols() - 1)
+    (*getFrameBuffer())
+        .gotoXY((*getFrameBuffer()).getRow(), (*getFrameBuffer()).getMaxCols() - 1)
         .fixedWrite('>');
 }
 
 void TextEngine::renderLineWithOverflowIndicator()
 {
-    (*_framebuffer)
-        .gotoXY((*_framebuffer).getRow(), 0)
+    (*getFrameBuffer())
+        .gotoXY((*getFrameBuffer()).getRow(), 0)
         .fixedWrite('+');
 }
 
 void TextEngine::renderEmptyLineIndicator()
 {
-    (*_framebuffer)
-        .gotoXY((*_framebuffer).getRow(), 0)
+    (*getFrameBuffer())
+        .gotoXY((*getFrameBuffer()).getRow(), 0)
         .fixedWrite('~');
 }
 
 void TextEngine::renderLineWithContentIndicator()
 {
-    (*_framebuffer)
-        .gotoXY((*_framebuffer).getRow(), 0)
+    (*getFrameBuffer())
+        .gotoXY((*getFrameBuffer()).getRow(), 0)
         .fixedWrite('.');
 }
 
@@ -140,36 +142,37 @@ void TextEngine::renderCharacter(DocCharacter *dc)
 {
     if ((*dc).getChar() == '\0')
     {
-        (*_framebuffer)
+        (*getFrameBuffer())
             .write(' ');
     } else {
-        (*_framebuffer)
+        (*getFrameBuffer())
             .write((*dc).getChar());
     }
+    cout << "[" << (*getFrameBuffer()).getRow() << "," << (*getFrameBuffer()).getCol() << "]" << endl;
 }
 
 void TextEngine::renderColRow()
 {
     char number_array[5 + sizeof(char)];
 
-    (*_framebuffer)
-      .gotoXY((*_framebuffer).getMaxRows() - 1, (*_framebuffer).getMaxCols()-10);
+    (*getFrameBuffer())
+      .gotoXY((*getFrameBuffer()).getMaxRows() - 1, (*getFrameBuffer()).getMaxCols()-10);
 
-    sprintf(number_array, "%d", (*_framebuffer).getRow()+1);
+    sprintf(number_array, "%d", ((*getDocument()).getDocRow()+1)+1000);
 
-    (*_framebuffer)
+    (*getFrameBuffer())
         .write('[')
-        .write(number_array[0])
-        .write(number_array[1])
-        .write(number_array[2]);
-
-    sprintf(number_array, "%d", (*_framebuffer).getCol()+1);
-
-    (*_framebuffer)
-        .write(',')
-        .write(number_array[0])
         .write(number_array[1])
         .write(number_array[2])
+        .write(number_array[3]);
+
+    sprintf(number_array, "%d", ((*getDocument()).getDocCol()+1)+1000);
+
+    (*getFrameBuffer())
+        .write(',')
+        .write(number_array[1])
+        .write(number_array[2])
+        .write(number_array[3])
         .write(']');
 }
 

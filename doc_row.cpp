@@ -275,11 +275,6 @@ int DocRow::getLength () const
 
 int DocRow::getLength (const DocCharacter * startCharPtr, int qtLength) const
 {
-    static int fuse = 10000;
-
-    fuse--;
-    if (fuse < 0)
-        return -1;
 
     if (startCharPtr != 0) {
         if ((*startCharPtr).getChar() != '\0')
@@ -289,8 +284,7 @@ int DocRow::getLength (const DocCharacter * startCharPtr, int qtLength) const
             return qtLength;
         }
     } else {
-        fuse = 10000;
-        return qtLength;
+       return qtLength;
     }
 
 }
