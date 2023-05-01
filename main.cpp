@@ -14,14 +14,18 @@ using std::strlen;
 #include "framebuffer.hpp"
 #include "text_engine.hpp"
 
+#include "menu_item.hpp"
+#include "main_menu_new_file.hpp"
+
 int getMemSize(CSAObject *);
 void frameBufferToConsole(FrameBuffer *fb);
+void triggerHandle(MenuItem *);
 
 int main()
 {
 
     FrameBuffer fb(4,20);
-    Document doc;
+    /*Document doc;
     TextEngine textEngine(&doc, &fb);
 
 
@@ -38,9 +42,14 @@ int main()
         .cursorMoveBegin();
 
     textEngine.render();
+    */
+
+    MainMenuNewFile mainMenuNewFile({"New file"}, 56000);
 
 
-    frameBufferToConsole(&fb);
+    triggerHandle(&mainMenuNewFile);
+
+    //frameBufferToConsole(&fb);
     cout << "\nFinalizado!" << endl;
 
     return 0;
@@ -74,6 +83,10 @@ void frameBufferToConsole(FrameBuffer *fb)
     }
 }
 
+void triggerHandle(MenuItem * menuItem)
+{
+    (*menuItem).handle();
+}
 
 
 
