@@ -1,3 +1,5 @@
+
+
 /*
     Copyright 2023 Cleverson S A
 
@@ -13,31 +15,36 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef APPGLOBALS
-#define APPGLOBALS
+#ifndef LCD4X20MSGBOX
+#define LCD4X20MSGBOX
 
+#include "msgbox_engine.hpp"
+#include "framebuffer.hpp"
 
 /*
-  Global settings class
+    Abstract class for MsgBox widget
 */
-class AppGlobals
+class LCD4X20MsgBox: public MsgBoxEngine
 {
     public:
-        ~AppGlobals();
+        LCD4X20MsgBox(FrameBuffer *);
+        ~LCD4X20MsgBox();
 
-        static AppGlobals & getInstance();
+        void setFrameBuffer(FrameBuffer *);
+        FrameBuffer * getFrameBuffer() const;
 
-        void setEnableObjDelLog(const bool);
-        bool getEnableObjDelLog() const;
+        virtual MsgBoxEngine & render();
 
+        virtual void toString();
+        virtual int getMemSize();
 
     private:
-        AppGlobals();
 
-        static AppGlobals* _me;
+        FrameBuffer *_framebuffer;
 
-        bool _enableObjDelLog;
+        void fitString(const char *, const int, int = 0);
 };
 
-#endif // DOCCHARACTER
+#endif // DOCUMENT
+
 

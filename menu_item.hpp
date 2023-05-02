@@ -13,31 +13,36 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef APPGLOBALS
-#define APPGLOBALS
+#ifndef MENUITEM
+#define MENUITEM
 
+#include "csa_object.hpp"
 
 /*
-  Global settings class
+    Controls logical menu item.
 */
-class AppGlobals
+class MenuItem: public CSAObject
 {
     public:
-        ~AppGlobals();
+        MenuItem(const char [], const int);
+        ~MenuItem();
 
-        static AppGlobals & getInstance();
+        void setLabel(const char []);
+        char * getLabel() const;
+        void setValue(const int);
+        int getValue() const;
+        void setParentMenuItemPtr (MenuItem *);
+        MenuItem * getParentMenuItemPtr() const;
 
-        void setEnableObjDelLog(const bool);
-        bool getEnableObjDelLog() const;
-
+        virtual void handle() = 0;
 
     private:
-        AppGlobals();
+        char *_label;
+        int _value;
 
-        static AppGlobals* _me;
+        MenuItem *_parentMenuItemPtr;
 
-        bool _enableObjDelLog;
 };
 
-#endif // DOCCHARACTER
+#endif // DOCUMENT
 

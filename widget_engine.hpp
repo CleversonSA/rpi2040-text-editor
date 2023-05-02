@@ -13,31 +13,25 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef APPGLOBALS
-#define APPGLOBALS
+#ifndef WIDGETENGINE
+#define WIDGETENGINE
 
+#include "widget_engine.hpp"
+#include "csa_object.hpp"
 
 /*
-  Global settings class
+    Abstract class for widgets (Msgbox, inputbox, menulist, views)
 */
-class AppGlobals
+class WidgetEngine: public CSAObject
 {
     public:
-        ~AppGlobals();
-
-        static AppGlobals & getInstance();
-
-        void setEnableObjDelLog(const bool);
-        bool getEnableObjDelLog() const;
-
+        WidgetEngine();
+        ~WidgetEngine();
 
     private:
-        AppGlobals();
 
-        static AppGlobals* _me;
-
-        bool _enableObjDelLog;
 };
 
-#endif // DOCCHARACTER
+#endif // DOCUMENT
+
 

@@ -1,0 +1,174 @@
+
+/*
+    Copyright 2023 Cleverson S A
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+#include <iostream>
+using std::cout;
+using std::endl;
+
+#include <iomanip>
+using std::setw;
+
+#include <cstring>
+using std::strlen;
+using std::strcpy;
+
+#include "msgbox_engine.hpp"
+#include "app_globals.hpp"
+
+void MsgBoxEngine::setSelectedButton(const int selectedButton)
+{
+    _selectedButton = selectedButton;
+}
+
+int MsgBoxEngine::getSelectedButton() const
+{
+    return _selectedButton;
+}
+
+void MsgBoxEngine::setBtnCount(const int btnCount)
+{
+    _btnCount = btnCount;
+}
+
+int MsgBoxEngine::getBtnCount() const
+{
+    return _btnCount;
+}
+
+void MsgBoxEngine::setDefaultMsgBox(MsgBoxEngine *defaultMsgBoxEngine)
+{
+    _defaultMsgBox = defaultMsgBoxEngine;
+}
+
+MsgBoxEngine * MsgBoxEngine::getMsgBox() const
+{
+    return _defaultMsgBox;
+}
+
+void MsgBoxEngine::setTitle(const char title[])
+{
+    if (_title != 0)
+    {
+        delete _title;
+    }
+
+    _title = new char[strlen(title)];
+    strcpy(_title, title);
+}
+
+char * MsgBoxEngine::getTitle() const
+{
+    return _title;
+}
+
+void MsgBoxEngine::setMessage(const char message[])
+{
+    if (_message != 0)
+    {
+        delete _message;
+    }
+
+    _message = new char[strlen(message)];
+    strcpy(_message, message);
+}
+
+char * MsgBoxEngine::getMessage() const
+{
+    return _message;
+}
+
+
+void MsgBoxEngine::setCallbackfn(void (*fn)(int))
+{
+    _callbackfn = fn;
+}
+
+void MsgBoxEngine::setButtonType(const int btnType)
+{
+    if (_buttonsPtr != 0)
+    {
+        delete _buttonsPtr;
+    }
+
+    switch(btnType)
+    {
+    case (MsgBoxEngine::YESNO_BUTTON):
+        _buttonsPtr = new int [2];
+        (*_buttonsPtr)[0] = BTN_YES;
+        (*_buttonsPtr)[1] = BTN_NO;
+        setBtnCount(2);
+        break;
+
+    case (MsgBoxEngine::YESNOCANCEL_BUTTON):
+        _buttonsPtr = new int [3];
+        (*_buttonsPtr)[0] = MsgBoxEngine::BTN_YES;
+        (*_buttonsPtr)[1] = MsgBoxEngine::BTN_NO;
+        (*_buttonsPtr)[2] = MsgBoxEngine::BTN_CANCEL;
+        setBtnCount(3);
+        break;
+
+    case (MsgBoxEngine::OKCANCEL_BUTTON):
+        _buttonsPtr = new int [2];
+        (*_buttonsPtr)[0] = MsgBoxEngine::BTN_OK;
+        (*_buttonsPtr)[1] = MsgBoxEngine::BTN_CANCEL;
+        setBtnCount(2);
+        break;
+
+    default:
+        _buttonsPtr = new int [1];
+        (*_buttonsPtr)[0] = MsgBoxEngine::BTN_OK;
+        setBtnCount(1);
+        break;
+    }
+
+    setSelectedButton(-1);
+}
+
+void MsgBoxEngine::selectButton();
+        void reset();
+
+
+void MsgBoxEngine::setDefaultMsgBox(MsgBoxEngine * defaultMsgBox)
+{
+    _defaultMsgBox = defaultMsgBox;
+}
+
+
+ MsgBoxEngine * MsgBoxEngine::getMsgBox() const
+ {
+    return _defaultMsgBox;
+ }
+
+
+MsgBoxEngine::~MsgBoxEngine()
+{
+    if(AppGlobals::getInstance().getEnableObjDelLog() == true) {
+        cout << "[MsgBoxEngine] [destUID=" << CSAObject::getSerialVersionUID() << "]" << endl;
+    }
+}
+
+MsgBoxEngine::MsgBoxEngine():
+WidgetEngine(),
+_selectedButton(-1),
+_btnCount(0),
+_buttonsPtr(0),
+_title(0),
+_message(0),
+_defaultMsgBox(0)
+{
+
+}
+

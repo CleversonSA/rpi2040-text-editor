@@ -13,31 +13,31 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef APPGLOBALS
-#define APPGLOBALS
+#include <iostream>
+using std::cout;
+using std::endl;
+
+#include <iomanip>
+using std::setw;
+
+#include <cstring>
+using std::strlen;
+using std::strcpy;
+
+#include "widget_engine.hpp"
+#include "app_globals.hpp"
 
 
-/*
-  Global settings class
-*/
-class AppGlobals
+WidgetEngine::~WidgetEngine()
 {
-    public:
-        ~AppGlobals();
+    if(AppGlobals::getInstance().getEnableObjDelLog() == true) {
+        cout << "[WidgetEngine] [destUID=" << CSAObject::getSerialVersionUID() << "]" << endl;
+    }
+}
 
-        static AppGlobals & getInstance();
+WidgetEngine::WidgetEngine():
+CSAObject()
+{
 
-        void setEnableObjDelLog(const bool);
-        bool getEnableObjDelLog() const;
-
-
-    private:
-        AppGlobals();
-
-        static AppGlobals* _me;
-
-        bool _enableObjDelLog;
-};
-
-#endif // DOCCHARACTER
+}
 

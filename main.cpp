@@ -17,6 +17,9 @@ using std::strlen;
 #include "menu_item.hpp"
 #include "main_menu_new_file.hpp"
 
+#include "msgbox_engine.hpp"
+#include "lcd4x20_msgbox.hpp"
+
 int getMemSize(CSAObject *);
 void frameBufferToConsole(FrameBuffer *fb);
 void triggerHandle(MenuItem *);
@@ -25,6 +28,12 @@ int main()
 {
 
     FrameBuffer fb(4,20);
+    FrameBuffer fbMsgbox(4,20);
+
+    LCD4X20MsgBox lcd4x20msgbox(&fbMsgbox);
+    MsgBoxEngine *msgbox = &lcd4x20msgbox;
+
+
     /*Document doc;
     TextEngine textEngine(&doc, &fb);
 
@@ -44,12 +53,14 @@ int main()
     textEngine.render();
     */
 
-    MainMenuNewFile mainMenuNewFile({"New file"}, 56000);
+    (*msgbox)
+        .reset()
+        .setTitle({"Greetings"})
+        .setMessage({"Hello world! In a larger message!"})
+        .setButtonType(MsgBoxEngine::OK_BUTTON)
+        .render();
 
-
-    triggerHandle(&mainMenuNewFile);
-
-    //frameBufferToConsole(&fb);
+    frameBufferToConsole(&fbMsgbox);
     cout << "\nFinalizado!" << endl;
 
     return 0;

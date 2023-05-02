@@ -1,3 +1,4 @@
+
 /*
     Copyright 2023 Cleverson S A
 
@@ -13,31 +14,29 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef APPGLOBALS
-#define APPGLOBALS
+#ifndef MAINMENUNEWFILE
+#define MAINMENUNEWFILE
 
+#include "menu_item.hpp"
 
 /*
-  Global settings class
+    Controls logical menu item.
 */
-class AppGlobals
+class MainMenuNewFile: public MenuItem
 {
     public:
-        ~AppGlobals();
+        MainMenuNewFile(const char [], const int);
+        ~MainMenuNewFile();
 
-        static AppGlobals & getInstance();
+        virtual void handle();
 
-        void setEnableObjDelLog(const bool);
-        bool getEnableObjDelLog() const;
+        virtual void toString();
+        virtual int getMemSize();
 
 
     private:
-        AppGlobals();
 
-        static AppGlobals* _me;
-
-        bool _enableObjDelLog;
 };
 
-#endif // DOCCHARACTER
+#endif // DOCUMENT
 
