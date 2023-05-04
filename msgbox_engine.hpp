@@ -25,6 +25,12 @@ limitations under the License.
 class MsgBoxEngine: public WidgetEngine
 {
     public:
+        static const int NO_ICON = 53600;
+        static const int EXCLAMATION_ICON = 53601;
+        static const int ERROR_ICON = 53602;
+        static const int INFO_ICON = 53603;
+        static const int QUESTION_ICON = 53604;
+
         static const int BTN_OK = 53500;
         static const int BTN_YES = 53501;
         static const int BTN_CANCEL = 53502;
@@ -42,15 +48,15 @@ class MsgBoxEngine: public WidgetEngine
         char * getTitle() const;
         MsgBoxEngine & setMessage(const char[]);
         char * getMessage() const;
-        MsgBoxEngine & setCallbackfn(void (*fn)(int));
-        MsgBoxEngine & setBtnCount(const int);
-        int getBtnCount() const;
+        MsgBoxEngine & setCallbackfn(void (*fn)(const int));
         MsgBoxEngine & setSelectedButton (const int);
         int getSelectedButton() const;
-
         MsgBoxEngine & setButtonType(const int);
+        int getButtonType() const;
         MsgBoxEngine & selectButton();
         MsgBoxEngine & reset();
+        MsgBoxEngine & setIconType(const int);
+        int getIconType() const;
 
         MsgBoxEngine & cursorMoveNextButton();
         MsgBoxEngine & cursorMovePreviousButton();
@@ -61,10 +67,10 @@ class MsgBoxEngine: public WidgetEngine
 
         char * _title;
         char * _message;
-        int * _buttonsPtr;
-        int _btnCount;
         int _selectedButton;
-        void (*_callbackfn)(int);
+        int _buttonType;
+        int _iconType;
+        void (*_callbackfn)(const int);
 };
 
 #endif // DOCUMENT

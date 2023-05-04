@@ -1,6 +1,7 @@
 #include <iostream>
 using std::cout;
 using std::endl;
+using std::cin;
 
 #include <cstring>
 using std::strlen;
@@ -23,10 +24,11 @@ using std::strlen;
 int getMemSize(CSAObject *);
 void frameBufferToConsole(FrameBuffer *fb);
 void triggerHandle(MenuItem *);
+void handleMsgBoxButton(const int);
 
 int main()
 {
-
+    int pausa = 0;
     FrameBuffer fb(4,20);
     FrameBuffer fbMsgbox(4,20);
 
@@ -56,11 +58,42 @@ int main()
     (*msgbox)
         .reset()
         .setTitle({"Greetings"})
-        .setMessage({"Hello world! In a larger message!"})
-        .setButtonType(MsgBoxEngine::OK_BUTTON)
+        .setMessage({"What do you think?"})
+        .setButtonType(MsgBoxEngine::YESNOCANCEL_BUTTON)
+        .setIconType(MsgBoxEngine::QUESTION_ICON)
+        .setCallbackfn(&handleMsgBoxButton)
         .render();
 
     frameBufferToConsole(&fbMsgbox);
+
+    cin >> pausa;
+    (*msgbox)
+        .cursorMoveNextButton()
+        .render();
+    frameBufferToConsole(&fbMsgbox);
+
+    cin >> pausa;
+    (*msgbox)
+        .cursorMoveNextButton()
+        .render();
+    frameBufferToConsole(&fbMsgbox);
+
+    cin >> pausa;
+    (*msgbox)
+        .cursorMovePreviousButton()
+        .render();
+    frameBufferToConsole(&fbMsgbox);
+
+    cin >> pausa;
+    (*msgbox)
+        .cursorMovePreviousButton()
+        .render();
+
+    frameBufferToConsole(&fbMsgbox);
+
+    (*msgbox)
+        .selectButton();
+
     cout << "\nFinalizado!" << endl;
 
     return 0;
@@ -99,5 +132,24 @@ void triggerHandle(MenuItem * menuItem)
     (*menuItem).handle();
 }
 
+
+void handleMsgBoxButton(const int selectedButton)
+{
+    switch(selectedButton)
+    {
+    case(MsgBoxEngine::BTN_YES):
+        cout << "!!!! VOCE ESCOLHEU O BOTAO SIM !!!!" << endl;
+        break;
+    case(MsgBoxEngine::BTN_NO):
+        cout << "!!!! VOCE ESCOLHEU O BOTAO NAO !!!!" << endl;
+        break;
+    case(MsgBoxEngine::BTN_CANCEL):
+        cout << "!!!! VOCE ESCOLHEU O BOTAO CANCELAR !!!!" << endl;
+        break;
+    default:
+        cout << "!!!! VOCE ESCOLHEU O BOTAO OK !!!!" << endl;
+        break;
+    }
+}
 
 

@@ -28,6 +28,11 @@ using std::strcpy;
 #include "msgbox_engine.hpp"
 #include "app_globals.hpp"
 
+int MsgBoxEngine::getButtonType() const
+{
+    return _buttonType;
+}
+
 MsgBoxEngine & MsgBoxEngine::setSelectedButton(const int selectedButton)
 {
     _selectedButton = selectedButton;
@@ -38,18 +43,6 @@ MsgBoxEngine & MsgBoxEngine::setSelectedButton(const int selectedButton)
 int MsgBoxEngine::getSelectedButton() const
 {
     return _selectedButton;
-}
-
-MsgBoxEngine & MsgBoxEngine::setBtnCount(const int btnCount)
-{
-    _btnCount = btnCount;
-
-    return (*this);
-}
-
-int MsgBoxEngine::getBtnCount() const
-{
-    return _btnCount;
 }
 
 MsgBoxEngine & MsgBoxEngine::setTitle(const char title[])
@@ -89,55 +82,47 @@ char * MsgBoxEngine::getMessage() const
 }
 
 
-MsgBoxEngine & MsgBoxEngine::setCallbackfn(void (*fn)(int))
+MsgBoxEngine & MsgBoxEngine::setCallbackfn(void (*fn)(const int))
 {
     _callbackfn = fn;
 
     return (*this);
 }
 
+MsgBoxEngine & MsgBoxEngine::setIconType(const int iconType)
+{
+    _iconType = iconType;
+
+    return (*this);
+}
+
+int MsgBoxEngine::getIconType() const
+{
+    return _iconType;
+}
+
 MsgBoxEngine & MsgBoxEngine::setButtonType(const int btnType)
 {
-    if (_buttonsPtr != 0)
-    {
-        delete _buttonsPtr;
-    }
-
     switch(btnType)
     {
     case (MsgBoxEngine::YESNO_BUTTON):
-        _buttonsPtr = new int [2];
-        (*_buttonsPtr) = BTN_YES;
-        (*_buttonsPtr++) = BTN_NO;
-        _buttonsPtr--;
-        setBtnCount(2);
+        setSelectedButton(MsgBoxEngine::BTN_NO);
         break;
 
     case (MsgBoxEngine::YESNOCANCEL_BUTTON):
-        _buttonsPtr = new int [3];
-        (*_buttonsPtr) = MsgBoxEngine::BTN_YES;
-        (*_buttonsPtr++) = MsgBoxEngine::BTN_NO;
-        (*_buttonsPtr++) = MsgBoxEngine::BTN_CANCEL;
-        _buttonsPtr = _buttonsPtr - 2;
-        setBtnCount(3);
+        setSelectedButton(MsgBoxEngine::BTN_CANCEL);
         break;
 
     case (MsgBoxEngine::OKCANCEL_BUTTON):
-        _buttonsPtr = new int [2];
-        (*_buttonsPtr) = MsgBoxEngine::BTN_OK;
-        (*_buttonsPtr++) = MsgBoxEngine::BTN_CANCEL;
-        _buttonsPtr = _buttonsPtr - 1;
-        setBtnCount(2);
+        setSelectedButton(MsgBoxEngine::BTN_CANCEL);
         break;
 
     default:
-        _buttonsPtr = new int [1];
-        (*_buttonsPtr) = MsgBoxEngine::BTN_OK;
-        setBtnCount(1);
+        setSelectedButton(MsgBoxEngine::BTN_OK);
         break;
     }
 
-    setSelectedButton(-1);
+    _buttonType = btnType;
 
     return (*this);
 }
@@ -152,10 +137,6 @@ MsgBoxEngine & MsgBoxEngine::selectButton()
 
 MsgBoxEngine & MsgBoxEngine::reset()
 {
-    if (_buttonsPtr != 0)
-    {
-        delete _buttonsPtr;
-    }
 
     if (_title != 0)
     {
@@ -167,8 +148,8 @@ MsgBoxEngine & MsgBoxEngine::reset()
         delete _message;
     }
 
-    setSelectedButton(0);
-    setBtnCount(0);
+    setIconType(MsgBoxEngine::NO_ICON);
+    setButtonType(MsgBoxEngine::OK_BUTTON);
     _callbackfn = 0;
 
     return (*this);
@@ -176,26 +157,76 @@ MsgBoxEngine & MsgBoxEngine::reset()
 
 MsgBoxEngine & MsgBoxEngine::cursorMoveNextButton()
 {
-    setSelectedButton(getSelectedButton() + 1);
-    if (getSelectedButton() > getBtnCount())
+    switch(getButtonType())
     {
-        setSelectedButton(0);
+    case(MsgBoxEngine::OKCANCEL_BUTTON):
+        if (getSelectedButton() == MsgBoxEngine::BTN_OK)
+        {
+            setSelectedButton(MsgBoxEngine::BTN_CANCEL);
+        } else {
+            setSelectedButton(MsgBoxEngine::BTN_OK);
+        }
+        break;
+    case(MsgBoxEngine::YESNO_BUTTON):
+        if (getSelectedButton() == MsgBoxEngine::BTN_YES)
+        {
+            setSelectedButton(MsgBoxEngine::BTN_NO);
+        } else {
+            setSelectedButton(MsgBoxEngine::BTN_YES);
+        }
+        break;
+    case(MsgBoxEngine::YESNOCANCEL_BUTTON):
+        if (getSelectedButton() == MsgBoxEngine::BTN_YES)
+        {
+            setSelectedButton(MsgBoxEngine::BTN_NO);
+        } else if (getSelectedButton() == MsgBoxEngine::BTN_NO) {
+            setSelectedButton(MsgBoxEngine::BTN_CANCEL);
+        } else {
+            setSelectedButton(MsgBoxEngine::BTN_YES);
+        }
+        break;
+    default:
+        setSelectedButton(MsgBoxEngine::BTN_OK);
+        break;
     }
-
-    render();
 
     return (*this);
 }
 
 MsgBoxEngine & MsgBoxEngine::cursorMovePreviousButton()
 {
-    setSelectedButton(getSelectedButton() - 1);
-    if (getSelectedButton() < 0)
+    switch(getButtonType())
     {
-        setSelectedButton(getBtnCount() - 1);
+    case(MsgBoxEngine::OKCANCEL_BUTTON):
+        if (getSelectedButton() == MsgBoxEngine::BTN_OK)
+        {
+            setSelectedButton(MsgBoxEngine::BTN_CANCEL);
+        } else {
+            setSelectedButton(MsgBoxEngine::BTN_OK);
+        }
+        break;
+    case(MsgBoxEngine::YESNO_BUTTON):
+        if (getSelectedButton() == MsgBoxEngine::BTN_YES)
+        {
+            setSelectedButton(MsgBoxEngine::BTN_NO);
+        } else {
+            setSelectedButton(MsgBoxEngine::BTN_YES);
+        }
+        break;
+    case(MsgBoxEngine::YESNOCANCEL_BUTTON):
+        if (getSelectedButton() == MsgBoxEngine::BTN_YES)
+        {
+            setSelectedButton(MsgBoxEngine::BTN_CANCEL);
+        } else if (getSelectedButton() == MsgBoxEngine::BTN_CANCEL) {
+            setSelectedButton(MsgBoxEngine::BTN_NO);
+        } else {
+            setSelectedButton(MsgBoxEngine::BTN_YES);
+        }
+        break;
+    default:
+        setSelectedButton(MsgBoxEngine::BTN_OK);
+        break;
     }
-
-    render();
 
     return (*this);
 }
@@ -209,11 +240,11 @@ MsgBoxEngine::~MsgBoxEngine()
 
 MsgBoxEngine::MsgBoxEngine():
 WidgetEngine(),
-_selectedButton(0),
-_btnCount(0),
-_buttonsPtr(0),
+_selectedButton(MsgBoxEngine::BTN_OK),
 _title(0),
-_message(0)
+_message(0),
+_buttonType(MsgBoxEngine::OK_BUTTON),
+_iconType(MsgBoxEngine::NO_ICON)
 {
 
 }

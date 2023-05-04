@@ -61,11 +61,48 @@ MsgBoxEngine & LCD4X20MsgBox::render()
 
     (*fb)
         .clearScreen()
-        .cursorMoveBegin()
-        .write({"+-|              |-+"}, 20)
-        .write({"|                  |"}, 20)
-        .write({"|                  |"}, 20)
-        .write({"+------------------+"}, 20)
+        .cursorMoveBegin();
+
+    switch(getIconType())
+    {
+    case(MsgBoxEngine::QUESTION_ICON):
+        (*fb)
+            .write({"??|              |??"}, 20)
+            .write({"?                  ?"}, 20)
+            .write({"?                  ?"}, 20)
+            .write({"??----------------??"}, 20);
+        break;
+    case(MsgBoxEngine::EXCLAMATION_ICON):
+        (*fb)
+            .write({"!!|              |!!"}, 20)
+            .write({"!                  !"}, 20)
+            .write({"!                  !"}, 20)
+            .write({"!!----------------!!"}, 20);
+        break;
+    case(MsgBoxEngine::ERROR_ICON):
+        (*fb)
+            .write({"##|              |##"}, 20)
+            .write({"#                  #"}, 20)
+            .write({"#                  #"}, 20)
+            .write({"##----------------##"}, 20);
+        break;
+    case(MsgBoxEngine::INFO_ICON):
+        (*fb)
+            .write({"ii|              |ii"}, 20)
+            .write({"i                  i"}, 20)
+            .write({"i                  i"}, 20)
+            .write({"ii----------------ii"}, 20);
+        break;
+    default:
+        (*fb)
+            .write({"+-|              |-+"}, 20)
+            .write({"|                  |"}, 20)
+            .write({"|                  |"}, 20)
+            .write({"+------------------+"}, 20);
+        break;
+    }
+
+    (*fb)
         .cursorMoveBegin()
         .gotoXY(0,3);
 
@@ -77,6 +114,70 @@ MsgBoxEngine & LCD4X20MsgBox::render()
     {
         (*fb).gotoXY(2,1);
         fitString(getMessage(),18,18);
+    }
+
+    switch(getButtonType())
+    {
+    case(MsgBoxEngine::OKCANCEL_BUTTON):
+        (*fb).gotoXY(3,3);
+        if (getSelectedButton() == MsgBoxEngine::BTN_OK)
+        {
+            (*fb).write({"{OK}"}, 4);
+        } else {
+            (*fb).write({" OK "}, 4);
+        }
+        (*fb).gotoXY(3,12);
+        if (getSelectedButton() == MsgBoxEngine::BTN_CANCEL)
+        {
+            (*fb).write({"{CAN}"}, 5);
+        } else {
+            (*fb).write({" CAN "}, 5);
+        }
+        break;
+    case(MsgBoxEngine::YESNO_BUTTON):
+        (*fb).gotoXY(3,3);
+        if (getSelectedButton() == MsgBoxEngine::BTN_YES)
+        {
+            (*fb).write({"{YES}"}, 5);
+        } else {
+            (*fb).write({" YES "}, 5);
+        }
+        (*fb).gotoXY(3,13);
+        if (getSelectedButton() == MsgBoxEngine::BTN_NO)
+        {
+            (*fb).write({"{NO}"}, 4);
+        } else {
+            (*fb).write({" NO "}, 4);
+        }
+        break;
+    case(MsgBoxEngine::YESNOCANCEL_BUTTON):
+        (*fb).gotoXY(3,2);
+        if (getSelectedButton() == MsgBoxEngine::BTN_YES)
+        {
+            (*fb).write({"{YES}"}, 5);
+        } else {
+            (*fb).write({" YES "}, 5);
+        }
+        (*fb).gotoXY(3,8);
+        if (getSelectedButton() == MsgBoxEngine::BTN_NO)
+        {
+            (*fb).write({"{NO}"}, 4);
+        } else {
+            (*fb).write({" NO "}, 4);
+        }
+        (*fb).gotoXY(3,13);
+        if (getSelectedButton() == MsgBoxEngine::BTN_CANCEL)
+        {
+            (*fb).write({"{CAN}"}, 5);
+        } else {
+            (*fb).write({" CAN "}, 5);
+        }
+        break;
+    default:
+        (*fb)
+            .gotoXY(3,8)
+            .write({"{OK}"}, 4);
+
     }
 
     return (*this);
