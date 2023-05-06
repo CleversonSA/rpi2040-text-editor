@@ -21,20 +21,29 @@ using std::strlen;
 #include "msgbox_engine.hpp"
 #include "lcd4x20_msgbox.hpp"
 
+#include "inputbox_engine.hpp"
+#include "lcd4x20_inputbox.hpp"
+
 int getMemSize(CSAObject *);
 void frameBufferToConsole(FrameBuffer *fb);
 void triggerHandle(MenuItem *);
 void handleMsgBoxButton(const int);
+void handleInputBox(const int, char *);
 
 int main()
 {
     int pausa = 0;
     FrameBuffer fb(4,20);
     FrameBuffer fbMsgbox(4,20);
+    FrameBuffer fbInputbox(4,20);
 
     LCD4X20MsgBox lcd4x20msgbox(&fbMsgbox);
-    MsgBoxEngine *msgbox = &lcd4x20msgbox;
+    LCD4X20InputBox lcd4x20inputbox(&fbInputbox);
 
+    MsgBoxEngine *msgbox = &lcd4x20msgbox;
+    InputBoxEngine *inputbox = &lcd4x20inputbox;
+
+    cout << "Inicializado" << endl;
 
     /*Document doc;
     TextEngine textEngine(&doc, &fb);
@@ -55,7 +64,7 @@ int main()
     textEngine.render();
     */
 
-    (*msgbox)
+    /*(*msgbox)
         .reset()
         .setTitle({"Greetings"})
         .setMessage({"What do you think?"})
@@ -95,6 +104,34 @@ int main()
         .selectButton();
 
     cout << "\nFinalizado!" << endl;
+
+    */
+
+    (*inputbox)
+        .reset()
+        .setTitle({"Save As"})
+        .setMessage({"Enter file name:"})
+        .render();
+
+    frameBufferToConsole(&fbInputbox);
+
+    cin >> pausa;
+
+    (*inputbox)
+        .type('O')
+        .type('l')
+        .type('a')
+        .type('.')
+        .type('t')
+        .type('x')
+        .type('t')
+        .render();
+
+    frameBufferToConsole(&fbInputbox);
+
+    cin >> pausa;
+
+
 
     return 0;
 }
@@ -152,4 +189,19 @@ void handleMsgBoxButton(const int selectedButton)
     }
 }
 
+
+void handleInputBox(const int actionInput, char * userInput)
+{
+    if (actionInput == InputBoxEngine::CANCEL_TRIGGERED)
+    {
+        cout << "O USUÁRIO CANCELOU A ENTRADA!" << endl;
+        return;
+    }
+
+    if (actionInput == InputBoxEngine::OK_TRIGGERED)
+    {
+        cout << "O usuário digitou:" << userInput << endl;
+    }
+
+}
 
