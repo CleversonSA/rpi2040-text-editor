@@ -125,9 +125,28 @@ int main()
         .type('t')
         .type('x')
         .type('t')
+        .triggerBackspace()
+        .triggerBackspace()
+        .triggerBackspace()
+        .triggerBackspace()
+        .triggerBackspace()
+        .triggerBackspace()
+        .triggerBackspace()
+        .triggerBackspace()
+        .type('O')
+        .type('l')
+        .type('a')
+        .type('.')
+        .type('t')
+        .type('x')
+        .type('t')
+        .setCallbackfn(&handleInputBox)
         .render();
 
     frameBufferToConsole(&fbInputbox);
+
+    (*inputbox)
+        .triggerESC();
 
     cin >> pausa;
 

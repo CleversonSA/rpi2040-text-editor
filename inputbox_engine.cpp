@@ -23,6 +23,7 @@ using std::setw;
 #include <cstring>
 using std::strlen;
 using std::strcpy;
+using std::strncat;
 
 #include "inputbox_engine.hpp"
 #include "app_globals.hpp"
@@ -68,6 +69,11 @@ char * InputBoxEngine::getMessage() const
 
 InputBoxEngine & InputBoxEngine::type(const char text[])
 {
+    if (strlen(text) >= getMaxInputSize())
+    {
+        return (*this);
+    }
+
     if (_userInput != 0)
     {
         delete _userInput;
@@ -82,14 +88,12 @@ InputBoxEngine & InputBoxEngine::type(const char text[])
 
 InputBoxEngine & InputBoxEngine::type(const char character)
 {
-    char * new_string = new char[strlen(_userInput) + 1];
+    if (strlen(_userInput) + 1 > getMaxInputSize())
+    {
+        return (*this);
+    }
 
-    strcpy(new_string, _userInput);
-    new_string[strlen(_userInput)-1] = character;
-    new_string[strlen(_userInput)] = '\0';
-
-    delete _userInput;
-    setUserInput(new_string);
+    strncat(_userInput, &character, 1);
 
     return (*this);
 
@@ -98,15 +102,24 @@ InputBoxEngine & InputBoxEngine::type(const char character)
 
 InputBoxEngine & InputBoxEngine::triggerBackspace()
 {
-    char * new_string = new char[strlen(_userInput) - 1];
+    int size = strlen(_userInput);
 
-    for (int i=0; i< strlen(new_string); i++)
+    if (size == 0)
+    {
+        return (*this);
+    }
+
+    char * new_string = new char[size - 1];
+
+    for (int i=0; i< (size - 1); i++)
     {
         new_string[i] = _userInput[i];
     }
 
-    new_string[strlen(new_string)] = '\0';
+    new_string[size - 1] = '\0';
+
     delete _userInput;
+
     setUserInput(new_string);
 
     return (*this);
