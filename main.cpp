@@ -11,24 +11,25 @@ using std::strlen;
 #include "doc_row.hpp"
 #include "app_globals.hpp"
 #include "document.hpp"
-#include "text_engine.hpp"
 #include "framebuffer.hpp"
-#include "text_engine.hpp"
-
 #include "menu_item.hpp"
 #include "main_menu_new_file.hpp"
 
+#include "text_engine.hpp"
 #include "msgbox_engine.hpp"
-#include "lcd4x20_msgbox.hpp"
-
 #include "inputbox_engine.hpp"
+#include "splashbox_engine.hpp"
+
+#include "lcd4x20_msgbox.hpp"
 #include "lcd4x20_inputbox.hpp"
+#include "lcd4x20_splashbox.hpp"
 
 int getMemSize(CSAObject *);
 void frameBufferToConsole(FrameBuffer *fb);
 void triggerHandle(MenuItem *);
 void handleMsgBoxButton(const int);
 void handleInputBox(const int, char *);
+void handleSplashBox(void);
 
 int main()
 {
@@ -36,12 +37,15 @@ int main()
     FrameBuffer fb(4,20);
     FrameBuffer fbMsgbox(4,20);
     FrameBuffer fbInputbox(4,20);
+    FrameBuffer fbSplashBox(4,20);
 
     LCD4X20MsgBox lcd4x20msgbox(&fbMsgbox);
     LCD4X20InputBox lcd4x20inputbox(&fbInputbox);
+    LCD4X20Splashbox lcd4x20splashbox(&fbSplashBox);
 
     MsgBoxEngine *msgbox = &lcd4x20msgbox;
     InputBoxEngine *inputbox = &lcd4x20inputbox;
+    SplashBoxEngine *splashbox = &lcd4x20splashbox;
 
     cout << "Inicializado" << endl;
 
@@ -105,7 +109,7 @@ int main()
 
     cout << "\nFinalizado!" << endl;
 
-    */
+
 
     (*inputbox)
         .reset()
@@ -147,10 +151,21 @@ int main()
 
     (*inputbox)
         .triggerESC();
+*/
+    (*splashbox)
+        .reset()
+        .setTitle({"Saving..."})
+        .setMessage({"Wait for file saving, be patient!"})
+        .setIconType(SplashBoxEngine::NO_ICON)
+        .setCallbackfn(&handleSplashBox)
+        .render();
+
+    frameBufferToConsole(&fbSplashBox);
 
     cin >> pausa;
 
-
+    (*splashbox)
+        .hide();
 
     return 0;
 }
@@ -221,6 +236,12 @@ void handleInputBox(const int actionInput, char * userInput)
     {
         cout << "O usuário digitou:" << userInput << endl;
     }
+
+}
+
+void handleSplashBox(void)
+{
+    cout << "A JANELA FOI ENCERRADA!" << endl;
 
 }
 
