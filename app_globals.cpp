@@ -15,7 +15,13 @@ limitations under the License.
 */
 #include "app_globals.hpp"
 
+#include <cstring>
+using std::strcpy;
+using std::strlen;
+
 AppGlobals * AppGlobals::_me = 0;
+const char AppGlobals::MENU_ITEM_DELIM[] = "|";
+const char AppGlobals::MENU_ITEM_DETAIL_DELIM[] = ";";
 
 void AppGlobals::setEnableObjDelLog(const bool opt)
 {
@@ -26,6 +32,7 @@ bool AppGlobals::getEnableObjDelLog() const
 {
     return _enableObjDelLog;
 }
+
 
 AppGlobals& AppGlobals::getInstance()
 {

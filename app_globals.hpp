@@ -23,6 +23,10 @@ limitations under the License.
 class AppGlobals
 {
     public:
+        static const int MAX_MENU_ITEMS_COUNT = 100;
+        static const char MENU_ITEM_DELIM[];
+        static const char MENU_ITEM_DETAIL_DELIM[];
+
         ~AppGlobals();
 
         static AppGlobals & getInstance();
@@ -30,13 +34,13 @@ class AppGlobals
         void setEnableObjDelLog(const bool);
         bool getEnableObjDelLog() const;
 
-
     private:
         AppGlobals();
 
         static AppGlobals* _me;
 
         bool _enableObjDelLog;
+
 };
 
 #endif // DOCCHARACTER

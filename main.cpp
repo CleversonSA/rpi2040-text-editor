@@ -5,6 +5,7 @@ using std::cin;
 
 #include <cstring>
 using std::strlen;
+using std::strtok;
 
 #include "csa_object.hpp"
 #include "doc_character.hpp"
@@ -12,21 +13,20 @@ using std::strlen;
 #include "app_globals.hpp"
 #include "document.hpp"
 #include "framebuffer.hpp"
-#include "menu_item.hpp"
-#include "main_menu_new_file.hpp"
 
 #include "text_engine.hpp"
 #include "msgbox_engine.hpp"
 #include "inputbox_engine.hpp"
 #include "splashbox_engine.hpp"
+#include "menu_engine.hpp"
 
 #include "lcd4x20_msgbox.hpp"
 #include "lcd4x20_inputbox.hpp"
 #include "lcd4x20_splashbox.hpp"
+#include "lcd4x20_menu.hpp"
 
 int getMemSize(CSAObject *);
 void frameBufferToConsole(FrameBuffer *fb);
-void triggerHandle(MenuItem *);
 void handleMsgBoxButton(const int);
 void handleInputBox(const int, char *);
 void handleSplashBox(void);
@@ -38,14 +38,17 @@ int main()
     FrameBuffer fbMsgbox(4,20);
     FrameBuffer fbInputbox(4,20);
     FrameBuffer fbSplashBox(4,20);
+    FrameBuffer fbMenu(4,20);
 
     LCD4X20MsgBox lcd4x20msgbox(&fbMsgbox);
     LCD4X20InputBox lcd4x20inputbox(&fbInputbox);
     LCD4X20Splashbox lcd4x20splashbox(&fbSplashBox);
+    LCD4X20Menu lcd4x20menu(&fbMenu);
 
     MsgBoxEngine *msgbox = &lcd4x20msgbox;
     InputBoxEngine *inputbox = &lcd4x20inputbox;
     SplashBoxEngine *splashbox = &lcd4x20splashbox;
+    MenuEngine *menu = &lcd4x20menu;
 
     cout << "Inicializado" << endl;
 
@@ -152,7 +155,7 @@ int main()
     (*inputbox)
         .triggerESC();
 */
-    (*splashbox)
+   /* (*splashbox)
         .reset()
         .setTitle({"Saving..."})
         .setMessage({"Wait for file saving, be patient!"})
@@ -166,8 +169,132 @@ int main()
 
     (*splashbox)
         .hide();
+*/
 
-    return 0;
+    /*char str[] = "NEW_FILE;New File|OPEN_FILE;Open File...|SAVE;Save file|SAVE_AS;Save as|SEPARATOR;Separator|INFO;Information|RESTART;Restart|ABOUT;About|EXIT;exit|ITEM1;item1|ITEM2;item2";
+	char delim[] = "|";
+
+	char *ptr = strtok(str, delim);
+    char *itemPtr[100];
+    int itemPos = 0;
+    int qtItems = 0;
+    int selectedItemPos = 8;
+
+	while(ptr != 0)
+	{
+        itemPtr[itemPos] = ptr;
+
+		cout << "Token: " << ptr << endl;
+        ptr = strtok(0, delim);
+        itemPos++;
+        qtItems++;
+	}
+
+	itemPos = 0;
+	char *itemDetailPtr = 0;
+	bool lastPage = false;
+	while (itemPos < qtItems)
+    {
+        if (selectedItemPos >= itemPos) {
+            lastPage = false;
+        } else {
+            lastPage = true;
+        }
+
+        if (((itemPos % 4) == 0) && !lastPage) {
+            system("cls");
+        } else if (((itemPos % 4) == 0) && lastPage){
+            break;
+        }
+
+        if (itemPos == selectedItemPos) {
+            cout << ">> ";
+        }
+
+        itemDetailPtr = strtok(itemPtr[itemPos], {";"});
+        cout << "Value:" <<  itemDetailPtr << " - ";
+
+        itemDetailPtr= strtok(0, {";"});
+        cout << "Label:" <<  itemDetailPtr;
+
+        if (itemPos == selectedItemPos) {
+            cout << "<< ";
+        }
+
+        cout << endl;
+
+        itemDetailPtr = 0;
+        itemPos++;
+    }*/
+
+    /* That´s new to me. If I use parseString("some str"), tokinzer will fail. I have to materialize a char array in order to strtok recoginze it! o.O */
+    char menuString[] = "NEW_FILE;New File|OPEN_FILE;Open File...|SAVE;Save file|SAVE_AS;Save as|SEPARATOR;Separator|INFO;Information|RESTART;Restart|ABOUT;About|EXIT;exit|ITEM1;item1|ITEM2;item2";
+
+    (*menu)
+        .reset()
+        .setTitle("Main menu")
+        .parseMenuString(menuString)
+        .render();
+
+    frameBufferToConsole(&fbMenu);
+
+    pausa = 0;
+    cin >> pausa;
+
+    (*menu)
+        .cursorMoveUp()
+        .render();
+
+    pausa= 0;
+    frameBufferToConsole(&fbMenu);
+    cin >> pausa;
+
+    (*menu)
+        .cursorMoveDown()
+        .render();
+
+    frameBufferToConsole(&fbMenu);
+    cin >> pausa;
+
+    (*menu)
+        .cursorMoveDown()
+        .render();
+
+    frameBufferToConsole(&fbMenu);
+    cin >> pausa;
+
+    (*menu)
+        .cursorMoveDown()
+        .render();
+    frameBufferToConsole(&fbMenu);
+    cin >> pausa;
+
+
+    (*menu)
+        .cursorMoveDown()
+        .render();
+    frameBufferToConsole(&fbMenu);
+    cin >> pausa;
+
+    (*menu)
+        .cursorMoveDown()
+        .render();
+    frameBufferToConsole(&fbMenu);
+    cin >> pausa;
+
+    (*menu)
+        .cursorMoveDown()
+        .render();
+    frameBufferToConsole(&fbMenu);
+    cin >> pausa;
+
+   (*menu)
+        .cursorMoveDown()
+        .render();
+    frameBufferToConsole(&fbMenu);
+    cin >> pausa;
+
+	return 0;
 }
 
 
@@ -196,11 +323,6 @@ void frameBufferToConsole(FrameBuffer *fb)
         }
         cout << endl;
     }
-}
-
-void triggerHandle(MenuItem * menuItem)
-{
-    (*menuItem).handle();
 }
 
 

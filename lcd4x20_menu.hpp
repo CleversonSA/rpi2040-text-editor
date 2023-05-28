@@ -1,4 +1,3 @@
-
 /*
     Copyright 2023 Cleverson S A
 
@@ -14,29 +13,37 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef MAINMENUNEWFILE
-#define MAINMENUNEWFILE
+#ifndef LCD4X20MENU
+#define LCD4X20MENU
 
-#include "menu_item.hpp"
+#include "menu_engine.hpp"
+#include "framebuffer.hpp"
 
 /*
-    Controls logical menu item.
+    LCD 4x20 Implementation for Menu List widget
 */
-class MainMenuNewFile: public MenuItem
+class LCD4X20Menu: public MenuEngine
 {
     public:
-        MainMenuNewFile(const char [], const int);
-        ~MainMenuNewFile();
+        LCD4X20Menu(FrameBuffer *);
+        ~LCD4X20Menu();
 
-        virtual void handle();
+        void setFrameBuffer(FrameBuffer *);
+        FrameBuffer * getFrameBuffer() const;
+
+        virtual MenuEngine & render();
 
         virtual void toString();
         virtual int getMemSize();
 
-
     private:
 
+        FrameBuffer *_framebuffer;
+
+        void fitString(const char *, const int, int = 0);
 };
 
 #endif // DOCUMENT
+
+
 
