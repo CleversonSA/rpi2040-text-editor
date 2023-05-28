@@ -24,6 +24,7 @@ class AppGlobals
 {
     public:
         static const int MAX_MENU_ITEMS_COUNT = 100;
+        static const int MAX_VIEW_TEXT_SIZE = 4096;
         static const char MENU_ITEM_DELIM[];
         static const char MENU_ITEM_DETAIL_DELIM[];
 

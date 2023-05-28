@@ -19,11 +19,13 @@ using std::strtok;
 #include "inputbox_engine.hpp"
 #include "splashbox_engine.hpp"
 #include "menu_engine.hpp"
+#include "textview_engine.hpp"
 
 #include "lcd4x20_msgbox.hpp"
 #include "lcd4x20_inputbox.hpp"
 #include "lcd4x20_splashbox.hpp"
 #include "lcd4x20_menu.hpp"
+#include "lcd4x20_textview.hpp"
 
 int getMemSize(CSAObject *);
 void frameBufferToConsole(FrameBuffer *fb);
@@ -31,6 +33,7 @@ void handleMsgBoxButton(const int);
 void handleInputBox(const int, char *);
 void handleMenuItem(char *, char *);
 void handleSplashBox(void);
+void handleView(void);
 
 int main()
 {
@@ -40,6 +43,7 @@ int main()
     FrameBuffer fbInputbox(4,20);
     FrameBuffer fbSplashBox(4,20);
     FrameBuffer fbMenu(4,20);
+    FrameBuffer fbTextView(4,20);
 
     LCD4X20MsgBox lcd4x20msgbox(&fbMsgbox);
     LCD4X20InputBox lcd4x20inputbox(&fbInputbox);
@@ -50,6 +54,10 @@ int main()
     InputBoxEngine *inputbox = &lcd4x20inputbox;
     SplashBoxEngine *splashbox = &lcd4x20splashbox;
     MenuEngine *menu = &lcd4x20menu;
+
+    LCD4X20TextView lcd4x20textview(&fbTextView, menu);
+    TextViewEngine *textView = &lcd4x20textview;
+
 
     cout << "Inicializado" << endl;
 
@@ -229,7 +237,7 @@ int main()
     }*/
 
     /* That´s new to me. If I use parseString("some str"), tokinzer will fail. I have to materialize a char array in order to strtok recoginze it! o.O */
-    char menuString[] = "NEW_FILE;New File|OPEN_FILE;Open File...|SAVE;Save file|SAVE_AS;Save as|SEPARATOR;Separator|INFO;Information|RESTART;Restart|ABOUT;About|EXIT;exit|ITEM1;item1|ITEM2;item2";
+    /*char menuString[] = "NEW_FILE;New File|OPEN_FILE;Open File...|SAVE;Save file|SAVE_AS;Save as|SEPARATOR;Separator|INFO;Information|RESTART;Restart|ABOUT;About|EXIT;exit|ITEM1;item1|ITEM2;item2";
     char newFileSubmenuString[] = "EMPTY_DOC;Empty document|TEMPLATE_DOC;Template document|BACK;Back";
 
     (*menu)
@@ -287,6 +295,35 @@ int main()
 
     (*menu)
         .selectItem();
+*/
+
+    char text[] = "Lorem ipsum dolor\nconsectetur adipiscing elit.\n Suspendisse quis\n ullamcorper enim.\n Mauris placerat \ncommodo efficitur. \nPhasellus pharetra, sem \nid viverra \naliquet, orci \nante vehicula ex, vestibulum \nconsequat erat metus\n quis tortor. Sed ac\n fina.";
+    (*textView)
+        .reset()
+        .setTitle("History")
+        .parseViewString(text)
+        .setCallbackfn(&handleView)
+        .render();
+
+    frameBufferToConsole(&fbTextView);
+
+    pausa = 0;
+    cin >> pausa;
+
+    (*textView)
+        .cursorMoveUp()
+        .render();
+
+    pausa= 0;
+    frameBufferToConsole(&fbTextView);
+    cin >> pausa;
+
+    (*textView)
+        .closeView();
+
+    pausa= 0;
+    cin >> pausa;
+
 
 	return 0;
 }
@@ -364,4 +401,9 @@ void handleSplashBox(void)
 void handleMenuItem(char * value, char * label)
 {
     cout << "A opcao selecionada foi:" << label << "(" << value << ")" << endl;
+}
+
+
+void handleView(void) {
+    cout << "Saindo da tela" << endl;
 }
