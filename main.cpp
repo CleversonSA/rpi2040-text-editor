@@ -29,6 +29,7 @@ int getMemSize(CSAObject *);
 void frameBufferToConsole(FrameBuffer *fb);
 void handleMsgBoxButton(const int);
 void handleInputBox(const int, char *);
+void handleMenuItem(char *, char *);
 void handleSplashBox(void);
 
 int main()
@@ -229,17 +230,31 @@ int main()
 
     /* That´s new to me. If I use parseString("some str"), tokinzer will fail. I have to materialize a char array in order to strtok recoginze it! o.O */
     char menuString[] = "NEW_FILE;New File|OPEN_FILE;Open File...|SAVE;Save file|SAVE_AS;Save as|SEPARATOR;Separator|INFO;Information|RESTART;Restart|ABOUT;About|EXIT;exit|ITEM1;item1|ITEM2;item2";
+    char newFileSubmenuString[] = "EMPTY_DOC;Empty document|TEMPLATE_DOC;Template document|BACK;Back";
 
     (*menu)
         .reset()
         .setTitle("Main menu")
         .parseMenuString(menuString)
+        .setCallbackfn(&handleMenuItem)
         .render();
 
     frameBufferToConsole(&fbMenu);
 
     pausa = 0;
     cin >> pausa;
+
+    (*menu)
+        .reset()
+        .setTitle("New file")
+        .parseMenuString(newFileSubmenuString)
+        .setCallbackfn(&handleMenuItem)
+        .render();
+
+    pausa= 0;
+    frameBufferToConsole(&fbMenu);
+    cin >> pausa;
+
 
     (*menu)
         .cursorMoveUp()
@@ -250,49 +265,28 @@ int main()
     cin >> pausa;
 
     (*menu)
-        .cursorMoveDown()
+        .cursorMoveUp()
         .render();
 
-    frameBufferToConsole(&fbMenu);
-    cin >> pausa;
-
-    (*menu)
-        .cursorMoveDown()
-        .render();
-
-    frameBufferToConsole(&fbMenu);
-    cin >> pausa;
-
-    (*menu)
-        .cursorMoveDown()
-        .render();
+    pausa= 0;
     frameBufferToConsole(&fbMenu);
     cin >> pausa;
 
 
     (*menu)
-        .cursorMoveDown()
+        .reset()
+        .setTitle("Main menu")
+        .parseMenuString(menuString)
+        .setCallbackfn(&handleMenuItem)
         .render();
+
     frameBufferToConsole(&fbMenu);
+
+    pausa = 0;
     cin >> pausa;
 
     (*menu)
-        .cursorMoveDown()
-        .render();
-    frameBufferToConsole(&fbMenu);
-    cin >> pausa;
-
-    (*menu)
-        .cursorMoveDown()
-        .render();
-    frameBufferToConsole(&fbMenu);
-    cin >> pausa;
-
-   (*menu)
-        .cursorMoveDown()
-        .render();
-    frameBufferToConsole(&fbMenu);
-    cin >> pausa;
+        .selectItem();
 
 	return 0;
 }
@@ -367,3 +361,7 @@ void handleSplashBox(void)
 
 }
 
+void handleMenuItem(char * value, char * label)
+{
+    cout << "A opcao selecionada foi:" << label << "(" << value << ")" << endl;
+}

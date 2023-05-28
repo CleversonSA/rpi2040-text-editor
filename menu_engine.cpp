@@ -83,13 +83,18 @@ void MenuEngine::setMenuItems(char * menuItems[], int qtItems)
 //Menu string format: "NEW_FILE;New File|OPEN_FILE;Open File...|SAVE;Save file|SAVE_AS;Save as"
 MenuEngine & MenuEngine::parseMenuString(char * menuString)
 {
-
-
-	char *ptr = strtok(menuString, AppGlobals::MENU_ITEM_DELIM);
+    char *menuStringCpy = new char[strlen(menuString)+1];
     char *itemPtr[AppGlobals::MAX_MENU_ITEMS_COUNT];
 
     int menuItemPos = 0;
     int menuItemCount = 0;
+
+    // So I think this will create a memory leak, since everytime this command is called
+    // a new string is created. But, I think strtok will just assign the string tokens
+    // to each pointer. To test it, call parseMenuString so many times until a memory
+    // crash o.O
+    strcpy(menuStringCpy, menuString);
+    char *ptr = strtok(menuStringCpy, AppGlobals::MENU_ITEM_DELIM);
 
 	while(ptr != 0)
 	{
@@ -100,7 +105,6 @@ MenuEngine & MenuEngine::parseMenuString(char * menuString)
 		menuItemPos++;
         menuItemCount++;
 	}
-
 
     setMenuItems(itemPtr, menuItemCount);
     setMenuItemCount(menuItemCount);
@@ -123,9 +127,21 @@ char * MenuEngine::getSelectedMenuItemValue() const
 
 char * MenuEngine::getMenuItemValue(const int menuItemPos) const
 {
-    char *itemDetailPtr = 0;
+    if (_menuItems[menuItemPos] == 0)
+    {
+        char *charEmpty = new char[2];
+        strcpy(charEmpty, " ");
 
-	itemDetailPtr = strtok(_menuItems[menuItemPos], AppGlobals::MENU_ITEM_DETAIL_DELIM);
+        return charEmpty;
+    }
+
+
+    char *itemDetailPtr = 0;
+    char *menuItemCpy = new char[strlen(_menuItems[menuItemPos])+1];
+    strcpy(menuItemCpy, _menuItems[menuItemPos]);
+
+
+	itemDetailPtr = strtok(menuItemCpy, AppGlobals::MENU_ITEM_DETAIL_DELIM);
 
     return itemDetailPtr;
 }
@@ -147,9 +163,12 @@ char * MenuEngine::getMenuItemLabel(const int menuItemPos) const
 
         return charEmpty;
     }
+
+
     char *itemDetailPtr = 0;
     char *menuItemCpy = new char[strlen(_menuItems[menuItemPos])+1];
     strcpy(menuItemCpy, _menuItems[menuItemPos]);
+
 
 	itemDetailPtr = strtok(menuItemCpy, AppGlobals::MENU_ITEM_DETAIL_DELIM);
     itemDetailPtr = strtok(0, AppGlobals::MENU_ITEM_DETAIL_DELIM);
@@ -179,6 +198,12 @@ MenuEngine & MenuEngine::cursorMoveUp()
         setMenuItemPos(getMenuItemCount() - 1);
     }
 
+    return (*this);
+}
+
+MenuEngine & MenuEngine::selectItem()
+{
+    (*_callbackfn)(getSelectedMenuItemValue(), getSelectedMenuItemLabel());
     return (*this);
 }
 
