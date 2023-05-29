@@ -1,11 +1,33 @@
+// WINSOCK
+#include <winsock2.h>
+#define NI_MAXHOST (1024)
+#define NI_MAXSERV (1024)
+
+#define RECV_ESC_CODE           (27)
+#define RECV_BEGIN_ESC_CODE     (91)
+#define RECV_OPT_END_ESC_CODE   (126)
+#define RECV_1_CODE             (49)
+#define RECV_2_CODE             (50)
+#define RECV_3_CODE             (51)
+#define RECV_4_CODE             (52)
+#define RECV_5_CODE             (53)
+#define RECV_6_CODE             (54)
+#define RECV_7_CODE             (55)
+#define RECV_8_CODE             (56)
+#define RECV_9_CODE             (57)
+#define RECV_0_CODE             (48)
+
+
 #include <iostream>
 using std::cout;
+using std::cerr;
 using std::endl;
 using std::cin;
 
 #include <cstring>
 using std::strlen;
 using std::strtok;
+using std::atoi;
 
 #include "csa_object.hpp"
 #include "doc_character.hpp"
@@ -29,16 +51,12 @@ using std::strtok;
 
 int getMemSize(CSAObject *);
 void frameBufferToConsole(FrameBuffer *fb);
-void handleMsgBoxButton(const int);
-void handleInputBox(const int, char *);
-void handleMenuItem(char *, char *);
-void handleSplashBox(void);
-void handleView(void);
 
 int main()
 {
     int pausa = 0;
-    FrameBuffer fb(4,20);
+
+    /*FrameBuffer fb(4,20);
     FrameBuffer fbMsgbox(4,20);
     FrameBuffer fbInputbox(4,20);
     FrameBuffer fbSplashBox(4,20);
@@ -57,273 +75,153 @@ int main()
 
     LCD4X20TextView lcd4x20textview(&fbTextView, menu);
     TextViewEngine *textView = &lcd4x20textview;
-
+*/
 
     cout << "Inicializado" << endl;
 
-    /*Document doc;
-    TextEngine textEngine(&doc, &fb);
+    //initialize winsock
+    WSADATA wsData;
+    WORD ver = MAKEWORD(2, 2);
 
-
-    doc
-        .type({"Lorem ipsum dolor sit amet\nconsectetur adipiscing elit.\n"})
-        .type({"Etiam ut ligula ante. In nec ante velit.\n Sed convallis volutpat lectus sit amet ultrices. Praesent eu interdum mi.\n"})
-        .type({"Quisque varius\n congue finibus.\n Etiam et nisl\n sagittis, sollicitudin\n eros id, cursus turpis.\n Morbi consequat \n"})
-        .type({"quis nisl sed posuere. Sed eu euismod justo. Phasellus lectus tortor, porttitor a bibendum non, venenatis eget lacus. Duis a neque a nunc pulvinar volutpat et non purus. Morbi tempus condimentum dolor non luctus. Maecenas tristique pharetra nibh laoreet porta. Cras sodales varius risus eget volutpat. Morbi rhoncus mollis nulla, vel ultricies lacus posuere et."})
-        .type({"In efficitur metus nisl, quis consectetur ipsum fringilla a.\n Integer faucibus elementum sapien, vel\n ultrices ipsum hendrerit \n"})
-        .type({"eget. In vitae mattis lectus. Proin id est egestas lorem faucibus aliquet.\n"})
-        .type({"Sed placerat molestie orci, nec mollis velit cursus tempor. "});
-
-    doc
-        .cursorMoveBegin();
-
-    textEngine.render();
-    */
-
-    /*(*msgbox)
-        .reset()
-        .setTitle({"Greetings"})
-        .setMessage({"What do you think?"})
-        .setButtonType(MsgBoxEngine::YESNOCANCEL_BUTTON)
-        .setIconType(MsgBoxEngine::QUESTION_ICON)
-        .setCallbackfn(&handleMsgBoxButton)
-        .render();
-
-    frameBufferToConsole(&fbMsgbox);
-
-    cin >> pausa;
-    (*msgbox)
-        .cursorMoveNextButton()
-        .render();
-    frameBufferToConsole(&fbMsgbox);
-
-    cin >> pausa;
-    (*msgbox)
-        .cursorMoveNextButton()
-        .render();
-    frameBufferToConsole(&fbMsgbox);
-
-    cin >> pausa;
-    (*msgbox)
-        .cursorMovePreviousButton()
-        .render();
-    frameBufferToConsole(&fbMsgbox);
-
-    cin >> pausa;
-    (*msgbox)
-        .cursorMovePreviousButton()
-        .render();
-
-    frameBufferToConsole(&fbMsgbox);
-
-    (*msgbox)
-        .selectButton();
-
-    cout << "\nFinalizado!" << endl;
-
-
-
-    (*inputbox)
-        .reset()
-        .setTitle({"Save As"})
-        .setMessage({"Enter file name:"})
-        .render();
-
-    frameBufferToConsole(&fbInputbox);
-
-    cin >> pausa;
-
-    (*inputbox)
-        .type('O')
-        .type('l')
-        .type('a')
-        .type('.')
-        .type('t')
-        .type('x')
-        .type('t')
-        .triggerBackspace()
-        .triggerBackspace()
-        .triggerBackspace()
-        .triggerBackspace()
-        .triggerBackspace()
-        .triggerBackspace()
-        .triggerBackspace()
-        .triggerBackspace()
-        .type('O')
-        .type('l')
-        .type('a')
-        .type('.')
-        .type('t')
-        .type('x')
-        .type('t')
-        .setCallbackfn(&handleInputBox)
-        .render();
-
-    frameBufferToConsole(&fbInputbox);
-
-    (*inputbox)
-        .triggerESC();
-*/
-   /* (*splashbox)
-        .reset()
-        .setTitle({"Saving..."})
-        .setMessage({"Wait for file saving, be patient!"})
-        .setIconType(SplashBoxEngine::NO_ICON)
-        .setCallbackfn(&handleSplashBox)
-        .render();
-
-    frameBufferToConsole(&fbSplashBox);
-
-    cin >> pausa;
-
-    (*splashbox)
-        .hide();
-*/
-
-    /*char str[] = "NEW_FILE;New File|OPEN_FILE;Open File...|SAVE;Save file|SAVE_AS;Save as|SEPARATOR;Separator|INFO;Information|RESTART;Restart|ABOUT;About|EXIT;exit|ITEM1;item1|ITEM2;item2";
-	char delim[] = "|";
-
-	char *ptr = strtok(str, delim);
-    char *itemPtr[100];
-    int itemPos = 0;
-    int qtItems = 0;
-    int selectedItemPos = 8;
-
-	while(ptr != 0)
-	{
-        itemPtr[itemPos] = ptr;
-
-		cout << "Token: " << ptr << endl;
-        ptr = strtok(0, delim);
-        itemPos++;
-        qtItems++;
-	}
-
-	itemPos = 0;
-	char *itemDetailPtr = 0;
-	bool lastPage = false;
-	while (itemPos < qtItems)
+    int wsOk = WSAStartup(ver, &wsData);
+    if (wsOk != 0)
     {
-        if (selectedItemPos >= itemPos) {
-            lastPage = false;
-        } else {
-            lastPage = true;
-        }
+        cerr << "Error winsock" << endl;
+        return -1;
+    }
 
-        if (((itemPos % 4) == 0) && !lastPage) {
-            system("cls");
-        } else if (((itemPos % 4) == 0) && lastPage){
-            break;
-        }
+    //create a sockert
+    SOCKET listenning = socket(AF_INET, SOCK_STREAM, 0);
+    if (listenning == INVALID_SOCKET)
+    {
+        cerr << "Error winsock 2" << endl;
+        return -2;
+    }
 
-        if (itemPos == selectedItemPos) {
-            cout << ">> ";
-        }
+    //bind the ip addr to a socket
+    sockaddr_in hint;
+    hint.sin_family = AF_INET;
+    hint.sin_port = htons(9000);
+    hint.sin_addr.S_un.S_addr = INADDR_ANY; //0.0.0.0
 
-        itemDetailPtr = strtok(itemPtr[itemPos], {";"});
-        cout << "Value:" <<  itemDetailPtr << " - ";
+    bind(listenning, (sockaddr *)&hint, sizeof(hint));
 
-        itemDetailPtr= strtok(0, {";"});
-        cout << "Label:" <<  itemDetailPtr;
+    //tell winsock the socket is for listenning
+    listen(listenning, SOMAXCONN); //All possible connections
 
-        if (itemPos == selectedItemPos) {
-            cout << "<< ";
-        }
+    //wait for connection
+    sockaddr_in client;
+    int clientSize = sizeof(client);
 
-        cout << endl;
+    SOCKET clientSocket = accept(listenning, (sockaddr*)&client, &clientSize);
+    if (clientSocket == INVALID_SOCKET)
+    {
+         cerr << "Invalid socket" << endl;
+        return -3;
+    }
 
-        itemDetailPtr = 0;
-        itemPos++;
+    char host[NI_MAXHOST]; //Client´s host name
+    char service[NI_MAXHOST]; //Service connected in
+
+    ZeroMemory(host, NI_MAXHOST); //same as memset(host, 0, NI_MAX_HOST);
+    ZeroMemory(service, NI_MAXHOST);
+
+    /*
+    Works only on M$ Visual Studio
+    if (getnameinfo((sockaddr*)&client, sizeof(client), host, NI_MAXHOST, service, NI_MAXSERV, 0) == 0)
+    {
+        cout << host << " connected on port " << service << endl;
+    } else {
+        inet_ntop(AF_INET, &client.sin_addr, host, NI_MAXHOST);
+        cout << host << " connected on port " << ntohs(client.sin_port) << endl;
     }*/
 
-    /* That´s new to me. If I use parseString("some str"), tokinzer will fail. I have to materialize a char array in order to strtok recoginze it! o.O */
-    /*char menuString[] = "NEW_FILE;New File|OPEN_FILE;Open File...|SAVE;Save file|SAVE_AS;Save as|SEPARATOR;Separator|INFO;Information|RESTART;Restart|ABOUT;About|EXIT;exit|ITEM1;item1|ITEM2;item2";
-    char newFileSubmenuString[] = "EMPTY_DOC;Empty document|TEMPLATE_DOC;Template document|BACK;Back";
+    //close the sock
+    closesocket(listenning);
 
-    (*menu)
-        .reset()
-        .setTitle("Main menu")
-        .parseMenuString(menuString)
-        .setCallbackfn(&handleMenuItem)
-        .render();
+    //while loop
+    char buf[1];
+    char escBuff[2];
 
-    frameBufferToConsole(&fbMenu);
+    int escCodeCount = 0;
+    int escBuffPos = 0;
 
-    pausa = 0;
-    cin >> pausa;
+    while(true)
+    {
+        ZeroMemory(buf, 1);
 
-    (*menu)
-        .reset()
-        .setTitle("New file")
-        .parseMenuString(newFileSubmenuString)
-        .setCallbackfn(&handleMenuItem)
-        .render();
+        int bytesReceived = recv(clientSocket, buf, 1, 0);
+        if (bytesReceived > 0)
+        {
+            cout << "Received: number=[" << (int)buf[0] << "] value=[" << buf[0] << "]" << endl;
+            //send(clientSocket, buf, 1, 0);
 
-    pausa= 0;
-    frameBufferToConsole(&fbMenu);
-    cin >> pausa;
+            if(((int)buf[0]) == RECV_ESC_CODE)
+            {
+                escCodeCount ++;
+                escBuffPos = 0;
+            } else if (escCodeCount == 1 && (((int)buf[0]) == RECV_BEGIN_ESC_CODE)) {
+                cout << "[ESCAPE CODE INITIALIZED]" << endl;
+                escCodeCount ++;
+            } else if (escCodeCount == 1 && (((int)buf[0]) != RECV_BEGIN_ESC_CODE)) {
+                cout << "[ESCAPE CODE ABORTED]" << endl;
+                escBuffPos = 0;
+                escCodeCount = 0;
+            } else if (escCodeCount == 2) {
+                switch(((int)buf[0])){
+                case RECV_1_CODE:
+                    case RECV_2_CODE:
+                    case RECV_3_CODE:
+                    case RECV_4_CODE:
+                    case RECV_5_CODE:
+                    case RECV_6_CODE:
+                    case RECV_7_CODE:
+                    case RECV_8_CODE:
+                    case RECV_9_CODE:
+                    case RECV_0_CODE:
+                        escBuff[escBuffPos] = buf[0];
+                        escBuffPos++;
+                    default:
+                        if (((int)buf[0]) == RECV_OPT_END_ESC_CODE) {
+                            if(escBuffPos > 0)
+                            {
+                                int keyEscCode = atoi(escBuff);
+                                if (keyEscCode >= 1 && keyEscCode <= 6)
+                                {
+                                    cout << "extra keys code = [" << keyEscCode << "]" << endl;
+                                } else {
+                                    cout << "fn key code = [" << atoi(escBuff) << "]" << endl;
+                                }
+                                escBuffPos = 0;
+                                escCodeCount = 0;
+                                escBuff[0] = 0;
+                                escBuff[1] = 0;
+                                escBuff[2] = 0;
+                            }
+                        } else {
+                            if (escBuffPos == 0) {
+                                cout << "arrow key code = [" << (int)buf[0] << "]" << endl;
+                                    escBuffPos = 0;
+                                    escCodeCount = 0;
+                                    escBuff[0] = 0;
+                                    escBuff[1] = 0;
+                                    escBuff[2] = 0;
+                            }
+                        }
+                }
+            }
 
 
-    (*menu)
-        .cursorMoveUp()
-        .render();
 
-    pausa= 0;
-    frameBufferToConsole(&fbMenu);
-    cin >> pausa;
+        } else {
+            cout << "[ NOP ]" << endl;
+        }
+    }
 
-    (*menu)
-        .cursorMoveUp()
-        .render();
+    closesocket(clientSocket);
 
-    pausa= 0;
-    frameBufferToConsole(&fbMenu);
-    cin >> pausa;
-
-
-    (*menu)
-        .reset()
-        .setTitle("Main menu")
-        .parseMenuString(menuString)
-        .setCallbackfn(&handleMenuItem)
-        .render();
-
-    frameBufferToConsole(&fbMenu);
-
-    pausa = 0;
-    cin >> pausa;
-
-    (*menu)
-        .selectItem();
-*/
-
-    char text[] = "Lorem ipsum dolor\nconsectetur adipiscing elit.\n Suspendisse quis\n ullamcorper enim.\n Mauris placerat \ncommodo efficitur. \nPhasellus pharetra, sem \nid viverra \naliquet, orci \nante vehicula ex, vestibulum \nconsequat erat metus\n quis tortor. Sed ac\n fina.";
-    (*textView)
-        .reset()
-        .setTitle("History")
-        .parseViewString(text)
-        .setCallbackfn(&handleView)
-        .render();
-
-    frameBufferToConsole(&fbTextView);
-
-    pausa = 0;
-    cin >> pausa;
-
-    (*textView)
-        .cursorMoveUp()
-        .render();
-
-    pausa= 0;
-    frameBufferToConsole(&fbTextView);
-    cin >> pausa;
-
-    (*textView)
-        .closeView();
-
-    pausa= 0;
-    cin >> pausa;
-
+    //shutdown winsock
+    WSACleanup();
 
 	return 0;
 }
@@ -357,53 +255,3 @@ void frameBufferToConsole(FrameBuffer *fb)
 }
 
 
-void handleMsgBoxButton(const int selectedButton)
-{
-    switch(selectedButton)
-    {
-    case(MsgBoxEngine::BTN_YES):
-        cout << "!!!! VOCE ESCOLHEU O BOTAO SIM !!!!" << endl;
-        break;
-    case(MsgBoxEngine::BTN_NO):
-        cout << "!!!! VOCE ESCOLHEU O BOTAO NAO !!!!" << endl;
-        break;
-    case(MsgBoxEngine::BTN_CANCEL):
-        cout << "!!!! VOCE ESCOLHEU O BOTAO CANCELAR !!!!" << endl;
-        break;
-    default:
-        cout << "!!!! VOCE ESCOLHEU O BOTAO OK !!!!" << endl;
-        break;
-    }
-}
-
-
-void handleInputBox(const int actionInput, char * userInput)
-{
-    if (actionInput == InputBoxEngine::CANCEL_TRIGGERED)
-    {
-        cout << "O USUÁRIO CANCELOU A ENTRADA!" << endl;
-        return;
-    }
-
-    if (actionInput == InputBoxEngine::OK_TRIGGERED)
-    {
-        cout << "O usuário digitou:" << userInput << endl;
-    }
-
-}
-
-void handleSplashBox(void)
-{
-    cout << "A JANELA FOI ENCERRADA!" << endl;
-
-}
-
-void handleMenuItem(char * value, char * label)
-{
-    cout << "A opcao selecionada foi:" << label << "(" << value << ")" << endl;
-}
-
-
-void handleView(void) {
-    cout << "Saindo da tela" << endl;
-}
