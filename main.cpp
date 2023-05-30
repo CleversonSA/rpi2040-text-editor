@@ -35,6 +35,7 @@ using std::atoi;
 
 int getMemSize(CSAObject *);
 void frameBufferToConsole(FrameBuffer *fb);
+bool onKeyPress(int keyCode, const char rawKeyChar);
 
 int main()
 {
@@ -64,8 +65,14 @@ int main()
     KeyboardEngine *keyboard = &winsockkeyboard;
 
 
+    (*keyboard).setCallbackfn(&onKeyPress);
     (*keyboard).setup();
+    cout << "Primeiro menu" << endl;
     (*keyboard).loop();
+    cout << "Segundo menu" << endl;
+    (*keyboard).loop();
+    (*keyboard).destroy();
+
 
     cout << "Inicializado" << endl;
 
@@ -101,3 +108,12 @@ void frameBufferToConsole(FrameBuffer *fb)
 }
 
 
+bool onKeyPress(int keyCode, const char rawKeyChar)
+{
+    if (keyCode == KeyboardEngine::KEY_ESCAPE) {
+        cout << "Menu acionado!" << endl;
+        return true;
+    }
+
+    return false;
+}

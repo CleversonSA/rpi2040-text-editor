@@ -62,6 +62,64 @@ class KeyboardEngine: public CSAObject
         static const int KEY_RIGHT    = 67;
         static const int KEY_CCEDIL   = 68;
 
+        static const int KEY_CEDILLA_UC_CODE = 69;
+        static const int KEY_CEDILLA_LC_CODE = 70;
+        static const int KEY_ATILDE_LC_CODE  = 71;
+        static const int KEY_ATILDE_UC_CODE  = 72;
+        static const int KEY_AGRAVE_LC_CODE  = 73;
+        static const int KEY_AGRAVE_UC_CODE  = 74;
+        static const int KEY_AACUTE_LC_CODE  = 75;
+        static const int KEY_AACUTE_UC_CODE  = 76;
+        static const int KEY_ACIRC_LC_CODE   = 77;
+        static const int KEY_ACIRC_UC_CODE   = 78;
+        static const int KEY_AUML_LC_CODE    = 79;
+        static const int KEY_AUML_UC_CODE    = 80;
+        static const int KEY_ARING_LC_CODE   = 81;
+        static const int KEY_ARING_UC_CODE   = 82;
+        static const int KEY_EGRAVE_LC_CODE  = 83;
+        static const int KEY_EGRAVE_UC_CODE  = 84;
+        static const int KEY_EACUTE_LC_CODE  = 85;
+        static const int KEY_EACUTE_UC_CODE  = 86;
+        static const int KEY_ECIRC_LC_CODE   = 87;
+        static const int KEY_ECIRC_UC_CODE   = 88;
+        static const int KEY_EUML_LC_CODE    = 89;
+        static const int KEY_EUML_UC_CODE    = 90;
+        static const int KEY_IGRAVE_LC_CODE  = 91;
+        static const int KEY_IGRAVE_UC_CODE  = 92;
+        static const int KEY_IACUTE_LC_CODE  = 93;
+        static const int KEY_IACUTE_UC_CODE  = 94;
+        static const int KEY_ICIRC_LC_CODE   = 95;
+        static const int KEY_ICIRC_UC_CODE   = 96;
+        static const int KEY_IUML_LC_CODE    = 97;
+        static const int KEY_IUML_UC_CODE    = 98;
+        static const int KEY_NTILDE_LC_CODE  = 99;
+        static const int KEY_NTILDE_UC_CODE  = 100;
+        static const int KEY_OGRAVE_LC_CODE  = 101;
+        static const int KEY_OGRAVE_UC_CODE  = 102;
+        static const int KEY_OACUTE_LC_CODE  = 103;
+        static const int KEY_OACUTE_UC_CODE  = 104;
+        static const int KEY_OCIRC_LC_CODE   = 105;
+        static const int KEY_OCIRC_UC_CODE   = 106;
+        static const int KEY_OTILDE_LC_CODE  = 107;
+        static const int KEY_OTILDE_UC_CODE  = 108;
+        static const int KEY_OUML_LC_CODE    = 109;
+        static const int KEY_OUML_UC_CODE    = 110;
+        static const int KEY_UGRAVE_LC_CODE  = 111;
+        static const int KEY_UGRAVE_UC_CODE  = 112;
+        static const int KEY_UACUTE_LC_CODE  = 113;
+        static const int KEY_UACUTE_UC_CODE  = 114;
+        static const int KEY_UCIRC_LC_CODE   = 115;
+        static const int KEY_UCIRC_UC_CODE   = 116;
+        static const int KEY_UUML_LC_CODE    = 117;
+        static const int KEY_UUML_UC_CODE    = 118;
+
+        static const int KEY_1RST_CODE       = 119;
+        static const int KEY_2ND_CODE        = 120;
+        static const int KEY_3RD_CODE        = 121;
+        static const int KEY_EURO_CODE       = 122;
+        static const int KEY_PARA_CODE       = 123;
+        static const int KEY_DOTA_CODE       = 124;
+        static const int KEY_GRAU_CODE       = 125;
 
         KeyboardEngine();
         ~KeyboardEngine();
@@ -72,12 +130,16 @@ class KeyboardEngine: public CSAObject
 
         virtual void setup() = 0;
         virtual void loop() = 0;
+        virtual void destroy() = 0;
 
+    protected:
+
+
+        void setInterruptLoop(bool);
+        bool isInterruptLoop() const;
 
     private:
 
-        void interruptLoop();
-        bool isInterruptLoop() const;
 
         bool _interruptLoop = false;
         bool (*_callbackfn)(const int, const char);

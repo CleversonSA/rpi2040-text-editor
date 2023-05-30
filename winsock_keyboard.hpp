@@ -35,6 +35,7 @@ class WinsockKeyboard: public KeyboardEngine
 
         virtual void setup();
         virtual void loop();
+        virtual void destroy();
 
         virtual void toString(); // Yes, you know, Java feelings rs
         virtual int getMemSize();

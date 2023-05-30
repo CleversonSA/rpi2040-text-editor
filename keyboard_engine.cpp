@@ -21,17 +21,17 @@ using std::endl;
 #include "keyboard_engine.hpp"
 #include "app_globals.hpp"
 
-void KeyboardEngine::interruptLoop()
+void KeyboardEngine::setInterruptLoop(bool interruptLoop)
 {
-    _interruptLoop = true;
+    _interruptLoop = interruptLoop;
 }
 
-bool KeyboardEngine::isInterruptLoop()
+bool KeyboardEngine::isInterruptLoop() const
 {
     return _interruptLoop;
 }
 
-KeyboardEngine & KeyboardEngine::setCallbackfn(void (*fn)(const int, const char))
+KeyboardEngine & KeyboardEngine::setCallbackfn(bool (*fn)(const int, const char))
 {
     _callbackfn = fn;
 
@@ -40,7 +40,9 @@ KeyboardEngine & KeyboardEngine::setCallbackfn(void (*fn)(const int, const char)
 
 KeyboardEngine & KeyboardEngine::pressKey(const int keyCode, const char rawChar)
 {
-    _callbackfn(keyCode, rawChar);
+
+    //cout << "Key Pressed: keyboard_engine_code = [" << keyCode << "] rawchar=[" << rawChar << "]" << endl;
+    _interruptLoop = _callbackfn(keyCode, rawChar);
 
     return (*this);
 }
