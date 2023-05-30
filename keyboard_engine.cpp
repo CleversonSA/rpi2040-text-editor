@@ -21,6 +21,15 @@ using std::endl;
 #include "keyboard_engine.hpp"
 #include "app_globals.hpp"
 
+void KeyboardEngine::interruptLoop()
+{
+    _interruptLoop = true;
+}
+
+bool KeyboardEngine::isInterruptLoop()
+{
+    return _interruptLoop;
+}
 
 KeyboardEngine & KeyboardEngine::setCallbackfn(void (*fn)(const int, const char))
 {
@@ -45,7 +54,8 @@ KeyboardEngine::~KeyboardEngine()
 }
 
 KeyboardEngine::KeyboardEngine():
-CSAObject()
+CSAObject(),
+_interruptLoop(false)
 {
 
 }

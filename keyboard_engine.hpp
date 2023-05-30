@@ -66,16 +66,23 @@ class KeyboardEngine: public CSAObject
         KeyboardEngine();
         ~KeyboardEngine();
 
-        KeyboardEngine & setCallbackfn(void (*fn)(const int, const char));
+        KeyboardEngine & setCallbackfn(bool (*fn)(const int, const char));
         KeyboardEngine & pressKey(const int, const char);
 
 
         virtual void setup() = 0;
         virtual void loop() = 0;
 
+
     private:
 
-        void (*_callbackfn)(const int, const char);
+        void interruptLoop();
+        bool isInterruptLoop() const;
+
+        bool _interruptLoop = false;
+        bool (*_callbackfn)(const int, const char);
+
+        virtual int parseRawKeycode(int, int) = 0;
 };
 
 #endif // DOCUMENT
