@@ -24,6 +24,7 @@ using std::atoi;
 #include "menu_engine.hpp"
 #include "textview_engine.hpp"
 #include "keyboard_engine.hpp"
+#include "video_engine.hpp"
 
 #include "lcd4x20_msgbox.hpp"
 #include "lcd4x20_inputbox.hpp"
@@ -32,9 +33,9 @@ using std::atoi;
 #include "lcd4x20_textview.hpp"
 
 #include "winsock_keyboard.hpp"
+#include "console_video.hpp"
 
 int getMemSize(CSAObject *);
-void frameBufferToConsole(FrameBuffer *fb);
 bool onKeyPress(int keyCode, const char rawKeyChar);
 
 int main()
@@ -83,28 +84,6 @@ int main()
 int getMemSize(CSAObject *obj)
 {
     return obj->getMemSize();
-}
-
-void frameBufferToConsole(FrameBuffer *fb)
-{
-    char * screenLine = 0;
-
-    system("cls");
-    for (int i=0; i < (*fb).getMaxRows(); i++)
-    {
-        screenLine = (*fb).getScreenRow(i);
-        for (int j=0; j < (*fb).getMaxCols(); j++)
-        {
-            if ((*screenLine) == '\0')
-            {
-                cout << " ";
-            } else {
-                cout << (*screenLine);
-            }
-            screenLine++;
-        }
-        cout << endl;
-    }
 }
 
 
