@@ -21,12 +21,12 @@ using std::endl;
 #include "video_engine.hpp"
 #include "app_globals.hpp"
 
-FrameBuffer * getFrameBuffer()
+FrameBuffer * VideoEngine::getFrameBuffer()
 {
     return _fb;
 }
 
-VideoEngine & setFrameBuffer(FrameBuffer *fb)
+VideoEngine & VideoEngine::setFrameBuffer(FrameBuffer *fb)
 {
     _fb = fb;
 

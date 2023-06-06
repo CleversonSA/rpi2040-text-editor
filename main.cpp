@@ -32,11 +32,42 @@ using std::atoi;
 #include "lcd4x20_menu.hpp"
 #include "lcd4x20_textview.hpp"
 
-#include "winsock_keyboard.hpp"
 #include "console_video.hpp"
+
+
+//********************** RASPBERRY PI PICO TEST ****************************
+#include "pico/stdlib.h"
+#include "hardware/uart.h"
+#include "hardware/irq.h"
+
+#define UART_ID uart0
+#define BAUD_RATE 115200
+
+// We are using pins 0 and 1, but see the GPIO function select table in the
+// datasheet for information on which other pins can be used.
+#define UART_TX_PIN 0
+#define UART_RX_PIN 1
+
+
 
 int getMemSize(CSAObject *);
 bool onKeyPress(int keyCode, const char rawKeyChar);
+
+// RX interrupt handler
+void on_uart_rx() {
+    while (uart_is_readable(UART_ID)) {
+        uint8_t ch = uart_getc(UART_ID);
+        // Can we send it back?
+        if (uart_is_writable(UART_ID)) {
+            uart_puts(UART_ID, "\033[12;10H");
+            uart_puts(UART_ID, "\033[5m");
+            uart_puts(UART_ID, "Last char received: ");
+            uart_putc(UART_ID, ch);
+            uart_puts(UART_ID, "\033[m");
+        }
+    }
+}
+
 
 int main()
 {
@@ -62,7 +93,7 @@ int main()
     LCD4X20TextView lcd4x20textview(&fbTextView, menu);
     TextViewEngine *textView = &lcd4x20textview;
 */
-    WinsockKeyboard winsockkeyboard(9000);
+    /*WinsockKeyboard winsockkeyboard(9000);
     KeyboardEngine *keyboard = &winsockkeyboard;
 
 
@@ -73,11 +104,58 @@ int main()
     cout << "Segundo menu" << endl;
     (*keyboard).loop();
     (*keyboard).destroy();
-
+    */
 
     cout << "Inicializado" << endl;
 
-	return 0;
+    // Set up our UART with the required speed.
+    uart_init(UART_ID, BAUD_RATE);
+
+    // Set the TX and RX pins by using the function select on the GPIO
+    // Set datasheet for more information on function select
+    gpio_set_function(UART_TX_PIN, GPIO_FUNC_UART);
+    gpio_set_function(UART_RX_PIN, GPIO_FUNC_UART);
+
+    // Use some the various UART functions to send out data
+    // In a default system, printf will also output via the default UART
+
+    // Send out a character without any conversions
+    //uart_putc_raw(UART_ID, 'A');
+
+    // Send out a character but do CR/LF conversions
+    //uart_putc(UART_ID, 'B');
+
+    // Turn off FIFO's - we want to do this character by character
+    uart_set_fifo_enabled(UART_ID, false);
+
+    // Set up a RX interrupt
+    // We need to set up the handler first
+    // Select correct interrupt for the UART we are using
+    int UART_IRQ = UART_ID == uart0 ? UART0_IRQ : UART1_IRQ;
+
+    // And set up and enable the interrupt handlers
+    irq_set_exclusive_handler(UART_IRQ, on_uart_rx);
+    irq_set_enabled(UART_IRQ, true);
+
+    // Now enable the UART to send interrupts - RX only
+    uart_set_irq_enables(UART_ID, true, false);
+
+    // Send out a string, with CR/LF conversions
+    uart_puts(UART_ID, "\033[H\033[J");
+    uart_puts(UART_ID, "\033[10;10H");
+    uart_puts(UART_ID, "\033[4m");
+    uart_puts(UART_ID, "Hi, this is VT100 lol :)");
+    uart_puts(UART_ID, "\033[m");
+    uart_puts(UART_ID, "\033[11;10H");
+    uart_puts(UART_ID, "\033[5m");
+    uart_puts(UART_ID, "Now it´s blinking");
+
+
+    cout << "This is a PC compatible sample" << endl;
+
+
+    while (1)
+        tight_loop_contents();
 }
 
 
