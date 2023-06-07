@@ -41,6 +41,8 @@ set(SOURCES
         video_engine.hpp
         console_video.cpp
         console_video.hpp
+        vt100_utils.cpp
+        vt100_utils.hpp
         )
 foreach(name IN ITEMS main)
     add_executable(${name} ${SOURCES})

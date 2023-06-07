@@ -310,7 +310,7 @@ int WinsockKeyboard::parseRawKeycode(int rawKeyType, int rawKeyCode)
 void WinsockKeyboard::loop()
 {
     char buf[1];
-    char escBuff[2];
+    char escBuff[3];
 
     int escCodeCount = 0;
     int escBuffPos = 0;

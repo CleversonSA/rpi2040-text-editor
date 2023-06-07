@@ -5,6 +5,9 @@ using std::cerr;
 using std::endl;
 using std::cin;
 
+#include <cstdio>
+using std::sprintf;
+
 #include <cstring>
 using std::strlen;
 using std::strtok;
@@ -34,6 +37,7 @@ using std::atoi;
 
 #include "console_video.hpp"
 
+#include "VT100_utils.hpp"
 
 //********************** RASPBERRY PI PICO TEST ****************************
 #include "pico/stdlib.h"
@@ -48,24 +52,71 @@ using std::atoi;
 #define UART_TX_PIN 0
 #define UART_RX_PIN 1
 
+#define DATA_BITS 8
+#define STOP_BITS 1
+#define PARITY    UART_PARITY_NONE
 
 
 int getMemSize(CSAObject *);
 bool onKeyPress(int keyCode, const char rawKeyChar);
 
+
 // RX interrupt handler
 void on_uart_rx() {
-    while (uart_is_readable(UART_ID)) {
-        uint8_t ch = uart_getc(UART_ID);
-        // Can we send it back?
-        if (uart_is_writable(UART_ID)) {
-            uart_puts(UART_ID, "\033[12;10H");
-            uart_puts(UART_ID, "\033[5m");
-            uart_puts(UART_ID, "Last char received: ");
-            uart_putc(UART_ID, ch);
-            uart_puts(UART_ID, "\033[m");
+    char ola[32];
+    ola[0] = '\0';
+    uint8_t ichar = 0;
+    static int linha = 1;
+    static uint8_t buffer[10];
+    static int contador = 0;
+    static int interrupcao = 0;
+    while (uart_is_readable_within_us(UART_ID, 200)) {
+
+        ichar = uart_getc(UART_ID);
+
+        if (ichar > 0) {
+            buffer[contador] = ichar;
+
+            contador ++;
+            if (contador > 9) contador = 0;
         }
     }
+
+    if (uart_is_writable(UART_ID) && (ichar != 0)) {
+        if ((linha % 10) == 0)
+        {
+            uart_puts(UART_ID, VT100Utils::gotoXY(1,1));
+            uart_puts(UART_ID, VT100Utils::clearScreen());
+            uart_puts(UART_ID, VT100Utils::inverseAttribute());
+            uart_puts(UART_ID, "Vamos descobrir as teclas pressionadas!");
+            uart_puts(UART_ID, VT100Utils::disableAttributes());
+            uart_puts(UART_ID, VT100Utils::gotoXY(2,1));
+        }
+        uart_puts(UART_ID, VT100Utils::disableAttributes());
+        uart_puts(UART_ID, VT100Utils::underlineAttribute());
+        uart_puts(UART_ID, "Caractere recebido: [");
+        //uart_putc(UART_ID, ch);
+        sprintf(ola, "] - Código: [%d]", ichar);
+        uart_puts(UART_ID, ola);
+        for (int i = 0; i < contador; i++)
+        {
+            sprintf(ola, "{%d}(%c)", buffer[i], (char)buffer[i]);
+            uart_puts(UART_ID, ola);
+            buffer[i]=0;
+        }
+
+        uart_puts(UART_ID, VT100Utils::lineBreak());
+        //uart_putc(UART_ID, ch);
+        uart_puts(UART_ID, VT100Utils::disableAttributes());
+        sprintf(ola, "Interrupcoes = %d", interrupcao);
+        uart_puts(UART_ID, ola);
+        uart_puts(UART_ID, VT100Utils::lineBreak());
+
+        linha ++;
+        contador  = 0;
+    }
+
+    interrupcao++;
 }
 
 
@@ -108,6 +159,7 @@ int main()
 
     cout << "Inicializado" << endl;
 
+
     // Set up our UART with the required speed.
     uart_init(UART_ID, BAUD_RATE);
 
@@ -116,17 +168,19 @@ int main()
     gpio_set_function(UART_TX_PIN, GPIO_FUNC_UART);
     gpio_set_function(UART_RX_PIN, GPIO_FUNC_UART);
 
-    // Use some the various UART functions to send out data
-    // In a default system, printf will also output via the default UART
+    // The call will return the actual baud rate selected, which will be as close as
+    // possible to that requested
+    int __unused actual = uart_set_baudrate(UART_ID, BAUD_RATE);
 
-    // Send out a character without any conversions
-    //uart_putc_raw(UART_ID, 'A');
+    // Set UART flow control CTS/RTS, we don't want these, so turn them off
+    uart_set_hw_flow(UART_ID, false, true);
 
-    // Send out a character but do CR/LF conversions
-    //uart_putc(UART_ID, 'B');
+    // Set our data format
+    uart_set_format(UART_ID, DATA_BITS, STOP_BITS, PARITY);
 
     // Turn off FIFO's - we want to do this character by character
     uart_set_fifo_enabled(UART_ID, false);
+
 
     // Set up a RX interrupt
     // We need to set up the handler first
@@ -141,21 +195,19 @@ int main()
     uart_set_irq_enables(UART_ID, true, false);
 
     // Send out a string, with CR/LF conversions
-    uart_puts(UART_ID, "\033[H\033[J");
-    uart_puts(UART_ID, "\033[10;10H");
-    uart_puts(UART_ID, "\033[4m");
-    uart_puts(UART_ID, "Hi, this is VT100 lol :)");
-    uart_puts(UART_ID, "\033[m");
-    uart_puts(UART_ID, "\033[11;10H");
-    uart_puts(UART_ID, "\033[5m");
-    uart_puts(UART_ID, "Now it´s blinking");
-
+    uart_puts(UART_ID, VT100Utils::gotoXY(1,1));
+    uart_puts(UART_ID, VT100Utils::clearScreen());
+    uart_puts(UART_ID, VT100Utils::inverseAttribute());
+    uart_puts(UART_ID, "Vamos descobrir as teclas pressionadas!");
+    uart_puts(UART_ID, VT100Utils::disableAttributes());
+    uart_puts(UART_ID, VT100Utils::gotoXY(2,1));
 
     cout << "This is a PC compatible sample" << endl;
 
 
     while (1)
         tight_loop_contents();
+
 }
 
 
