@@ -31,6 +31,8 @@ limitations under the License.
 #define STOP_BITS 1
 #define PARITY    UART_PARITY_NONE
 
+#include <cstring>
+using std::strcpy;
 
 #include <iostream>
 using std::cout;

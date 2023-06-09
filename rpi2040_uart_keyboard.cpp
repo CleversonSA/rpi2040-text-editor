@@ -668,8 +668,6 @@ void Rpi2040UartKeyboard::loop()
 
     setInterruptLoop(false);
 
-    uart_puts(Rpi2040Uart::getInstance().getUart(), "Exiting loop");
-
 }
 
 

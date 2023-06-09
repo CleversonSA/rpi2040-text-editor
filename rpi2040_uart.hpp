@@ -45,6 +45,8 @@ class Rpi2040Uart: public CSAObject
 
         uart_inst_t * getUart();
 
+        void uart_printf(char *);
+
         virtual void toString(); // Yes, you know, Java feelings rs
         virtual int getMemSize();
 
