@@ -37,15 +37,11 @@ KeyboardEngine & KeyboardEngine::setCallbackfn(bool (*fn)(const int, const char)
 
    _callbackfn = fn;
 
-   AppGlobals::getInstance()._callbackfn = fn;
-
     return (*this);
 }
 
 KeyboardEngine & KeyboardEngine::pressKey(const int keyCode, const char rawChar)
 {
-
-    _callbackfn = AppGlobals::getInstance()._callbackfn;
 
     if (_callbackfn == 0)
     {
@@ -54,7 +50,6 @@ KeyboardEngine & KeyboardEngine::pressKey(const int keyCode, const char rawChar)
 
     //cout << "Key Pressed: keyboard_engine_code = [" << keyCode << "] rawchar=[" << rawChar << "]" << endl;
     _interruptLoop = (*_callbackfn)(keyCode, rawChar);
-
 
 
 

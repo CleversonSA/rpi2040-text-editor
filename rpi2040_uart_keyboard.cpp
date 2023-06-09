@@ -169,6 +169,7 @@ int Rpi2040UartKeyboard::getESCExtraCodes(uint8_t arr[], int length)
             case HOME_CODE:
             case LEFT_CODE:
             case INS_CODE:
+            case END_CODE:
             case PGDN_CODE:
             case PGUP_CODE:
             case DELETE_CODE:
@@ -488,6 +489,45 @@ void Rpi2040UartKeyboard::setup()
 
 }
 
+void Rpi2040UartKeyboard::setInterruptLoop(bool interruptLoop)
+{
+    /* Unfortunately, the IRQ Handler lost the callback info, so I have to
+        use a 3rd class to handle it in other location of memory, bizarre! */
+    AppGlobals::getInstance()._sharedInterruptedLoop = interruptLoop;
+
+}
+
+bool Rpi2040UartKeyboard::isInterruptLoop() const
+{
+    /* Unfortunately, the IRQ Handler lost the callback info, so I have to
+        use a 3rd class to handle it in other location of memory, bizarre! */
+    return (AppGlobals::getInstance()._sharedInterruptedLoop);
+}
+
+
+KeyboardEngine & Rpi2040UartKeyboard::setCallbackfn(bool (*fn)(const int, const char))
+{
+    /* Unfortunately, the IRQ Handler lost the callback info, so I have to
+        use a 3rd class to handle it in other location of memory, bizarre! */
+    AppGlobals::getInstance()._sharedCallbackfn = fn;
+
+
+    return (*this);
+}
+
+KeyboardEngine & Rpi2040UartKeyboard::pressKey(const int keyCode, const char rawChar)
+{
+    if (AppGlobals::getInstance()._sharedCallbackfn == 0)
+    {
+        return (*this);
+    }
+
+    //cout << "Key Pressed: keyboard_engine_code = [" << keyCode << "] rawchar=[" << rawChar << "]" << endl;
+    setInterruptLoop((*AppGlobals::getInstance()._sharedCallbackfn)(keyCode, rawChar));
+
+    return (*this);
+}
+
 
 int Rpi2040UartKeyboard::parseRawKeycode(int rawKeyType, int rawKeyCode)
 {
@@ -628,7 +668,7 @@ void Rpi2040UartKeyboard::loop()
 
     setInterruptLoop(false);
 
-    //uart_puts(Rpi2040Uart::getInstance().getUart(), "ops saiu do loop");
+    uart_puts(Rpi2040Uart::getInstance().getUart(), "Exiting loop");
 
 }
 

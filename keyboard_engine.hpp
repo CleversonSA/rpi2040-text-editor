@@ -124,8 +124,8 @@ class KeyboardEngine: public CSAObject
         KeyboardEngine();
         ~KeyboardEngine();
 
-        KeyboardEngine & setCallbackfn(bool (*fn)(const int, const char));
-        KeyboardEngine & pressKey(const int, const char);
+        virtual KeyboardEngine & setCallbackfn(bool (*fn)(const int, const char));
+        virtual KeyboardEngine & pressKey(const int, const char);
 
 
         virtual void setup() = 0;
@@ -137,8 +137,8 @@ class KeyboardEngine: public CSAObject
     protected:
 
 
-        void setInterruptLoop(bool);
-        bool isInterruptLoop() const;
+        virtual void setInterruptLoop(bool);
+        virtual bool isInterruptLoop() const;
         bool (*_callbackfn)(const int, const char);
         bool _interruptLoop = false;
 

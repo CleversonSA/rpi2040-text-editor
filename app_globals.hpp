@@ -40,7 +40,8 @@ class AppGlobals
         void setEnableObjDelLog(const bool);
         bool getEnableObjDelLog() const;
 
-        bool (*_callbackfn)(const int, const char);
+        bool (*_sharedCallbackfn)(const int, const char);
+        bool _sharedInterruptedLoop = false;
 
     private:
         AppGlobals();

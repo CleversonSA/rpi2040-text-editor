@@ -50,6 +50,11 @@ class Rpi2040UartKeyboard: public KeyboardEngine
         int getSpecialCodes2(uint8_t[], int );
         int getNormalCode(uint8_t[], int );
 
+        virtual void setInterruptLoop(bool);
+        virtual bool isInterruptLoop() const;
+        virtual KeyboardEngine & setCallbackfn(bool (*fn)(const int, const char));
+        virtual KeyboardEngine & pressKey(const int, const char);
+
         virtual int parseRawKeycode(int, int);
 
     private:

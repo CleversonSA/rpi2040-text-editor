@@ -203,13 +203,17 @@ bool onKeyPress(const int keyCode, const char rawKeyChar)
         uart_puts(rpi2040uart.getUart(), "backspace");
         uart_puts(rpi2040uart.getUart(), VT100Utils::lineBreak());
         break;
+    case KeyboardEngine::KEY_TAB:
+        uart_puts(rpi2040uart.getUart(), "tab");
+        uart_puts(rpi2040uart.getUart(), VT100Utils::lineBreak());
+        break;
    case KeyboardEngine::KEY_ANY:
        uart_putc(rpi2040uart.getUart(), rawKeyChar);
         break;
    default:
         uart_puts(rpi2040uart.getUart(), "unknown char");
         uart_puts(rpi2040uart.getUart(), VT100Utils::lineBreak());
-        break;
+        return true;
    }
 
     return false;
