@@ -52,6 +52,7 @@ Rpi2040Uart rpi2040uart = Rpi2040Uart::getInstance();
 
 int getMemSize(CSAObject *);
 bool onKeyPress(const int keyCode, const char rawKeyChar);
+void onMsgBoxReturn(const int btnSelected);
 
 
 int main()
@@ -91,6 +92,7 @@ int main()
         .setMessage({"What do you think?"})
         .setButtonType(MsgBoxEngine::YESNOCANCEL_BUTTON)
         .setIconType(MsgBoxEngine::QUESTION_ICON)
+        .setCallbackfn(&onMsgBoxReturn)
         .render();
 
     /*Rpi2040UartKeyboard rpiUartKb = Rpi2040UartKeyboard::getInstance();
@@ -242,4 +244,27 @@ bool onKeyPress(const int keyCode, const char rawKeyChar)
    }
 
     return false;
+}
+
+
+void onMsgBoxReturn(const int btnSelected)
+{
+    switch(btnSelected)
+    {
+    case MsgBoxEngine::BTN_YES:
+        uart_puts(rpi2040uart.getUart(), "VOCE ESCOLHEU O SIM");
+        uart_puts(rpi2040uart.getUart(), VT100Utils::lineBreak());
+        break;
+    case MsgBoxEngine::BTN_NO:
+        uart_puts(rpi2040uart.getUart(), "VOCE ESCOLHEU O NAO");
+        uart_puts(rpi2040uart.getUart(), VT100Utils::lineBreak());
+        break;
+    case MsgBoxEngine::BTN_CANCEL:
+        uart_puts(rpi2040uart.getUart(), "VOCE ESCOLHEU O CANCELAR");
+        uart_puts(rpi2040uart.getUart(), VT100Utils::lineBreak());
+        break;
+    default:
+        break;
+    }
+
 }

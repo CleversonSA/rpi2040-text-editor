@@ -216,7 +216,6 @@ MenuEngine & MenuEngine::setCallbackfn(void (*fn)(char *, char *))
 
 MenuEngine & MenuEngine::reset()
 {
-    delete _menuItems;
 
     _menuItems[AppGlobals::MAX_MENU_ITEMS_COUNT];
 

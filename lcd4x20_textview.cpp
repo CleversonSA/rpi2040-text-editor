@@ -61,7 +61,6 @@ TextViewEngine & LCD4X20TextView::render()
     FrameBuffer *fb = getFrameBuffer();
     int textLine = 1;
     bool lastPage = false;
-    char *charEmpty = " ";
 
     (*fb)
         .clearScreen()
