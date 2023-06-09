@@ -37,9 +37,11 @@ using std::atoi;
 
 #include "console_video.hpp"
 
+
 #include "VT100_utils.hpp"
 #include "rpi2040_uart.hpp"
 #include "rpi2040_uart_keyboard.hpp"
+#include "rpi2040_uart_video.hpp"
 
 //********************** RASPBERRY PI PICO TEST ****************************
 #include "pico/stdlib.h"
@@ -57,27 +59,41 @@ int main()
     int pausa = 0;
 
     /*FrameBuffer fb(4,20);
+    */
     FrameBuffer fbMsgbox(4,20);
+    /*
     FrameBuffer fbInputbox(4,20);
     FrameBuffer fbSplashBox(4,20);
     FrameBuffer fbMenu(4,20);
     FrameBuffer fbTextView(4,20);
 
+    */
     LCD4X20MsgBox lcd4x20msgbox(&fbMsgbox);
+    /*
     LCD4X20InputBox lcd4x20inputbox(&fbInputbox);
     LCD4X20Splashbox lcd4x20splashbox(&fbSplashBox);
     LCD4X20Menu lcd4x20menu(&fbMenu);
 
+    */
     MsgBoxEngine *msgbox = &lcd4x20msgbox;
+    /*
     InputBoxEngine *inputbox = &lcd4x20inputbox;
     SplashBoxEngine *splashbox = &lcd4x20splashbox;
     MenuEngine *menu = &lcd4x20menu;
 
     LCD4X20TextView lcd4x20textview(&fbTextView, menu);
     TextViewEngine *textView = &lcd4x20textview;
-*/
+    */
 
-    Rpi2040UartKeyboard rpiUartKb = Rpi2040UartKeyboard::getInstance();
+    (*msgbox)
+        .reset()
+        .setTitle({"Greetings"})
+        .setMessage({"What do you think?"})
+        .setButtonType(MsgBoxEngine::YESNOCANCEL_BUTTON)
+        .setIconType(MsgBoxEngine::QUESTION_ICON)
+        .render();
+
+    /*Rpi2040UartKeyboard rpiUartKb = Rpi2040UartKeyboard::getInstance();
 
     rpi2040uart.setup();
 
@@ -86,7 +102,16 @@ int main()
     (*keyboard).setup();
     (*keyboard).loop();
     (*keyboard).destroy();
+    */
 
+    Rpi2040UartVideo rpi2040UartVideo;
+    rpi2040uart.setup();
+
+    VideoEngine *video = &rpi2040UartVideo;
+
+    (*video)
+        .setFrameBuffer(&fbMsgbox)
+        .display();
 
     cout << "Inicializado" << endl;
 

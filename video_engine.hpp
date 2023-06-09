@@ -35,7 +35,7 @@ class VideoEngine: public CSAObject
         VideoEngine & setFrameBuffer(FrameBuffer *);
 
 
-        virtual VideoEngine * display() = 0;
+        virtual VideoEngine & display() = 0;
 
     private:
 

@@ -14,21 +14,21 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef CONSOLEVIDEO
-#define CONSOLEVIDEO
+#ifndef RPI2040UARTVIDEO
+#define RPI2040UARTVIDEO
 
 #include "app_globals.hpp"
 #include "video_engine.hpp"
 
 /*
-    Display the App GUI at Console Text
+    Display the App GUI at RPI UART Serial Console
 */
-class ConsoleVideo: public VideoEngine
+class Rpi2040UartVideo: public VideoEngine
 {
     public:
 
-        ConsoleVideo();
-        ~ConsoleVideo();
+        Rpi2040UartVideo();
+        ~Rpi2040UartVideo();
 
        virtual VideoEngine & display();
 
@@ -38,5 +38,6 @@ class ConsoleVideo: public VideoEngine
 };
 
 #endif // DOCUMENT
+
 
 

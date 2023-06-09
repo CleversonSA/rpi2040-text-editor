@@ -18,16 +18,24 @@ limitations under the License.
 using std::cout;
 using std::endl;
 
-#include "console_video.hpp"
+//********************** RASPBERRY PI PICO TEST ****************************
+#include "pico/stdlib.h"
+#include "hardware/uart.h"
+
+#include "rpi2040_uart_video.hpp"
+#include "rpi2040_uart.hpp"
 #include "video_engine.hpp"
 #include "app_globals.hpp"
+#include "vt100_utils.hpp"
 
 
-VideoEngine & ConsoleVideo::display()
+VideoEngine & Rpi2040UartVideo::display()
 {
     char * screenLine = 0;
 
-    system("cls");
+    uart_puts(Rpi2040Uart::getInstance().getUart(), VT100Utils::gotoXY(1,1));
+    uart_puts(Rpi2040Uart::getInstance().getUart(), VT100Utils::clearScreen());
+
     for (int i=0; i < (*getFrameBuffer()).getMaxRows(); i++)
     {
         screenLine = (*getFrameBuffer()).getScreenRow(i);
@@ -35,40 +43,43 @@ VideoEngine & ConsoleVideo::display()
         {
             if ((*screenLine) == '\0')
             {
-                cout << " ";
+                uart_puts(Rpi2040Uart::getInstance().getUart(), " ");
             } else {
-                cout << (*screenLine);
+                uart_putc(Rpi2040Uart::getInstance().getUart(), (*screenLine));
             }
             screenLine++;
         }
-        cout << endl;
+        uart_puts(Rpi2040Uart::getInstance().getUart(), VT100Utils::lineBreak());
     }
+
+    return (*this);
 }
 
-void ConsoleVideo::toString()
+void Rpi2040UartVideo::toString()
 {
-    cout << "[ConsoleVideo] [UID=" << CSAObject::getSerialVersionUID() << "] [SIZE=" << sizeof((*this)) <<"] "
+    cout << "[Rpi2040UartVideo] [UID=" << CSAObject::getSerialVersionUID() << "] [SIZE=" << sizeof((*this)) <<"] "
          << endl;
 }
 
-int ConsoleVideo::getMemSize()
+int Rpi2040UartVideo::getMemSize()
 {
     return sizeof((*this));
 }
 
 
-ConsoleVideo::~ConsoleVideo()
+Rpi2040UartVideo::~Rpi2040UartVideo()
 {
     if(AppGlobals::getInstance().getEnableObjDelLog() == true) {
-        cout << "[ConsoleVideo] [destUID=" << CSAObject::getSerialVersionUID() << "]" << endl;
+        cout << "[Rpi2040UartVideo] [destUID=" << CSAObject::getSerialVersionUID() << "]" << endl;
     }
 }
 
-ConsoleVideo::ConsoleVideo():
+Rpi2040UartVideo::Rpi2040UartVideo():
 VideoEngine()
 {
 
 }
+
 
 
 

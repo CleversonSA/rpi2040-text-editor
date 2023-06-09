@@ -13,6 +13,8 @@ set(SOURCES
         app_globals.hpp
         csa_object.cpp
         csa_object.hpp
+        framebuffer.cpp
+        framebuffer.hpp
         doc_character.cpp
         doc_character.hpp
         doc_row.cpp
@@ -39,6 +41,16 @@ set(SOURCES
         textview_engine.hpp
         video_engine.cpp
         video_engine.hpp
+        lcd4x20_inputbox.cpp
+        lcd4x20_inputbox.hpp
+        lcd4x20_menu.cpp
+        lcd4x20_menu.hpp
+        lcd4x20_msgbox.cpp
+        lcd4x20_msgbox.hpp
+        lcd4x20_splashbox.cpp
+        lcd4x20_splashbox.hpp
+        lcd4x20_textview.cpp
+        lcd4x20_textview.hpp
         console_video.cpp
         console_video.hpp
         vt100_utils.cpp
@@ -47,6 +59,8 @@ set(SOURCES
         rpi2040_uart.hpp
         rpi2040_uart_keyboard.cpp
         rpi2040_uart_keyboard.hpp
+        rpi2040_uart_video.cpp
+        rpi2040_uart_video.hpp
         )
 foreach(name IN ITEMS main)
     add_executable(${name} ${SOURCES})

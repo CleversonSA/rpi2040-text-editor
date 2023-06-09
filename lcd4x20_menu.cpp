@@ -60,7 +60,6 @@ MenuEngine & LCD4X20Menu::render()
     FrameBuffer *fb = getFrameBuffer();
     int menuItemLine = 1;
     bool lastPage = false;
-    char *charEmpty = " ";
 
     (*fb)
         .clearScreen()
