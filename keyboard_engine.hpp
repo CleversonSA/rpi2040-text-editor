@@ -132,19 +132,18 @@ class KeyboardEngine: public CSAObject
         virtual void loop() = 0;
         virtual void destroy() = 0;
 
+        virtual int parseRawKeycode(int, int) = 0;
+
     protected:
 
 
         void setInterruptLoop(bool);
         bool isInterruptLoop() const;
-
-    private:
-
-
-        bool _interruptLoop = false;
         bool (*_callbackfn)(const int, const char);
+        bool _interruptLoop = false;
 
-        virtual int parseRawKeycode(int, int) = 0;
+
+
 };
 
 #endif // DOCUMENT

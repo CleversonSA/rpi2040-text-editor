@@ -16,6 +16,8 @@ limitations under the License.
 #ifndef APPGLOBALS
 #define APPGLOBALS
 
+#include <malloc.h>
+#include <inttypes.h>
 
 /*
   Global settings class
@@ -32,8 +34,13 @@ class AppGlobals
 
         static AppGlobals & getInstance();
 
+        static uint32_t getFreeHeap();
+        static uint32_t getTotalHeap();
+
         void setEnableObjDelLog(const bool);
         bool getEnableObjDelLog() const;
+
+        bool (*_callbackfn)(const int, const char);
 
     private:
         AppGlobals();

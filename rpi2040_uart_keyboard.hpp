@@ -13,25 +13,28 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef SOCKETKEYBOARD
-#define SOCKETKEYBOARD
-
-#include <winsock2.h>
-#define NI_MAXHOST (1024)
-#define NI_MAXSERV (1024)
+#ifndef RPI2040UARTKEYBOARD
+#define RPI2040UARTKEYBOARD
 
 #include "app_globals.hpp"
 #include "keyboard_engine.hpp"
 
 /*
-    TCP Socket keyboard implementation for Windows. You could use Putty with a no LF to send data.
+    RPI2040 UART Specific Keyboard Implementation.
 */
-class WinsockKeyboard: public KeyboardEngine
+class Rpi2040UartKeyboard: public KeyboardEngine
 {
     public:
 
-        WinsockKeyboard(int);
-        ~WinsockKeyboard();
+        ~Rpi2040UartKeyboard();
+
+        static Rpi2040UartKeyboard & getInstance();
+
+        // This is called by the uart RPI lib
+        static void onUartRXEvent();
+
+        static inline uint8_t _uartBuffer[10] = {0,0,0,0,0,0,0,0,0,0};
+        static int8_t  _uartBufferCounter;
 
         virtual void setup();
         virtual void loop();
@@ -40,21 +43,25 @@ class WinsockKeyboard: public KeyboardEngine
         virtual void toString(); // Yes, you know, Java feelings rs
         virtual int getMemSize();
 
+        int getESCFnCodes(uint8_t[], int );
+        int getESCExtraCodes(uint8_t[], int );
+        int getESCArrowCodes(uint8_t[], int );
+        int getSpecialCodes1(uint8_t[], int );
+        int getSpecialCodes2(uint8_t[], int );
+        int getNormalCode(uint8_t[], int );
+
         virtual int parseRawKeycode(int, int);
 
     private:
+        Rpi2040UartKeyboard();
 
-        WSADATA     _wsData;
-        SOCKET      _listenning;
-        sockaddr_in _hint;
-        sockaddr_in _client;
-        SOCKET      _clientSocket;
-        int         _tcpPort = 9000;
+        static Rpi2040UartKeyboard* _me;
 
 
 };
 
 #endif // DOCUMENT
+
 
 
 

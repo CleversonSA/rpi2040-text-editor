@@ -43,6 +43,10 @@ set(SOURCES
         console_video.hpp
         vt100_utils.cpp
         vt100_utils.hpp
+        rpi2040_uart.cpp
+        rpi2040_uart.hpp
+        rpi2040_uart_keyboard.cpp
+        rpi2040_uart_keyboard.hpp
         )
 foreach(name IN ITEMS main)
     add_executable(${name} ${SOURCES})

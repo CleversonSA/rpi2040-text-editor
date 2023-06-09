@@ -38,86 +38,18 @@ using std::atoi;
 #include "console_video.hpp"
 
 #include "VT100_utils.hpp"
+#include "rpi2040_uart.hpp"
+#include "rpi2040_uart_keyboard.hpp"
 
 //********************** RASPBERRY PI PICO TEST ****************************
 #include "pico/stdlib.h"
 #include "hardware/uart.h"
 #include "hardware/irq.h"
 
-#define UART_ID uart0
-#define BAUD_RATE 115200
-
-// We are using pins 0 and 1, but see the GPIO function select table in the
-// datasheet for information on which other pins can be used.
-#define UART_TX_PIN 0
-#define UART_RX_PIN 1
-
-#define DATA_BITS 8
-#define STOP_BITS 1
-#define PARITY    UART_PARITY_NONE
-
+Rpi2040Uart rpi2040uart = Rpi2040Uart::getInstance();
 
 int getMemSize(CSAObject *);
-bool onKeyPress(int keyCode, const char rawKeyChar);
-
-
-// RX interrupt handler
-void on_uart_rx() {
-    char ola[32];
-    ola[0] = '\0';
-    uint8_t ichar = 0;
-    static int linha = 1;
-    static uint8_t buffer[10];
-    static int contador = 0;
-    static int interrupcao = 0;
-    while (uart_is_readable_within_us(UART_ID, 200)) {
-
-        ichar = uart_getc(UART_ID);
-
-        if (ichar > 0) {
-            buffer[contador] = ichar;
-
-            contador ++;
-            if (contador > 9) contador = 0;
-        }
-    }
-
-    if (uart_is_writable(UART_ID) && (ichar != 0)) {
-        if ((linha % 10) == 0)
-        {
-            uart_puts(UART_ID, VT100Utils::gotoXY(1,1));
-            uart_puts(UART_ID, VT100Utils::clearScreen());
-            uart_puts(UART_ID, VT100Utils::inverseAttribute());
-            uart_puts(UART_ID, "Vamos descobrir as teclas pressionadas!");
-            uart_puts(UART_ID, VT100Utils::disableAttributes());
-            uart_puts(UART_ID, VT100Utils::gotoXY(2,1));
-        }
-        uart_puts(UART_ID, VT100Utils::disableAttributes());
-        uart_puts(UART_ID, VT100Utils::underlineAttribute());
-        uart_puts(UART_ID, "Caractere recebido: [");
-        //uart_putc(UART_ID, ch);
-        sprintf(ola, "] - Código: [%d]", ichar);
-        uart_puts(UART_ID, ola);
-        for (int i = 0; i < contador; i++)
-        {
-            sprintf(ola, "{%d}(%c)", buffer[i], (char)buffer[i]);
-            uart_puts(UART_ID, ola);
-            buffer[i]=0;
-        }
-
-        uart_puts(UART_ID, VT100Utils::lineBreak());
-        //uart_putc(UART_ID, ch);
-        uart_puts(UART_ID, VT100Utils::disableAttributes());
-        sprintf(ola, "Interrupcoes = %d", interrupcao);
-        uart_puts(UART_ID, ola);
-        uart_puts(UART_ID, VT100Utils::lineBreak());
-
-        linha ++;
-        contador  = 0;
-    }
-
-    interrupcao++;
-}
+bool onKeyPress(const int keyCode, const char rawKeyChar);
 
 
 int main()
@@ -144,69 +76,21 @@ int main()
     LCD4X20TextView lcd4x20textview(&fbTextView, menu);
     TextViewEngine *textView = &lcd4x20textview;
 */
-    /*WinsockKeyboard winsockkeyboard(9000);
-    KeyboardEngine *keyboard = &winsockkeyboard;
 
+    Rpi2040UartKeyboard rpiUartKb = Rpi2040UartKeyboard::getInstance();
 
+    rpi2040uart.setup();
+
+    KeyboardEngine *keyboard = &rpiUartKb;
     (*keyboard).setCallbackfn(&onKeyPress);
     (*keyboard).setup();
-    cout << "Primeiro menu" << endl;
-    (*keyboard).loop();
-    cout << "Segundo menu" << endl;
     (*keyboard).loop();
     (*keyboard).destroy();
-    */
+
 
     cout << "Inicializado" << endl;
 
 
-    // Set up our UART with the required speed.
-    uart_init(UART_ID, BAUD_RATE);
-
-    // Set the TX and RX pins by using the function select on the GPIO
-    // Set datasheet for more information on function select
-    gpio_set_function(UART_TX_PIN, GPIO_FUNC_UART);
-    gpio_set_function(UART_RX_PIN, GPIO_FUNC_UART);
-
-    // The call will return the actual baud rate selected, which will be as close as
-    // possible to that requested
-    int __unused actual = uart_set_baudrate(UART_ID, BAUD_RATE);
-
-    // Set UART flow control CTS/RTS, we don't want these, so turn them off
-    uart_set_hw_flow(UART_ID, false, true);
-
-    // Set our data format
-    uart_set_format(UART_ID, DATA_BITS, STOP_BITS, PARITY);
-
-    // Turn off FIFO's - we want to do this character by character
-    uart_set_fifo_enabled(UART_ID, false);
-
-
-    // Set up a RX interrupt
-    // We need to set up the handler first
-    // Select correct interrupt for the UART we are using
-    int UART_IRQ = UART_ID == uart0 ? UART0_IRQ : UART1_IRQ;
-
-    // And set up and enable the interrupt handlers
-    irq_set_exclusive_handler(UART_IRQ, on_uart_rx);
-    irq_set_enabled(UART_IRQ, true);
-
-    // Now enable the UART to send interrupts - RX only
-    uart_set_irq_enables(UART_ID, true, false);
-
-    // Send out a string, with CR/LF conversions
-    uart_puts(UART_ID, VT100Utils::gotoXY(1,1));
-    uart_puts(UART_ID, VT100Utils::clearScreen());
-    uart_puts(UART_ID, VT100Utils::inverseAttribute());
-    uart_puts(UART_ID, "Vamos descobrir as teclas pressionadas!");
-    uart_puts(UART_ID, VT100Utils::disableAttributes());
-    uart_puts(UART_ID, VT100Utils::gotoXY(2,1));
-
-    cout << "This is a PC compatible sample" << endl;
-
-
-    while (1)
-        tight_loop_contents();
 
 }
 
@@ -217,12 +101,116 @@ int getMemSize(CSAObject *obj)
 }
 
 
-bool onKeyPress(int keyCode, const char rawKeyChar)
+bool onKeyPress(const int keyCode, const char rawKeyChar)
 {
-    if (keyCode == KeyboardEngine::KEY_ESCAPE) {
-        cout << "Menu acionado!" << endl;
-        return true;
-    }
+   switch(keyCode){
+   case KeyboardEngine::KEY_UP:
+        uart_puts(rpi2040uart.getUart(), "PARA CIMA!");
+        uart_puts(rpi2040uart.getUart(), VT100Utils::lineBreak());
+        break;
+   case KeyboardEngine::KEY_DOWN:
+        uart_puts(rpi2040uart.getUart(), "PARA BAIXO!");
+        uart_puts(rpi2040uart.getUart(), VT100Utils::lineBreak());
+        break;
+   case KeyboardEngine::KEY_LEFT:
+        uart_puts(rpi2040uart.getUart(), "PARA DIREITA!");
+        uart_puts(rpi2040uart.getUart(), VT100Utils::lineBreak());
+        break;
+   case KeyboardEngine::KEY_RIGHT:
+        uart_puts(rpi2040uart.getUart(), "PARA ESQUERDA!");
+        uart_puts(rpi2040uart.getUart(), VT100Utils::lineBreak());
+        break;
+   case KeyboardEngine::KEY_ESCAPE:
+        uart_puts(rpi2040uart.getUart(), VT100Utils::gotoXY(1,1));
+        uart_puts(rpi2040uart.getUart(), VT100Utils::clearScreen());
+        break;
+   case KeyboardEngine::KEY_F1:
+        uart_puts(rpi2040uart.getUart(), "F1!");
+        uart_puts(rpi2040uart.getUart(), VT100Utils::lineBreak());
+        break;
+   case KeyboardEngine::KEY_F2:
+        uart_puts(rpi2040uart.getUart(), "F2!");
+        uart_puts(rpi2040uart.getUart(), VT100Utils::lineBreak());
+        break;
+   case KeyboardEngine::KEY_F3:
+        uart_puts(rpi2040uart.getUart(), "F3!");
+        uart_puts(rpi2040uart.getUart(), VT100Utils::lineBreak());
+        break;
+   case KeyboardEngine::KEY_F4:
+        uart_puts(rpi2040uart.getUart(), "F4!");
+        uart_puts(rpi2040uart.getUart(), VT100Utils::lineBreak());
+        break;
+   case KeyboardEngine::KEY_F5:
+        uart_puts(rpi2040uart.getUart(), "F5!");
+        uart_puts(rpi2040uart.getUart(), VT100Utils::lineBreak());
+        break;
+   case KeyboardEngine::KEY_F6:
+        uart_puts(rpi2040uart.getUart(), "F6!");
+        uart_puts(rpi2040uart.getUart(), VT100Utils::lineBreak());
+        break;
+   case KeyboardEngine::KEY_F7:
+        uart_puts(rpi2040uart.getUart(), "F7!");
+        uart_puts(rpi2040uart.getUart(), VT100Utils::lineBreak());
+        break;
+   case KeyboardEngine::KEY_F8:
+        uart_puts(rpi2040uart.getUart(), "F8!");
+        uart_puts(rpi2040uart.getUart(), VT100Utils::lineBreak());
+        break;
+   case KeyboardEngine::KEY_F9:
+        uart_puts(rpi2040uart.getUart(), "F9!");
+        uart_puts(rpi2040uart.getUart(), VT100Utils::lineBreak());
+        break;
+   case KeyboardEngine::KEY_F10:
+        uart_puts(rpi2040uart.getUart(), "F10!");
+        uart_puts(rpi2040uart.getUart(), VT100Utils::lineBreak());
+        break;
+   case KeyboardEngine::KEY_F11:
+        uart_puts(rpi2040uart.getUart(), "F11!");
+        uart_puts(rpi2040uart.getUart(), VT100Utils::lineBreak());
+        break;
+   case KeyboardEngine::KEY_F12:
+        uart_puts(rpi2040uart.getUart(), "F12!");
+        uart_puts(rpi2040uart.getUart(), VT100Utils::lineBreak());
+        break;
+   case KeyboardEngine::KEY_ENTER:
+        uart_puts(rpi2040uart.getUart(), VT100Utils::lineBreak());
+        break;
+   case KeyboardEngine::KEY_HOME:
+       uart_puts(rpi2040uart.getUart(), "home");
+        uart_puts(rpi2040uart.getUart(), VT100Utils::lineBreak());
+        break;
+   case KeyboardEngine::KEY_PGDOWN:
+       uart_puts(rpi2040uart.getUart(), "pgdown");
+        uart_puts(rpi2040uart.getUart(), VT100Utils::lineBreak());
+        break;
+   case KeyboardEngine::KEY_PGUP:
+       uart_puts(rpi2040uart.getUart(), "pgup");
+        uart_puts(rpi2040uart.getUart(), VT100Utils::lineBreak());
+        break;
+   case KeyboardEngine::KEY_END:
+       uart_puts(rpi2040uart.getUart(), "end");
+        uart_puts(rpi2040uart.getUart(), VT100Utils::lineBreak());
+        break;
+   case KeyboardEngine::KEY_INS:
+       uart_puts(rpi2040uart.getUart(), "insert");
+        uart_puts(rpi2040uart.getUart(), VT100Utils::lineBreak());
+        break;
+   case KeyboardEngine::KEY_DEL:
+       uart_puts(rpi2040uart.getUart(), "delete");
+        uart_puts(rpi2040uart.getUart(), VT100Utils::lineBreak());
+        break;
+   case KeyboardEngine::KEY_BACKSPACE:
+        uart_puts(rpi2040uart.getUart(), "backspace");
+        uart_puts(rpi2040uart.getUart(), VT100Utils::lineBreak());
+        break;
+   case KeyboardEngine::KEY_ANY:
+       uart_putc(rpi2040uart.getUart(), rawKeyChar);
+        break;
+   default:
+        uart_puts(rpi2040uart.getUart(), "unknown char");
+        uart_puts(rpi2040uart.getUart(), VT100Utils::lineBreak());
+        break;
+   }
 
     return false;
 }

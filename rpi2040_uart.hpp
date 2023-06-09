@@ -13,48 +13,53 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef SOCKETKEYBOARD
-#define SOCKETKEYBOARD
+#ifndef RPI2040UART
+#define RPI2040UART
 
-#include <winsock2.h>
-#define NI_MAXHOST (1024)
-#define NI_MAXSERV (1024)
+//********************** RASPBERRY PI PICO 2040 ****************************
+#include "pico/stdlib.h"
+#include "hardware/uart.h"
+#include "hardware/irq.h"
 
 #include "app_globals.hpp"
-#include "keyboard_engine.hpp"
+#include "csa_object.hpp"
 
 /*
-    TCP Socket keyboard implementation for Windows. You could use Putty with a no LF to send data.
+    RPI2040 UART Specific Helper - For TX/RX
 */
-class WinsockKeyboard: public KeyboardEngine
+class Rpi2040Uart: public CSAObject
 {
     public:
 
-        WinsockKeyboard(int);
-        ~WinsockKeyboard();
+        ~Rpi2040Uart();
 
-        virtual void setup();
-        virtual void loop();
-        virtual void destroy();
+        static Rpi2040Uart & getInstance();
+
+        bool isUartInitialized() const;
+        void setUartInitialized(bool);
+
+        void setup();
+        void destroy();
+        void defineRXIRQ(irq_handler_t);
+        void disableRXIRQ();
+
+        uart_inst_t * getUart();
 
         virtual void toString(); // Yes, you know, Java feelings rs
         virtual int getMemSize();
 
-        virtual int parseRawKeycode(int, int);
 
     private:
+        Rpi2040Uart();
 
-        WSADATA     _wsData;
-        SOCKET      _listenning;
-        sockaddr_in _hint;
-        sockaddr_in _client;
-        SOCKET      _clientSocket;
-        int         _tcpPort = 9000;
+        static bool _uartInitialized;
 
-
+        static Rpi2040Uart* _me;
 };
 
 #endif // DOCUMENT
+
+
 
 
 

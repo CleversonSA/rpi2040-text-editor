@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #include "app_globals.hpp"
+#include <malloc.h>
+#include <inttypes.h>
 
 #include <cstring>
 using std::strcpy;
@@ -32,6 +34,21 @@ bool AppGlobals::getEnableObjDelLog() const
 {
     return _enableObjDelLog;
 }
+
+uint32_t AppGlobals::getTotalHeap(void)
+{
+   extern char __StackLimit, __bss_end__;
+
+   return &__StackLimit  - &__bss_end__;
+}
+
+uint32_t AppGlobals::getFreeHeap(void)
+{
+   struct mallinfo m = mallinfo();
+
+   return AppGlobals::getTotalHeap() - m.uordblks;
+}
+
 
 
 AppGlobals& AppGlobals::getInstance()
