@@ -43,6 +43,8 @@ using std::atoi;
 #include "rpi2040_uart_keyboard.hpp"
 #include "rpi2040_uart_video.hpp"
 
+#include "msgbox_sample_callback.hpp"
+
 //********************** RASPBERRY PI PICO TEST ****************************
 #include "pico/stdlib.h"
 #include "hardware/uart.h"
@@ -86,25 +88,22 @@ int main()
     TextViewEngine *textView = &lcd4x20textview;
     */
 
+    MsgboxSampleCallback msgcb;
+
     (*msgbox)
         .reset()
         .setTitle({"Greetings"})
         .setMessage({"What do you think?"})
         .setButtonType(MsgBoxEngine::YESNOCANCEL_BUTTON)
         .setIconType(MsgBoxEngine::QUESTION_ICON)
-        .setCallbackfn(&onMsgBoxReturn)
+        .setCallback(&msgcb)
         .render();
-
-    /*Rpi2040UartKeyboard rpiUartKb = Rpi2040UartKeyboard::getInstance();
 
     rpi2040uart.setup();
 
+    Rpi2040UartKeyboard rpiUartKb = Rpi2040UartKeyboard::getInstance();
+
     KeyboardEngine *keyboard = &rpiUartKb;
-    (*keyboard).setCallbackfn(&onKeyPress);
-    (*keyboard).setup();
-    (*keyboard).loop();
-    (*keyboard).destroy();
-    */
 
     Rpi2040UartVideo rpi2040UartVideo;
     rpi2040uart.setup();
@@ -114,6 +113,13 @@ int main()
     (*video)
         .setFrameBuffer(&fbMsgbox)
         .display();
+
+
+    (*msgbox)
+        .run(video, keyboard);
+
+    uart_puts(rpi2040uart.getUart(), "saiu");
+    uart_puts(rpi2040uart.getUart(), VT100Utils::lineBreak());
 
     cout << "Inicializado" << endl;
 

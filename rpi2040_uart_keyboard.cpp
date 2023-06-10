@@ -476,11 +476,7 @@ void Rpi2040UartKeyboard::onUartRXEvent()
         }
 
         Rpi2040UartKeyboard::_uartBufferCounter = 0;
-
-        if ( KeyboardMessage::getInstance()._readOneCharPerTime)
-        {
-            KeyboardMessage::getInstance()._sharedInterruptedLoop = true;
-        }
+        KeyboardMessage::getInstance()._sharedInterruptedLoop = true;
 
     }
 
@@ -499,7 +495,6 @@ void Rpi2040UartKeyboard::setup()
     Rpi2040Uart::getInstance().defineRXIRQ(Rpi2040UartKeyboard::onUartRXEvent);
 
     KeyboardMessage::getInstance()._rawCode='\0';
-    KeyboardMessage::getInstance()._readOneCharPerTime=true;
     KeyboardMessage::getInstance()._sharedInterruptedLoop=false;
     KeyboardMessage::getInstance()._keyboardKeyCode=-1;
 
@@ -521,11 +516,11 @@ bool Rpi2040UartKeyboard::isInterruptLoop() const
 }
 
 
-KeyboardEngine & Rpi2040UartKeyboard::setCallbackfn(bool (*fn)(const int, const char))
+KeyboardEngine & Rpi2040UartKeyboard:: setCallback(KeyboardCallback *keyboardCallback)
 {
     /* Unfortunately, the IRQ Handler lost the callback info, so I have to
         use a 3rd class to handle it in other location of memory, bizarre! */
-    KeyboardMessage::getInstance()._sharedCallbackfn = fn;
+    KeyboardMessage::getInstance()._sharedCallback = keyboardCallback;
 
 
     return (*this);
@@ -533,16 +528,13 @@ KeyboardEngine & Rpi2040UartKeyboard::setCallbackfn(bool (*fn)(const int, const 
 
 KeyboardEngine & Rpi2040UartKeyboard::pressKey(const int keyCode, const char rawChar)
 {
-    if (KeyboardMessage::getInstance()._sharedCallbackfn == 0)
+    if (KeyboardMessage::getInstance()._sharedCallback == 0)
     {
         return (*this);
     }
 
     //cout << "Key Pressed: keyboard_engine_code = [" << keyCode << "] rawchar=[" << rawChar << "]" << endl;
-    if (KeyboardMessage::getInstance()._readOneCharPerTime)
-        (*KeyboardMessage::getInstance()._sharedCallbackfn)(keyCode, rawChar);
-    else
-        setInterruptLoop((*KeyboardMessage::getInstance()._sharedCallbackfn)(keyCode, rawChar));
+    setInterruptLoop((*KeyboardMessage::getInstance()._sharedCallback).execute(keyCode, rawChar));
 
     return (*this);
 }
@@ -680,13 +672,18 @@ int Rpi2040UartKeyboard::parseRawKeycode(int rawKeyType, int rawKeyCode)
 void Rpi2040UartKeyboard::loop()
 {
 
-    while (!isInterruptLoop())
-    {
-        tight_loop_contents();
+    while (!isInterruptLoop()) {
+
+        while (!isInterruptLoop())
+        {
+            tight_loop_contents();
+        }
+
+        //The callback function will decide if loop stops or not! Look KeyboardMessage
+        pressKey(KeyboardMessage::getInstance()._keyboardKeyCode,
+            KeyboardMessage::getInstance()._rawCode);
+
     }
-
-    pressKey(KeyboardMessage::getInstance()._keyboardKeyCode, KeyboardMessage::getInstance()._rawCode);
-
 }
 
 

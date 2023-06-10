@@ -29,10 +29,24 @@ using std::strcpy;
 #include "app_globals.hpp"
 #include "video_engine.hpp"
 #include "keyboard_engine.hpp"
+#include "widget_callback.hpp"
+#include "keyboard_callback.hpp"
+#include "msgbox_keyboard_callback.hpp"
 
 void MsgBoxEngine::run(VideoEngine *videoEngine, KeyboardEngine *keyboardEngine)
 {
+    (*videoEngine).display();
 
+    MsgboxKeyboardCallback *kcb = new MsgboxKeyboardCallback;
+
+    (*kcb).setVideoEngine(videoEngine);
+    (*kcb).setMsgboxEngine(this);
+
+    (*keyboardEngine).setup();
+    (*keyboardEngine).setCallback(kcb);
+    (*keyboardEngine).loop();
+
+    delete kcb;
 }
 
 int MsgBoxEngine::getButtonType() const
@@ -89,9 +103,9 @@ char * MsgBoxEngine::getMessage() const
 }
 
 
-MsgBoxEngine & MsgBoxEngine::setCallbackfn(void (*fn)(const int))
+MsgBoxEngine & MsgBoxEngine::setCallback(WidgetCallback *widgetCallback)
 {
-    _callbackfn = fn;
+    _widgetCallback = widgetCallback;
 
     return (*this);
 }
@@ -136,7 +150,8 @@ MsgBoxEngine & MsgBoxEngine::setButtonType(const int btnType)
 
 MsgBoxEngine & MsgBoxEngine::selectButton()
 {
-    (*_callbackfn)(getSelectedButton());
+    (*_widgetCallback).execute(this);
+
     reset();
 
     return (*this);
@@ -157,7 +172,7 @@ MsgBoxEngine & MsgBoxEngine::reset()
 
     setIconType(MsgBoxEngine::NO_ICON);
     setButtonType(MsgBoxEngine::OK_BUTTON);
-    _callbackfn = 0;
+    _widgetCallback = 0;
 
     return (*this);
 }
@@ -238,6 +253,13 @@ MsgBoxEngine & MsgBoxEngine::cursorMovePreviousButton()
     return (*this);
 }
 
+int MsgBoxEngine::getResultIntValue() {
+
+    return getSelectedButton();
+
+}
+
+
 MsgBoxEngine::~MsgBoxEngine()
 {
     if(AppGlobals::getInstance().getEnableObjDelLog() == true) {
@@ -255,4 +277,5 @@ _iconType(MsgBoxEngine::NO_ICON)
 {
 
 }
+
 

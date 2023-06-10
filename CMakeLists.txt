@@ -25,16 +25,24 @@ set(SOURCES
         document_engine.hpp
         widget_engine.cpp
         widget_engine.hpp
+        widget_callback.cpp
+        widget_callback.hpp
         inputbox_engine.cpp
         inputbox_engine.hpp
+        keyboard_engine.hpp
+        keyboard_engine.cpp
+        keyboard_callback.hpp
         keyboard_message.cpp
         keyboard_message.hpp
-        keyboard_engine.cpp
-        keyboard_engine.hpp
+        keyboard_callback.cpp
         menu_engine.cpp
         menu_engine.hpp
-        msgbox_engine.cpp
         msgbox_engine.hpp
+        msgbox_keyboard_callback.cpp
+        msgbox_keyboard_callback.hpp
+        msgbox_sample_callback.cpp
+        msgbox_sample_callback.hpp
+        msgbox_engine.cpp
         splashbox_engine.cpp
         splashbox_engine.hpp
         text_engine.cpp
@@ -63,6 +71,7 @@ set(SOURCES
         rpi2040_uart_keyboard.hpp
         rpi2040_uart_video.cpp
         rpi2040_uart_video.hpp
+
         )
 foreach(name IN ITEMS main)
     add_executable(${name} ${SOURCES})

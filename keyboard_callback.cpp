@@ -17,37 +17,33 @@ limitations under the License.
 using std::cout;
 using std::endl;
 
-#include <iomanip>
-using std::setw;
-
-#include <cstring>
-using std::strlen;
-using std::strcpy;
-
-#include "widget_engine.hpp"
 #include "app_globals.hpp"
+#include "csa_object.hpp"
+#include "keyboard_callback.hpp"
 
 
-int WidgetEngine::getResultIntValue()
+void KeyboardCallback::toString()
 {
-    return -1;
+    cout << "[KeyboardCallback] [UID=" << CSAObject::getSerialVersionUID() << "] [SIZE=" << sizeof((*this)) <<"] "
+         << endl;
 }
 
-void WidgetEngine::run(VideoEngine *videoEngine, KeyboardEngine *keyboardEngine)
+int KeyboardCallback::getMemSize()
 {
-
+    return sizeof((*this));
 }
 
-WidgetEngine::~WidgetEngine()
+KeyboardCallback::~KeyboardCallback()
 {
     if(AppGlobals::getInstance().getEnableObjDelLog() == true) {
-        cout << "[WidgetEngine] [destUID=" << CSAObject::getSerialVersionUID() << "]" << endl;
+        cout << "[KeyboardCallback] [destUID=" << CSAObject::getSerialVersionUID() << "]" << endl;
     }
 }
 
-WidgetEngine::WidgetEngine():
+KeyboardCallback::KeyboardCallback():
 CSAObject()
 {
 
 }
+
 

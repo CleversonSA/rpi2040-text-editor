@@ -19,6 +19,7 @@ limitations under the License.
 #include "app_globals.hpp"
 #include "csa_object.hpp"
 #include "keyboard_message.hpp"
+#include "keyboard_callback.hpp"
 /*
     Abstract class for agnostic keyboard input (may be a console, USB or Serial Keyboard)
 */
@@ -124,7 +125,7 @@ class KeyboardEngine: public CSAObject
         KeyboardEngine();
         ~KeyboardEngine();
 
-        virtual KeyboardEngine & setCallbackfn(bool (*fn)(const int, const char));
+        virtual KeyboardEngine & setCallback(KeyboardCallback *);
         virtual KeyboardEngine & pressKey(const int, const char);
 
 
@@ -139,7 +140,9 @@ class KeyboardEngine: public CSAObject
 
         virtual void setInterruptLoop(bool);
         virtual bool isInterruptLoop() const;
-        bool (*_callbackfn)(const int, const char);
+
+        KeyboardCallback *_keyboardCallback;
+
         bool _interruptLoop = false;
 
 

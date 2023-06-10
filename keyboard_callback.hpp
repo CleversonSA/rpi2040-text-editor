@@ -13,30 +13,35 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef WIDGETENGINE
-#define WIDGETENGINE
+#ifndef KEYBOARDCALLBACK
+#define KEYBOARDCALLBACK
 
-#include "widget_engine.hpp"
+#include "app_globals.hpp"
 #include "csa_object.hpp"
-#include "video_engine.hpp"
-#include "keyboard_engine.hpp"
 
 /*
-    Abstract class for widgets (Msgbox, inputbox, menulist, views)
+  Handle the callback of a keyboard completition
 */
-class WidgetEngine: public CSAObject
+class KeyboardCallback : public CSAObject
 {
     public:
-        WidgetEngine();
-        ~WidgetEngine();
 
-        virtual void run(VideoEngine *, KeyboardEngine *);
-        virtual int getResultIntValue();
+        ~KeyboardCallback();
+        KeyboardCallback();
+
+        virtual bool execute(const int, const char) = 0;
+
+        virtual void toString();
+        virtual int getMemSize();
 
     private:
 
+
+
 };
 
-#endif // DOCUMENT
+#endif // DOCCHARACTER
+
+
 
 

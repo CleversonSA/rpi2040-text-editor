@@ -16,7 +16,7 @@ limitations under the License.
 #ifndef KEYBOARDMESSAGE
 #define KEYBOARDMESSAGE
 
-#include "keyboard_engine.hpp"
+#include "keyboard_callback.hpp"
 
 /*
   Handle static values from async executions for keyboard, or not
@@ -29,11 +29,11 @@ class KeyboardMessage
 
         static KeyboardMessage & getInstance();
 
-        bool (*_sharedCallbackfn)(const int, const char);
+        KeyboardCallback * _sharedCallback;
+
         bool _sharedInterruptedLoop = false;
         int  _keyboardKeyCode = -1;
         char  _rawCode = '\0';
-        bool  _readOneCharPerTime = false;
 
     private:
         KeyboardMessage();

@@ -18,6 +18,7 @@ limitations under the License.
 #define MSGBOXENGINE
 
 #include "widget_engine.hpp"
+#include "widget_callback.hpp"
 
 /*
     Abstract class for MsgBox widget
@@ -48,7 +49,7 @@ class MsgBoxEngine: public WidgetEngine
         char * getTitle() const;
         MsgBoxEngine & setMessage(const char[]);
         char * getMessage() const;
-        MsgBoxEngine & setCallbackfn(void (*fn)(const int));
+        MsgBoxEngine & setCallback(WidgetCallback *);
         MsgBoxEngine & setSelectedButton (const int);
         int getSelectedButton() const;
         MsgBoxEngine & setButtonType(const int);
@@ -62,8 +63,9 @@ class MsgBoxEngine: public WidgetEngine
         MsgBoxEngine & cursorMovePreviousButton();
 
         virtual MsgBoxEngine & render() = 0;
-        virtual void run(VideoEngine *, KeyboardEngine *);
 
+        virtual void run(VideoEngine *, KeyboardEngine *);
+        virtual int getResultIntValue();
     private:
 
         char * _title;
@@ -71,7 +73,7 @@ class MsgBoxEngine: public WidgetEngine
         int _selectedButton;
         int _buttonType;
         int _iconType;
-        void (*_callbackfn)(const int);
+        WidgetCallback* _widgetCallback;
 };
 
 #endif // DOCUMENT

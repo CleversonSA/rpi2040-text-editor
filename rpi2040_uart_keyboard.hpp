@@ -52,7 +52,8 @@ class Rpi2040UartKeyboard: public KeyboardEngine
 
         virtual void setInterruptLoop(bool);
         virtual bool isInterruptLoop() const;
-        virtual KeyboardEngine & setCallbackfn(bool (*fn)(const int, const char));
+
+        virtual KeyboardEngine & setCallback(KeyboardCallback *);
         virtual KeyboardEngine & pressKey(const int, const char);
 
         virtual int parseRawKeycode(int, int);
