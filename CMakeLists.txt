@@ -27,6 +27,8 @@ set(SOURCES
         widget_engine.hpp
         inputbox_engine.cpp
         inputbox_engine.hpp
+        keyboard_message.cpp
+        keyboard_message.hpp
         keyboard_engine.cpp
         keyboard_engine.hpp
         menu_engine.cpp

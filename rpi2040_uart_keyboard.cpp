@@ -145,6 +145,7 @@ using std::setw;
 #include "rpi2040_uart.hpp"
 #include "app_globals.hpp"
 #include "VT100_utils.hpp"
+#include "keyboard_message.hpp"
 
 Rpi2040UartKeyboard * Rpi2040UartKeyboard::_me = 0;
 int8_t  Rpi2040UartKeyboard::_uartBufferCounter = 0;
@@ -411,36 +412,39 @@ void Rpi2040UartKeyboard::onUartRXEvent()
 
         readCode = Rpi2040UartKeyboard::getInstance().getESCFnCodes(Rpi2040UartKeyboard::_uartBuffer,bufferSize);
         if (readCode > 0) {
-             Rpi2040UartKeyboard::getInstance().pressKey(Rpi2040UartKeyboard::getInstance().parseRawKeycode(WKTYPE_FN,readCode), '\0');
+             KeyboardMessage::getInstance()._rawCode =  '\0';
+             KeyboardMessage::getInstance()._keyboardKeyCode =  Rpi2040UartKeyboard::getInstance().parseRawKeycode(WKTYPE_FN,readCode);
+
              charRecognized = true;
         }
 
         if (!charRecognized) {
-            //uart_puts(Rpi2040Uart::getInstance().getUart(), "passo 1");
-
             readCode = Rpi2040UartKeyboard::getInstance().getESCArrowCodes(Rpi2040UartKeyboard::_uartBuffer,bufferSize);
             if (readCode > 0) {
-                 Rpi2040UartKeyboard::getInstance().pressKey(Rpi2040UartKeyboard::getInstance().parseRawKeycode(WKTYPE_ARROWS,readCode), '\0');
+                 KeyboardMessage::getInstance()._rawCode =  '\0';
+                 KeyboardMessage::getInstance()._keyboardKeyCode =  Rpi2040UartKeyboard::getInstance().parseRawKeycode(WKTYPE_ARROWS,readCode);
+
                  charRecognized = true;
             }
         }
 
         if (!charRecognized) {
-            //uart_puts(Rpi2040Uart::getInstance().getUart(), "passo 2");
-
             readCode = Rpi2040UartKeyboard::getInstance().getSpecialCodes2(Rpi2040UartKeyboard::_uartBuffer,bufferSize);
             if (readCode > 0) {
-                 Rpi2040UartKeyboard::getInstance().pressKey(Rpi2040UartKeyboard::getInstance().parseRawKeycode(WKTYPE_SPECIAL_2,readCode), '\0');
+                 KeyboardMessage::getInstance()._rawCode =  '\0';
+                 KeyboardMessage::getInstance()._keyboardKeyCode =  Rpi2040UartKeyboard::getInstance().parseRawKeycode(WKTYPE_SPECIAL_2,readCode);
+
                  charRecognized = true;
             }
         }
 
         if (!charRecognized) {
-            //uart_puts(Rpi2040Uart::getInstance().getUart(), "passo 3");
-
             readCode = Rpi2040UartKeyboard::getInstance().getESCExtraCodes(Rpi2040UartKeyboard::_uartBuffer,bufferSize);
+
             if (readCode > 0) {
-                Rpi2040UartKeyboard::getInstance().pressKey(Rpi2040UartKeyboard::getInstance().parseRawKeycode(WKTYPE_EXTRA,readCode), '\0');
+                 KeyboardMessage::getInstance()._rawCode =  '\0';
+                 KeyboardMessage::getInstance()._keyboardKeyCode =  Rpi2040UartKeyboard::getInstance().parseRawKeycode(WKTYPE_EXTRA,readCode);
+
                  charRecognized = true;
             }
         }
@@ -452,7 +456,9 @@ void Rpi2040UartKeyboard::onUartRXEvent()
             readCode = Rpi2040UartKeyboard::getInstance().getNormalCode(Rpi2040UartKeyboard::_uartBuffer,bufferSize);
             if (readCode > 0) {
                 //uart_puts(Rpi2040Uart::getInstance().getUart(), "passo 4,5");
-                Rpi2040UartKeyboard::getInstance().pressKey(Rpi2040UartKeyboard::getInstance().parseRawKeycode(-1, readCode), (char)readCode);
+                KeyboardMessage::getInstance()._rawCode =  (char)readCode;
+                KeyboardMessage::getInstance()._keyboardKeyCode =  Rpi2040UartKeyboard::getInstance().parseRawKeycode(-1,readCode);
+
                 charRecognized = false;
             }
         }
@@ -471,6 +477,11 @@ void Rpi2040UartKeyboard::onUartRXEvent()
 
         Rpi2040UartKeyboard::_uartBufferCounter = 0;
 
+        if ( KeyboardMessage::getInstance()._readOneCharPerTime)
+        {
+            KeyboardMessage::getInstance()._sharedInterruptedLoop = true;
+        }
+
     }
 
 }
@@ -487,13 +498,18 @@ void Rpi2040UartKeyboard::setup()
 
     Rpi2040Uart::getInstance().defineRXIRQ(Rpi2040UartKeyboard::onUartRXEvent);
 
+    KeyboardMessage::getInstance()._rawCode='\0';
+    KeyboardMessage::getInstance()._readOneCharPerTime=true;
+    KeyboardMessage::getInstance()._sharedInterruptedLoop=false;
+    KeyboardMessage::getInstance()._keyboardKeyCode=-1;
+
 }
 
 void Rpi2040UartKeyboard::setInterruptLoop(bool interruptLoop)
 {
     /* Unfortunately, the IRQ Handler lost the callback info, so I have to
         use a 3rd class to handle it in other location of memory, bizarre! */
-    AppGlobals::getInstance()._sharedInterruptedLoop = interruptLoop;
+    KeyboardMessage::getInstance()._sharedInterruptedLoop = interruptLoop;
 
 }
 
@@ -501,7 +517,7 @@ bool Rpi2040UartKeyboard::isInterruptLoop() const
 {
     /* Unfortunately, the IRQ Handler lost the callback info, so I have to
         use a 3rd class to handle it in other location of memory, bizarre! */
-    return (AppGlobals::getInstance()._sharedInterruptedLoop);
+    return (KeyboardMessage::getInstance()._sharedInterruptedLoop);
 }
 
 
@@ -509,7 +525,7 @@ KeyboardEngine & Rpi2040UartKeyboard::setCallbackfn(bool (*fn)(const int, const 
 {
     /* Unfortunately, the IRQ Handler lost the callback info, so I have to
         use a 3rd class to handle it in other location of memory, bizarre! */
-    AppGlobals::getInstance()._sharedCallbackfn = fn;
+    KeyboardMessage::getInstance()._sharedCallbackfn = fn;
 
 
     return (*this);
@@ -517,13 +533,16 @@ KeyboardEngine & Rpi2040UartKeyboard::setCallbackfn(bool (*fn)(const int, const 
 
 KeyboardEngine & Rpi2040UartKeyboard::pressKey(const int keyCode, const char rawChar)
 {
-    if (AppGlobals::getInstance()._sharedCallbackfn == 0)
+    if (KeyboardMessage::getInstance()._sharedCallbackfn == 0)
     {
         return (*this);
     }
 
     //cout << "Key Pressed: keyboard_engine_code = [" << keyCode << "] rawchar=[" << rawChar << "]" << endl;
-    setInterruptLoop((*AppGlobals::getInstance()._sharedCallbackfn)(keyCode, rawChar));
+    if (KeyboardMessage::getInstance()._readOneCharPerTime)
+        (*KeyboardMessage::getInstance()._sharedCallbackfn)(keyCode, rawChar);
+    else
+        setInterruptLoop((*KeyboardMessage::getInstance()._sharedCallbackfn)(keyCode, rawChar));
 
     return (*this);
 }
@@ -666,7 +685,7 @@ void Rpi2040UartKeyboard::loop()
         tight_loop_contents();
     }
 
-    setInterruptLoop(false);
+    pressKey(KeyboardMessage::getInstance()._keyboardKeyCode, KeyboardMessage::getInstance()._rawCode);
 
 }
 

@@ -13,29 +13,36 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef WIDGETENGINE
-#define WIDGETENGINE
+#ifndef KEYBOARDMESSAGE
+#define KEYBOARDMESSAGE
 
-#include "widget_engine.hpp"
-#include "csa_object.hpp"
-#include "video_engine.hpp"
 #include "keyboard_engine.hpp"
 
 /*
-    Abstract class for widgets (Msgbox, inputbox, menulist, views)
+  Handle static values from async executions for keyboard, or not
 */
-class WidgetEngine: public CSAObject
+class KeyboardMessage
 {
     public:
-        WidgetEngine();
-        ~WidgetEngine();
 
-        virtual void run(VideoEngine *, KeyboardEngine *);
+        ~KeyboardMessage();
+
+        static KeyboardMessage & getInstance();
+
+        bool (*_sharedCallbackfn)(const int, const char);
+        bool _sharedInterruptedLoop = false;
+        int  _keyboardKeyCode = -1;
+        char  _rawCode = '\0';
+        bool  _readOneCharPerTime = false;
 
     private:
+        KeyboardMessage();
+
+        static KeyboardMessage* _me;
+
 
 };
 
-#endif // DOCUMENT
+#endif // DOCCHARACTER
 
 

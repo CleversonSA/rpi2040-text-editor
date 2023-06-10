@@ -13,29 +13,26 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef WIDGETENGINE
-#define WIDGETENGINE
+#include "app_globals.hpp"
+#include "keyboard_message.hpp"
 
-#include "widget_engine.hpp"
-#include "csa_object.hpp"
-#include "video_engine.hpp"
-#include "keyboard_engine.hpp"
+#include <cstring>
+using std::strcpy;
+using std::strlen;
 
-/*
-    Abstract class for widgets (Msgbox, inputbox, menulist, views)
-*/
-class WidgetEngine: public CSAObject
+KeyboardMessage * KeyboardMessage::_me = 0;
+
+KeyboardMessage& KeyboardMessage::getInstance()
 {
-    public:
-        WidgetEngine();
-        ~WidgetEngine();
+    if (KeyboardMessage::_me == 0)
+    {
+        KeyboardMessage::_me = new KeyboardMessage();
+    }
+    return (*KeyboardMessage::_me);
+}
 
-        virtual void run(VideoEngine *, KeyboardEngine *);
+KeyboardMessage::KeyboardMessage()
+{
 
-    private:
-
-};
-
-#endif // DOCUMENT
-
+}
 

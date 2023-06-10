@@ -27,6 +27,10 @@ using std::strcpy;
 #include "widget_engine.hpp"
 #include "app_globals.hpp"
 
+void WidgetEngine::run(VideoEngine *videoEngine, KeyboardEngine *keyboardEngine)
+{
+
+}
 
 WidgetEngine::~WidgetEngine()
 {

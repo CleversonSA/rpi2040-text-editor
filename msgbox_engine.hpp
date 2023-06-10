@@ -62,6 +62,7 @@ class MsgBoxEngine: public WidgetEngine
         MsgBoxEngine & cursorMovePreviousButton();
 
         virtual MsgBoxEngine & render() = 0;
+        virtual void run(VideoEngine *, KeyboardEngine *);
 
     private:
 

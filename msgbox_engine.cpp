@@ -27,6 +27,13 @@ using std::strcpy;
 
 #include "msgbox_engine.hpp"
 #include "app_globals.hpp"
+#include "video_engine.hpp"
+#include "keyboard_engine.hpp"
+
+void MsgBoxEngine::run(VideoEngine *videoEngine, KeyboardEngine *keyboardEngine)
+{
+
+}
 
 int MsgBoxEngine::getButtonType() const
 {

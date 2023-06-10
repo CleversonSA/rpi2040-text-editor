@@ -18,7 +18,7 @@ limitations under the License.
 
 #include "app_globals.hpp"
 #include "csa_object.hpp"
-
+#include "keyboard_message.hpp"
 /*
     Abstract class for agnostic keyboard input (may be a console, USB or Serial Keyboard)
 */
