@@ -55,6 +55,8 @@ set(SOURCES
         splashbox_engine.hpp
         textview_keyboard_callback.cpp
         textview_keyboard_callback.hpp
+        textengine_keyboard_callback.cpp
+        textengine_keyboard_callback.hpp
         text_engine.cpp
         text_engine.hpp
         textview_engine.cpp

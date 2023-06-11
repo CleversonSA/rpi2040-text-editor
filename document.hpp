@@ -50,6 +50,7 @@ class Document: public CSAObject
         Document & cursorMoveStartOfLine();
         Document & cursorMoveBegin();
         Document & type(const char[]);
+        Document & type(const char);
         Document & joinNextLine();
 
         virtual void toString();

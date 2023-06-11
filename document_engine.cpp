@@ -143,7 +143,7 @@ DocumentEngine::~DocumentEngine()
 }
 
 DocumentEngine::DocumentEngine(Document * document):
-CSAObject(),
+WidgetEngine(),
 _document(document)
 {
 

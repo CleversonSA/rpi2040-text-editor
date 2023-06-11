@@ -391,6 +391,7 @@ void Rpi2040UartKeyboard::onUartRXEvent()
         return;
     }
 
+
     while (uart_is_readable_within_us(Rpi2040Uart::getInstance().getUart(), 200)) {
 
         ichar = uart_getc(Rpi2040Uart::getInstance().getUart());
@@ -401,6 +402,12 @@ void Rpi2040UartKeyboard::onUartRXEvent()
             Rpi2040UartKeyboard::_uartBufferCounter ++;
             if (Rpi2040UartKeyboard::_uartBufferCounter > 9) Rpi2040UartKeyboard::_uartBufferCounter = 0;
         }
+
+        if (uart_is_writable(Rpi2040Uart::getInstance().getUart())) {
+            uart_putc(Rpi2040Uart::getInstance().getUart(),'#');
+        }
+
+        busy_wait_ms(50);
     }
 
     if ((Rpi2040UartKeyboard::_uartBufferCounter > 0) && uart_is_writable(Rpi2040Uart::getInstance().getUart()) && (ichar != 0)) {

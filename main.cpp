@@ -59,9 +59,43 @@ Rpi2040Uart rpi2040uart = Rpi2040Uart::getInstance();
 int getMemSize(CSAObject *);
 bool onKeyPress(const int keyCode, const char rawKeyChar);
 void onMsgBoxReturn(const int btnSelected);
-
+void testWidgets();
 
 int main()
+{
+
+    FrameBuffer fb(24,40);
+
+    rpi2040uart.setup();
+    Rpi2040UartKeyboard rpiUartKb = Rpi2040UartKeyboard::getInstance();
+    KeyboardEngine *keyboard = &rpiUartKb;
+
+    Rpi2040UartVideo rpi2040UartVideo;
+    rpi2040uart.setup();
+    VideoEngine *video = &rpi2040UartVideo;
+
+    (*video)
+        .setFrameBuffer(&fb);
+
+    Document doc;
+    TextEngine textEngine(&doc, video);
+
+    textEngine.render();
+    textEngine.run(video, keyboard);
+
+    cout << "Inicializado" << endl;
+
+
+
+}
+
+
+int getMemSize(CSAObject *obj)
+{
+    return obj->getMemSize();
+}
+
+void testWidgets()
 {
     int pausa = 0;
 
@@ -294,12 +328,6 @@ int main()
 
 
 
-}
-
-
-int getMemSize(CSAObject *obj)
-{
-    return obj->getMemSize();
 }
 
 

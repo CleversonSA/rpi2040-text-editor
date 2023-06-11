@@ -157,6 +157,8 @@ DocRow * Document::rowAt(DocRow * docRowPtr, int offset)
             return docRowPtr;
         }
     }
+
+    return docRowPtr;
 }
 
 Document & Document::cursorMoveUp()
@@ -242,6 +244,19 @@ Document & Document::cursorMoveBegin()
 }
 
 
+Document & Document::type(const char character)
+{
+    if (character == '\n')
+    {
+        addNewLine();
+    } else if (character != '\0') {
+        (*getCurrentRowPtr()).append(character, getDocCol());
+        setDocCol(getDocCol()+1);
+    }
+
+    return (*this);
+}
+
 Document & Document::type(const char text[])
 {
     for (int i = 0; i<strlen(text); i++)
@@ -291,6 +306,8 @@ Document & Document::joinNextLine()
     }
 
     delete nextLinePtr;
+
+    return (*this);
 }
 
 Document & Document::triggerBackspace()

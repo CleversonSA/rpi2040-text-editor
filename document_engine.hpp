@@ -20,10 +20,12 @@ limitations under the License.
 #include "doc_character.hpp"
 #include "document.hpp"
 #include "doc_character.hpp"
+#include "widget_engine.hpp"
+
 /*
   The abstract document engine processing
 */
-class DocumentEngine : public CSAObject
+class DocumentEngine : public WidgetEngine
 {
     public:
         DocumentEngine(Document *);

@@ -26,11 +26,39 @@ using std::sprintf;
 
 #include "text_engine.hpp"
 #include "app_globals.hpp"
+#include "video_engine.hpp"
+#include "keyboard_engine.hpp"
+#include "widget_callback.hpp"
 #include "framebuffer.hpp"
+#include "textengine_keyboard_callback.hpp"
+
+
+void TextEngine::run(VideoEngine *videoEngine, KeyboardEngine *keyboardEngine)
+{
+    (*videoEngine).display();
+
+    TextEngineKeyboardCallback *kcb = new TextEngineKeyboardCallback;
+
+    (*kcb).setVideoEngine(videoEngine);
+    (*kcb).setTextEngine(this);
+
+    (*keyboardEngine).setup();
+    (*keyboardEngine).setCallback(kcb);
+    (*keyboardEngine).loop();
+
+    delete kcb;
+}
+
+
+VideoEngine * TextEngine::getVideoEngine() const
+{
+    return _videoEngine;
+}
 
 bool TextEngine::isCursorAtBottomOfView() const
 {
-    if ((*getFrameBuffer()).getRow() >= (*getFrameBuffer()).getMaxRows() - 1)
+
+    if ((*(*getVideoEngine()).getFrameBuffer()).getRow() >= (*(*getVideoEngine()).getFrameBuffer()).getMaxRows() - 1)
     {
         return true;
     }
@@ -39,7 +67,9 @@ bool TextEngine::isCursorAtBottomOfView() const
 
 bool TextEngine::isCursorAtEndOfViewLine() const
 {
-    if ((*getFrameBuffer()).getCol() >= (*getFrameBuffer()).getMaxCols() - 2)
+     VideoEngine *video = getVideoEngine();
+
+    if ((*(*getVideoEngine()).getFrameBuffer()).getCol() >= (*(*getVideoEngine()).getFrameBuffer()).getMaxCols() - 2)
     {
         return true;
     }
@@ -48,7 +78,7 @@ bool TextEngine::isCursorAtEndOfViewLine() const
 
 void TextEngine::renderClearView()
 {
-    (*getFrameBuffer())
+   (*(*getVideoEngine()).getFrameBuffer())
         .clearScreen()
         .cursorMoveBegin();
 
@@ -56,29 +86,19 @@ void TextEngine::renderClearView()
 
 void TextEngine::renderClearLine()
 {
-    (*getFrameBuffer()).clearLine();
-}
-
-void TextEngine::setFrameBuffer (FrameBuffer *fb)
-{
-    _framebuffer = fb;
-}
-
-FrameBuffer * TextEngine::getFrameBuffer() const
-{
-    return _framebuffer;
+    (*(*getVideoEngine()).getFrameBuffer()).clearLine();
 }
 
 void TextEngine::renderLineBreak()
 {
-    if ((*getFrameBuffer()).getRow() == ((*getFrameBuffer()).getMaxRows() - 1))
+    if ((*getVideoEngine()->getFrameBuffer()).getRow() == ((*getVideoEngine()->getFrameBuffer()).getMaxRows() - 1))
     {
-        (*getFrameBuffer())
+        (*(*getVideoEngine()).getFrameBuffer())
             .clearScreen()
             .cursorMoveBegin()
             .cursorMoveRight();
     } else {
-        (*getFrameBuffer())
+        (*(*getVideoEngine()).getFrameBuffer())
             .cursorMoveDown()
             .clearLine()
             .cursorMoveStartOfLine()
@@ -88,48 +108,48 @@ void TextEngine::renderLineBreak()
 
 void TextEngine::renderCarriageReturn()
 {
-   (*getFrameBuffer())
+   (*(*getVideoEngine()).getFrameBuffer())
         .cursorMoveStartOfLine()
         .cursorMoveRight();
 }
 
 void TextEngine::renderCursor()
 {
-    (*getFrameBuffer())
+    (*(*getVideoEngine()).getFrameBuffer())
         .write('_');
 }
 
 void TextEngine::renderTabulation()
 {
-    (*getFrameBuffer())
+    (*(*getVideoEngine()).getFrameBuffer())
         .write(' ');
 }
 
 void TextEngine::renderLineOverflowIndicator()
 {
-    (*getFrameBuffer())
-        .gotoXY((*getFrameBuffer()).getRow(), (*getFrameBuffer()).getMaxCols() - 1)
+    (*(*getVideoEngine()).getFrameBuffer())
+        .gotoXY((*getVideoEngine()->getFrameBuffer()).getRow(), (*getVideoEngine()->getFrameBuffer()).getMaxCols() - 1)
         .fixedWrite('>');
 }
 
 void TextEngine::renderLineWithOverflowIndicator()
 {
-    (*getFrameBuffer())
-        .gotoXY((*getFrameBuffer()).getRow(), 0)
+    (*(*getVideoEngine()).getFrameBuffer())
+        .gotoXY((*getVideoEngine()->getFrameBuffer()).getRow(), 0)
         .fixedWrite('+');
 }
 
 void TextEngine::renderEmptyLineIndicator()
 {
-    (*getFrameBuffer())
-        .gotoXY((*getFrameBuffer()).getRow(), 0)
+    (*(*getVideoEngine()).getFrameBuffer())
+        .gotoXY((*getVideoEngine()->getFrameBuffer()).getRow(), 0)
         .fixedWrite('~');
 }
 
 void TextEngine::renderLineWithContentIndicator()
 {
-    (*getFrameBuffer())
-        .gotoXY((*getFrameBuffer()).getRow(), 0)
+    (*(*getVideoEngine()).getFrameBuffer())
+        .gotoXY((*getVideoEngine()->getFrameBuffer()).getRow(), 0)
         .fixedWrite('.');
 }
 
@@ -142,25 +162,25 @@ void TextEngine::renderCharacter(DocCharacter *dc)
 {
     if ((*dc).getChar() == '\0')
     {
-        (*getFrameBuffer())
+        (*(*getVideoEngine()).getFrameBuffer())
             .write(' ');
     } else {
-        (*getFrameBuffer())
+        (*(*getVideoEngine()).getFrameBuffer())
             .write((*dc).getChar());
     }
-    cout << "[" << (*getFrameBuffer()).getRow() << "," << (*getFrameBuffer()).getCol() << "]" << endl;
+    cout << "[" << (*(*getVideoEngine()).getFrameBuffer()).getRow() << "," << (*(*getVideoEngine()).getFrameBuffer()).getCol() << "]" << endl;
 }
 
 void TextEngine::renderColRow()
 {
     char number_array[5 + sizeof(char)];
 
-    (*getFrameBuffer())
-      .gotoXY((*getFrameBuffer()).getMaxRows() - 1, (*getFrameBuffer()).getMaxCols()-10);
+    (*(*getVideoEngine()).getFrameBuffer())
+      .gotoXY((*(*getVideoEngine()).getFrameBuffer()).getMaxRows() - 1,(*(*getVideoEngine()).getFrameBuffer()).getMaxCols()-10);
 
     sprintf(number_array, "%d", ((*getDocument()).getDocRow()+1)+1000);
 
-    (*getFrameBuffer())
+    (*getVideoEngine()->getFrameBuffer())
         .write('[')
         .write(number_array[1])
         .write(number_array[2])
@@ -168,7 +188,7 @@ void TextEngine::renderColRow()
 
     sprintf(number_array, "%d", ((*getDocument()).getDocCol()+1)+1000);
 
-    (*getFrameBuffer())
+    (*getVideoEngine()->getFrameBuffer())
         .write(',')
         .write(number_array[1])
         .write(number_array[2])
@@ -194,9 +214,9 @@ TextEngine::~TextEngine()
     }
 }
 
-TextEngine::TextEngine(Document * document, FrameBuffer *framebuffer):
+TextEngine::TextEngine(Document * document, VideoEngine *videoEngine):
 DocumentEngine(document),
-_framebuffer(framebuffer)
+_videoEngine(videoEngine)
 {
 
 }

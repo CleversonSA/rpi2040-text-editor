@@ -18,7 +18,9 @@ limitations under the License.
 
 #include "document_engine.hpp"
 #include "document.hpp"
-#include "framebuffer.hpp"
+#include "video_engine.hpp"
+#include "keyboard_engine.hpp"
+#include "widget_callback.hpp"
 
 /*
   The abstract document engine processing
@@ -26,11 +28,8 @@ limitations under the License.
 class TextEngine : public DocumentEngine
 {
     public:
-        TextEngine(Document *, FrameBuffer *);
+        TextEngine(Document *, VideoEngine *);
         ~TextEngine();
-
-        void setFrameBuffer (FrameBuffer *);
-        FrameBuffer * getFrameBuffer() const;
 
         virtual bool isCursorAtEndOfViewLine() const;
         virtual bool isCursorAtBottomOfView() const;
@@ -49,11 +48,17 @@ class TextEngine : public DocumentEngine
         virtual void renderCharacter(DocCharacter *);
         virtual void renderColRow();
 
+        virtual VideoEngine * getVideoEngine() const;
+
         virtual void toString(); // Yes, you know, Java feelings rs
         virtual int getMemSize();
 
+        virtual void run(VideoEngine *, KeyboardEngine *);
+
     private:
-        FrameBuffer *_framebuffer;
+
+        WidgetCallback* _widgetCallback;
+        VideoEngine *_videoEngine;
 };
 
 #endif // DOCCHARACTER

@@ -63,6 +63,11 @@ bool InputboxKeyboardCallback::execute(const int keyboardCode, const char rawCha
             (*getInputboxEngine()).render();
             (*getVideoEngine()).display();
             break;
+        case KeyboardEngine::KEY_SPACE:
+            (*getInputboxEngine()).type('\b');
+            (*getInputboxEngine()).render();
+            (*getVideoEngine()).display();
+            break;
         case KeyboardEngine::KEY_DEL:
             (*getInputboxEngine()).clearInput();
             (*getInputboxEngine()).render();
