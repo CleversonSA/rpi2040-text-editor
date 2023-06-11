@@ -18,6 +18,9 @@ limitations under the License.
 
 #include "widget_engine.hpp"
 #include "app_globals.hpp"
+#include "widget_callback.hpp"
+#include "video_engine.hpp"
+#include "keyboard_engine.hpp"
 
 /*
     Abstract class for Menu widget
@@ -30,7 +33,7 @@ class MenuEngine: public WidgetEngine
 
         MenuEngine & setTitle(const char []);
         char * getTitle() const;
-        MenuEngine & setCallbackfn(void (*fn)(char *, char *));
+        MenuEngine & setCallback(WidgetCallback *);
         MenuEngine & parseMenuString(char *);
         int getMenuItemCount() const;
         int getMenuItemPos() const;
@@ -46,6 +49,10 @@ class MenuEngine: public WidgetEngine
 
         virtual MenuEngine & render() = 0;
 
+        virtual void run(VideoEngine *, KeyboardEngine *);
+        virtual char * getResultCharValue1();
+        virtual char * getResultCharValue2();
+
     private:
 
         char * parseMenuItem(char *);
@@ -56,7 +63,7 @@ class MenuEngine: public WidgetEngine
         int _menuItemPos;
         int _menuItemCount;
         char * _title;
-        void (*_callbackfn)(char *, char *);
+        WidgetCallback* _widgetCallback;
 };
 
 #endif // DOCUMENT

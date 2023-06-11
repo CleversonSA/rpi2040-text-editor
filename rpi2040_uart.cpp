@@ -137,7 +137,7 @@ void Rpi2040Uart::disableRXIRQ()
     int UART_IRQ = UART_ID == uart0 ? UART0_IRQ : UART1_IRQ;
 
     // And set up and enable the interrupt handlers
-    irq_set_exclusive_handler(UART_IRQ, 0);
+    //irq_set_exclusive_handler(UART_IRQ, 0);
     irq_set_enabled(UART_IRQ, false);
 
     // Now enable the UART to send interrupts - RX only

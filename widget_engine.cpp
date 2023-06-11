@@ -33,6 +33,16 @@ int WidgetEngine::getResultIntValue()
     return -1;
 }
 
+char * WidgetEngine::getResultCharValue1()
+{
+    return 0;
+}
+
+char * WidgetEngine::getResultCharValue2()
+{
+    return 0;
+}
+
 void WidgetEngine::run(VideoEngine *videoEngine, KeyboardEngine *keyboardEngine)
 {
 

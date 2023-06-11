@@ -684,6 +684,8 @@ void Rpi2040UartKeyboard::loop()
             KeyboardMessage::getInstance()._rawCode);
 
     }
+
+    Rpi2040Uart::getInstance().disableRXIRQ();
 }
 
 

@@ -50,6 +50,10 @@ void MsgboxSampleCallback::execute(WidgetEngine * widgetEngine)
         uart_puts(rpi2040uart.getUart(), "VOCE ESCOLHEU O CANCELAR");
         uart_puts(rpi2040uart.getUart(), VT100Utils::lineBreak());
         break;
+     case MsgBoxEngine::BTN_OK:
+        uart_puts(rpi2040uart.getUart(), "VOCE ESCOLHEU O OK");
+        uart_puts(rpi2040uart.getUart(), VT100Utils::lineBreak());
+        break;
     default:
         break;
     }

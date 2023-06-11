@@ -26,14 +26,39 @@ using std::strtok;
 
 #include "menu_engine.hpp"
 #include "app_globals.hpp"
+#include "video_engine.hpp"
+#include "keyboard_engine.hpp"
+#include "menu_keyboard_callback.hpp"
+
+
+char * MenuEngine::getResultCharValue1()
+{
+    return getSelectedMenuItemValue();
+}
+
+char * MenuEngine::getResultCharValue2()
+{
+    return getSelectedMenuItemLabel();
+}
+
+void MenuEngine::run(VideoEngine *videoEngine, KeyboardEngine *keyboardEngine)
+{
+    (*videoEngine).display();
+
+    MenuKeyboardCallback *kcb = new MenuKeyboardCallback;
+
+    (*kcb).setVideoEngine(videoEngine);
+    (*kcb).setMenuEngine(this);
+
+    (*keyboardEngine).setup();
+    (*keyboardEngine).setCallback(kcb);
+    (*keyboardEngine).loop();
+
+    delete kcb;
+}
 
 MenuEngine & MenuEngine::setTitle(const char title[])
 {
-    if (_title != 0)
-    {
-        delete _title;
-    }
-
     _title = new char[strlen(title)];
     strcpy(_title, title);
 
@@ -203,13 +228,14 @@ MenuEngine & MenuEngine::cursorMoveUp()
 
 MenuEngine & MenuEngine::selectItem()
 {
-    (*_callbackfn)(getSelectedMenuItemValue(), getSelectedMenuItemLabel());
+    (*_widgetCallback).execute(this);
+
     return (*this);
 }
 
-MenuEngine & MenuEngine::setCallbackfn(void (*fn)(char *, char *))
+MenuEngine & MenuEngine::setCallback(WidgetCallback *widgetCallback)
 {
-    _callbackfn = fn;
+    _widgetCallback = widgetCallback;
 
     return (*this);
 }
@@ -226,7 +252,7 @@ MenuEngine & MenuEngine::reset()
 
     setMenuItemCount(0);
     setMenuItemPos(0);
-    _callbackfn = 0;
+    _widgetCallback = 0;
 
     return (*this);
 }
@@ -241,7 +267,8 @@ MenuEngine::~MenuEngine()
 
 MenuEngine::MenuEngine():
 WidgetEngine(),
-_menuItemPos(0)
+_menuItemPos(0),
+_title(0)
 {
 
 }

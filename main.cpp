@@ -44,11 +44,13 @@ using std::atoi;
 #include "rpi2040_uart_video.hpp"
 
 #include "msgbox_sample_callback.hpp"
+#include "menu_sample_callback.hpp"
 
 //********************** RASPBERRY PI PICO TEST ****************************
 #include "pico/stdlib.h"
 #include "hardware/uart.h"
 #include "hardware/irq.h"
+#include "pico/time.h"
 
 Rpi2040Uart rpi2040uart = Rpi2040Uart::getInstance();
 
@@ -64,62 +66,99 @@ int main()
     /*FrameBuffer fb(4,20);
     */
     FrameBuffer fbMsgbox(4,20);
+    FrameBuffer fbMenu(4,20);
     /*
     FrameBuffer fbInputbox(4,20);
     FrameBuffer fbSplashBox(4,20);
-    FrameBuffer fbMenu(4,20);
     FrameBuffer fbTextView(4,20);
 
     */
     LCD4X20MsgBox lcd4x20msgbox(&fbMsgbox);
+    LCD4X20Menu lcd4x20menu(&fbMenu);
     /*
     LCD4X20InputBox lcd4x20inputbox(&fbInputbox);
     LCD4X20Splashbox lcd4x20splashbox(&fbSplashBox);
-    LCD4X20Menu lcd4x20menu(&fbMenu);
 
     */
     MsgBoxEngine *msgbox = &lcd4x20msgbox;
+    MenuEngine *menu = &lcd4x20menu;
     /*
     InputBoxEngine *inputbox = &lcd4x20inputbox;
     SplashBoxEngine *splashbox = &lcd4x20splashbox;
-    MenuEngine *menu = &lcd4x20menu;
 
     LCD4X20TextView lcd4x20textview(&fbTextView, menu);
     TextViewEngine *textView = &lcd4x20textview;
     */
+    rpi2040uart.setup();
+    Rpi2040UartKeyboard rpiUartKb = Rpi2040UartKeyboard::getInstance();
+    KeyboardEngine *keyboard = &rpiUartKb;
+
+    Rpi2040UartVideo rpi2040UartVideo;
+    rpi2040uart.setup();
+    VideoEngine *video = &rpi2040UartVideo;
+    (*video)
+        .setFrameBuffer(&fbMenu)
+        .display();
 
     MsgboxSampleCallback msgcb;
+    MenuSampleCallback menucb;
 
-    (*msgbox)
+    char menuString[] = "NEW_FILE;New File|OPEN_FILE;Open File...|SAVE;Save file|SAVE_AS;Save as|SEPARATOR;Separator|INFO;Information|RESTART;Restart|ABOUT;About|EXIT;exit|ITEM1;item1|ITEM2;item2";
+
+    (*menu)
+        .reset()
+        .setTitle({"Main menu"})
+        .parseMenuString(menuString)
+        .setCallback(&menucb)
+        .render()
+        .run(video, keyboard);
+
+    sleep_ms(5000);
+
+   (*video)
+        .setFrameBuffer(&fbMsgbox)
+        .display();
+
+   (*msgbox)
         .reset()
         .setTitle({"Greetings"})
         .setMessage({"What do you think?"})
         .setButtonType(MsgBoxEngine::YESNOCANCEL_BUTTON)
         .setIconType(MsgBoxEngine::QUESTION_ICON)
         .setCallback(&msgcb)
-        .render();
-
-    rpi2040uart.setup();
-
-    Rpi2040UartKeyboard rpiUartKb = Rpi2040UartKeyboard::getInstance();
-
-    KeyboardEngine *keyboard = &rpiUartKb;
-
-    Rpi2040UartVideo rpi2040UartVideo;
-    rpi2040uart.setup();
-
-    VideoEngine *video = &rpi2040UartVideo;
-
-    (*video)
-        .setFrameBuffer(&fbMsgbox)
-        .display();
-
-
-    (*msgbox)
+        .render()
         .run(video, keyboard);
 
     uart_puts(rpi2040uart.getUart(), "saiu");
     uart_puts(rpi2040uart.getUart(), VT100Utils::lineBreak());
+
+    sleep_ms(3000);
+
+    (*msgbox)
+        .reset()
+        .setTitle({"Greetings"})
+        .setMessage({"Welcome to system"})
+        .setButtonType(MsgBoxEngine::OK_BUTTON)
+        .setIconType(MsgBoxEngine::NO_ICON)
+        .setCallback(&msgcb)
+        .render()
+        .run(video, keyboard);
+
+    uart_puts(rpi2040uart.getUart(), "2");
+
+    sleep_ms(3000);
+
+    (*video)
+        .setFrameBuffer(&fbMenu)
+        .display();
+
+    (*menu)
+        .reset()
+        .setTitle({"Main menu 2"})
+        .parseMenuString(menuString)
+        .setCallback(&menucb)
+        .render()
+        .run(video, keyboard);
 
     cout << "Inicializado" << endl;
 

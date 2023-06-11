@@ -35,6 +35,10 @@ set(SOURCES
         keyboard_message.cpp
         keyboard_message.hpp
         keyboard_callback.cpp
+        menu_keyboard_callback.cpp
+        menu_keyboard_callback.hpp
+        menu_sample_callback.cpp
+        menu_sample_callback.hpp
         menu_engine.cpp
         menu_engine.hpp
         msgbox_engine.hpp

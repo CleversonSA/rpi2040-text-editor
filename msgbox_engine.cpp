@@ -68,11 +68,6 @@ int MsgBoxEngine::getSelectedButton() const
 
 MsgBoxEngine & MsgBoxEngine::setTitle(const char title[])
 {
-    if (_title != 0)
-    {
-        delete _title;
-    }
-
     _title = new char[strlen(title)];
     strcpy(_title, title);
 
@@ -86,10 +81,6 @@ char * MsgBoxEngine::getTitle() const
 
 MsgBoxEngine & MsgBoxEngine::setMessage(const char message[])
 {
-    if (_message != 0)
-    {
-        delete _message;
-    }
 
     _message = new char[strlen(message)];
     strcpy(_message, message);
@@ -159,17 +150,6 @@ MsgBoxEngine & MsgBoxEngine::selectButton()
 
 MsgBoxEngine & MsgBoxEngine::reset()
 {
-
-    if (_title != 0)
-    {
-        delete _title;
-    }
-
-    if (_message != 0)
-    {
-        delete _message;
-    }
-
     setIconType(MsgBoxEngine::NO_ICON);
     setButtonType(MsgBoxEngine::OK_BUTTON);
     _widgetCallback = 0;

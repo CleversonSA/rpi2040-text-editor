@@ -32,6 +32,7 @@ using std::endl;
 VideoEngine & Rpi2040UartVideo::display()
 {
     char * screenLine = 0;
+    int totalMovs = 0;
 
     uart_puts(Rpi2040Uart::getInstance().getUart(), VT100Utils::gotoXY(1,1));
     uart_puts(Rpi2040Uart::getInstance().getUart(), VT100Utils::clearScreen());
@@ -39,6 +40,8 @@ VideoEngine & Rpi2040UartVideo::display()
     for (int i=0; i < (*getFrameBuffer()).getMaxRows(); i++)
     {
         screenLine = (*getFrameBuffer()).getScreenRow(i);
+        totalMovs = 0;
+
         for (int j=0; j < (*getFrameBuffer()).getMaxCols(); j++)
         {
             if ((*screenLine) == '\0')
@@ -48,9 +51,20 @@ VideoEngine & Rpi2040UartVideo::display()
                 uart_putc(Rpi2040Uart::getInstance().getUart(), (*screenLine));
             }
             screenLine++;
+            totalMovs++;
         }
+
+        for (int j=0; j < totalMovs; j++)
+        {
+            screenLine--;
+        }
+        delete screenLine;
+
         uart_puts(Rpi2040Uart::getInstance().getUart(), VT100Utils::lineBreak());
+
     }
+
+
 
     return (*this);
 }
