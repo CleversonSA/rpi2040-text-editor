@@ -65,8 +65,9 @@ int main()
 {
     int pausa = 0;
 
-    /*FrameBuffer fb(4,20);
-    */
+    FrameBuffer fb(4,20);
+
+    /*
     FrameBuffer fbMsgbox(4,20);
     FrameBuffer fbMenu(4,20);
     FrameBuffer fbSplashBox(4,20);
@@ -75,10 +76,10 @@ int main()
     /*
 
     */
-    LCD4X20MsgBox lcd4x20msgbox(&fbMsgbox);
-    LCD4X20Menu lcd4x20menu(&fbMenu);
-    LCD4X20Splashbox lcd4x20splashbox(&fbSplashBox);
-    LCD4X20InputBox lcd4x20inputbox(&fbInputbox);
+    LCD4X20MsgBox lcd4x20msgbox(&fb);
+    LCD4X20Menu lcd4x20menu(&fb);
+    LCD4X20Splashbox lcd4x20splashbox(&fb);
+    LCD4X20InputBox lcd4x20inputbox(&fb);
     /*
 
     */
@@ -88,7 +89,7 @@ int main()
     InputBoxEngine *inputbox = &lcd4x20inputbox;
 
 
-    LCD4X20TextView lcd4x20textview(&fbTextView, menu);
+    LCD4X20TextView lcd4x20textview(&fb, menu);
     TextViewEngine *textView = &lcd4x20textview;
 
 
@@ -111,13 +112,13 @@ int main()
         .render();
 
     (*video)
-        .setFrameBuffer(&fbSplashBox)
+        .setFrameBuffer(&fb)
         .display();
 
     sleep_ms(3000);
 
     (*video)
-        .setFrameBuffer(&fbInputbox);
+        .setFrameBuffer(&fb);
 
     (*inputbox)
         .reset()
@@ -136,13 +137,13 @@ int main()
         .render();
 
     (*video)
-        .setFrameBuffer(&fbSplashBox)
+        .setFrameBuffer(&fb)
         .display();
 
     sleep_ms(3000);
 
     (*video)
-        .setFrameBuffer(&fbMenu)
+        .setFrameBuffer(&fb)
         .display();
 
 
@@ -164,7 +165,7 @@ int main()
         .render();
 
     (*video)
-        .setFrameBuffer(&fbSplashBox)
+        .setFrameBuffer(&fb)
         .display();
 
     sleep_ms(5000);
@@ -175,13 +176,13 @@ int main()
         .render();
 
     (*video)
-        .setFrameBuffer(&fbSplashBox)
+        .setFrameBuffer(&fb)
         .display();
 
     sleep_ms(3000);
 
    (*video)
-        .setFrameBuffer(&fbMsgbox)
+        .setFrameBuffer(&fb)
         .display();
 
    (*msgbox)
@@ -219,13 +220,13 @@ int main()
         .render();
 
     (*video)
-        .setFrameBuffer(&fbSplashBox)
+        .setFrameBuffer(&fb)
         .display();
 
     sleep_ms(3000);
 
     (*video)
-        .setFrameBuffer(&fbMenu)
+        .setFrameBuffer(&fb)
         .display();
 
     (*menu)
@@ -245,13 +246,13 @@ int main()
         .render();
 
     (*video)
-        .setFrameBuffer(&fbSplashBox)
+        .setFrameBuffer(&fb)
         .display();
 
     sleep_ms(3000);
 
     (*video)
-        .setFrameBuffer(&fbInputbox);
+        .setFrameBuffer(&fb);
 
     (*inputbox)
         .reset()
@@ -265,7 +266,7 @@ int main()
 
 
     (*video)
-        .setFrameBuffer(&fbTextView);
+        .setFrameBuffer(&fb);
 
 
     char aboutString[255];
@@ -286,7 +287,7 @@ int main()
         .render();
 
     (*video)
-        .setFrameBuffer(&fbSplashBox)
+        .setFrameBuffer(&fb)
         .display();
 
     cout << "Inicializado" << endl;
