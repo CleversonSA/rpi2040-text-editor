@@ -45,6 +45,8 @@ using std::atoi;
 
 #include "msgbox_sample_callback.hpp"
 #include "menu_sample_callback.hpp"
+#include "inputbox_sample_callback.hpp"
+
 
 //********************** RASPBERRY PI PICO TEST ****************************
 #include "pico/stdlib.h"
@@ -67,28 +69,29 @@ int main()
     */
     FrameBuffer fbMsgbox(4,20);
     FrameBuffer fbMenu(4,20);
-    /*
-    FrameBuffer fbInputbox(4,20);
     FrameBuffer fbSplashBox(4,20);
+    FrameBuffer fbInputbox(4,20);
     FrameBuffer fbTextView(4,20);
+    /*
 
     */
     LCD4X20MsgBox lcd4x20msgbox(&fbMsgbox);
     LCD4X20Menu lcd4x20menu(&fbMenu);
-    /*
-    LCD4X20InputBox lcd4x20inputbox(&fbInputbox);
     LCD4X20Splashbox lcd4x20splashbox(&fbSplashBox);
+    LCD4X20InputBox lcd4x20inputbox(&fbInputbox);
+    /*
 
     */
     MsgBoxEngine *msgbox = &lcd4x20msgbox;
     MenuEngine *menu = &lcd4x20menu;
-    /*
-    InputBoxEngine *inputbox = &lcd4x20inputbox;
     SplashBoxEngine *splashbox = &lcd4x20splashbox;
+    InputBoxEngine *inputbox = &lcd4x20inputbox;
+
 
     LCD4X20TextView lcd4x20textview(&fbTextView, menu);
     TextViewEngine *textView = &lcd4x20textview;
-    */
+
+
     rpi2040uart.setup();
     Rpi2040UartKeyboard rpiUartKb = Rpi2040UartKeyboard::getInstance();
     KeyboardEngine *keyboard = &rpiUartKb;
@@ -96,12 +99,52 @@ int main()
     Rpi2040UartVideo rpi2040UartVideo;
     rpi2040uart.setup();
     VideoEngine *video = &rpi2040UartVideo;
+
+    MsgboxSampleCallback msgcb;
+    MenuSampleCallback menucb;
+    InputboxSampleCallback inputboxcb;
+
+
+    (*splashbox)
+        .setTitle({"Widget testing"})
+        .setMessage({"Inputbox widget will be tested!"})
+        .render();
+
+    (*video)
+        .setFrameBuffer(&fbSplashBox)
+        .display();
+
+    sleep_ms(3000);
+
+    (*video)
+        .setFrameBuffer(&fbInputbox);
+
+    (*inputbox)
+        .reset()
+        .setTitle({"Nome:"})
+        .setMessage({"Informe um nome:"})
+        .setCallback(&inputboxcb)
+        .render()
+        .run(video, keyboard);
+
+    sleep_ms(3000);
+
+
+    (*splashbox)
+        .setTitle({"Widget testing"})
+        .setMessage({"Menu widget will be tested!"})
+        .render();
+
+    (*video)
+        .setFrameBuffer(&fbSplashBox)
+        .display();
+
+    sleep_ms(3000);
+
     (*video)
         .setFrameBuffer(&fbMenu)
         .display();
 
-    MsgboxSampleCallback msgcb;
-    MenuSampleCallback menucb;
 
     char menuString[] = "NEW_FILE;New File|OPEN_FILE;Open File...|SAVE;Save file|SAVE_AS;Save as|SEPARATOR;Separator|INFO;Information|RESTART;Restart|ABOUT;About|EXIT;exit|ITEM1;item1|ITEM2;item2";
 
@@ -113,7 +156,29 @@ int main()
         .render()
         .run(video, keyboard);
 
+    sleep_ms(2000);
+
+    (*splashbox)
+        .setTitle({"Widget testing"})
+        .setMessage({"MENU teste finished!"})
+        .render();
+
+    (*video)
+        .setFrameBuffer(&fbSplashBox)
+        .display();
+
     sleep_ms(5000);
+
+    (*splashbox)
+        .setTitle({"Widget testing"})
+        .setMessage({"Msgbox widget will be tested!"})
+        .render();
+
+    (*video)
+        .setFrameBuffer(&fbSplashBox)
+        .display();
+
+    sleep_ms(3000);
 
    (*video)
         .setFrameBuffer(&fbMsgbox)
@@ -148,6 +213,17 @@ int main()
 
     sleep_ms(3000);
 
+    (*splashbox)
+        .setTitle({"Widget testing"})
+        .setMessage({"Menu widget will be tested again!"})
+        .render();
+
+    (*video)
+        .setFrameBuffer(&fbSplashBox)
+        .display();
+
+    sleep_ms(3000);
+
     (*video)
         .setFrameBuffer(&fbMenu)
         .display();
@@ -159,6 +235,59 @@ int main()
         .setCallback(&menucb)
         .render()
         .run(video, keyboard);
+
+    sleep_ms(3000);
+
+
+    (*splashbox)
+        .setTitle({"Widget testing"})
+        .setMessage({"Inputbox widget will be tested!"})
+        .render();
+
+    (*video)
+        .setFrameBuffer(&fbSplashBox)
+        .display();
+
+    sleep_ms(3000);
+
+    (*video)
+        .setFrameBuffer(&fbInputbox);
+
+    (*inputbox)
+        .reset()
+        .setTitle({"Numero:"})
+        .setMessage({"Informe um numero:"})
+        .setCallback(&inputboxcb)
+        .render()
+        .run(video, keyboard);
+
+    sleep_ms(3000);
+
+
+    (*video)
+        .setFrameBuffer(&fbTextView);
+
+
+    char aboutString[255];
+    sprintf(aboutString, "Hi,\n\nThis a text view\nsample with a tinny\nscreen.\n\nCreated by:\nCleverson S A\n\nMemory available:\n%d bytes\n\nPress ENTER to\nexit!", (unsigned long)AppGlobals::getFreeHeap());
+
+    (*textView)
+        .reset()
+        .setTitle({"About"})
+        .parseViewString(aboutString)
+        .render()
+        .run(video, keyboard);
+
+    sleep_ms(3000);
+
+    (*splashbox)
+        .setTitle({"Widget testing"})
+        .setMessage({"Tests finished!"})
+        .render();
+
+    (*video)
+        .setFrameBuffer(&fbSplashBox)
+        .display();
 
     cout << "Inicializado" << endl;
 

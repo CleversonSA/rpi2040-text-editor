@@ -27,6 +27,26 @@ using std::strtok;
 
 #include "textview_engine.hpp"
 #include "app_globals.hpp"
+#include "video_engine.hpp"
+#include "keyboard_engine.hpp"
+#include "textview_keyboard_callback.hpp"
+
+
+void TextViewEngine::run(VideoEngine *videoEngine, KeyboardEngine *keyboardEngine)
+{
+    (*videoEngine).display();
+
+    TextViewKeyboardCallback *kcb = new TextViewKeyboardCallback;
+
+    (*kcb).setVideoEngine(videoEngine);
+    (*kcb).setTextViewEngine(this);
+
+    (*keyboardEngine).setup();
+    (*keyboardEngine).setCallback(kcb);
+    (*keyboardEngine).loop();
+
+    delete kcb;
+}
 
 TextViewEngine & TextViewEngine::setTitle(const char title[])
 {
@@ -128,21 +148,13 @@ TextViewEngine & TextViewEngine::cursorMoveUp()
 
 TextViewEngine & TextViewEngine::closeView()
 {
-    (*_callbackfn)();
     return (*this);
 }
 
-TextViewEngine & TextViewEngine::setCallbackfn(void (*fn)(void))
-{
-    _callbackfn = fn;
-
-    return (*this);
-}
 
 TextViewEngine & TextViewEngine::reset()
 {
     (*_menuEngineInstance).reset();
-    _callbackfn = 0;
 
     return (*this);
 }

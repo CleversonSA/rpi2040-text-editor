@@ -27,13 +27,46 @@ using std::strncat;
 
 #include "inputbox_engine.hpp"
 #include "app_globals.hpp"
+#include "widget_callback.hpp"
+#include "video_engine.hpp"
+#include "keyboard_engine.hpp"
+#include "inputbox_keyboard_callback.hpp"
+
+
+char * InputBoxEngine::getResultCharValue1()
+{
+    return getUserInput();
+}
+
+int  InputBoxEngine::getResultIntValue()
+{
+    return getInputAction();
+}
+
+int InputBoxEngine::getInputAction() const
+{
+    return _inputAction;
+}
+
+void InputBoxEngine::run(VideoEngine *videoEngine, KeyboardEngine *keyboardEngine)
+{
+    (*videoEngine).display();
+
+    InputboxKeyboardCallback *kcb = new InputboxKeyboardCallback;
+
+    (*kcb).setVideoEngine(videoEngine);
+    (*kcb).setInputboxEngine(this);
+
+    (*keyboardEngine).setup();
+    (*keyboardEngine).setCallback(kcb);
+    (*keyboardEngine).loop();
+
+    delete kcb;
+}
+
 
 InputBoxEngine & InputBoxEngine::setTitle(const char title[])
 {
-    if (_title != 0)
-    {
-        delete _title;
-    }
 
     _title = new char[strlen(title) + 1];
     strcpy(_title, title);
@@ -48,10 +81,6 @@ char * InputBoxEngine::getTitle() const
 
 InputBoxEngine & InputBoxEngine::setMessage(const char message[])
 {
-    if (_message != 0)
-    {
-        delete _message;
-    }
 
     cout << "Executou 1" <<endl;
     _message = new char[strlen(message) + 1];
@@ -74,10 +103,6 @@ InputBoxEngine & InputBoxEngine::type(const char text[])
         return (*this);
     }
 
-    if (_userInput != 0)
-    {
-        delete _userInput;
-    }
 
     _userInput = new char[strlen(text)];
     strcpy(_userInput, text);
@@ -139,12 +164,13 @@ char * InputBoxEngine::getUserInput() const
 }
 
 
-InputBoxEngine & InputBoxEngine::setCallbackfn(void (*fn)(const int, char *))
+InputBoxEngine & InputBoxEngine::setCallback(WidgetCallback *widgetCallback)
 {
-    _callbackfn = fn;
+    _widgetCallback = widgetCallback;
 
     return (*this);
 }
+
 
 
 InputBoxEngine & InputBoxEngine::setMaxInputSize(const int maxInputSize)
@@ -163,7 +189,6 @@ int InputBoxEngine::getMaxInputSize() const
 
 InputBoxEngine & InputBoxEngine::clearInput()
 {
-    delete _userInput;
 
     _userInput = new char[getMaxInputSize()];
     _userInput[0]='\0';
@@ -175,20 +200,10 @@ InputBoxEngine & InputBoxEngine::clearInput()
 InputBoxEngine & InputBoxEngine::reset()
 {
 
-    if (_title != 0)
-    {
-        delete _title;
-    }
-
-    if (_message != 0)
-    {
-        delete _message;
-    }
 
     clearInput();
     setInputAction(-1);
     setMaxInputSize(16);
-    _callbackfn = 0;
 
     return (*this);
 }
@@ -202,14 +217,17 @@ InputBoxEngine & InputBoxEngine::setInputAction(const int inputAction)
 
 InputBoxEngine & InputBoxEngine::triggerEnter()
 {
-    _callbackfn(InputBoxEngine::OK_TRIGGERED, getUserInput());
+    setInputAction(InputBoxEngine::OK_TRIGGERED);
+    (*_widgetCallback).execute(this);
 
     return (*this);
 }
 
 InputBoxEngine & InputBoxEngine::triggerESC()
 {
-    _callbackfn(InputBoxEngine::CANCEL_TRIGGERED, 0);
+    setUserInput(0);
+    setInputAction(InputBoxEngine::CANCEL_TRIGGERED);
+    (*_widgetCallback).execute(this);
 
     return (*this);
 }

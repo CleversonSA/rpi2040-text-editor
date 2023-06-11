@@ -17,7 +17,9 @@ limitations under the License.
 #define INPUTBOXENGINE
 
 #include "widget_engine.hpp"
-
+#include "widget_callback.hpp"
+#include "video_engine.hpp"
+#include "keyboard_engine.hpp"
 /*
     Abstract class for InputBox widget
 */
@@ -34,7 +36,7 @@ class InputBoxEngine: public WidgetEngine
         char * getTitle() const;
         InputBoxEngine & setMessage(const char[]);
         char * getMessage() const;
-        InputBoxEngine & setCallbackfn(void (*fn)(const int, char *));
+        InputBoxEngine & setCallback(WidgetCallback *);
         InputBoxEngine & setInputAction (const int);
         int getInputAction() const;
         InputBoxEngine & setMaxInputSize (const int);
@@ -54,6 +56,10 @@ class InputBoxEngine: public WidgetEngine
 
         virtual InputBoxEngine & render() = 0;
 
+        virtual void run(VideoEngine *, KeyboardEngine *);
+        virtual int getResultIntValue();
+        virtual char * getResultCharValue1();
+
     private:
 
         char * _title;
@@ -61,7 +67,7 @@ class InputBoxEngine: public WidgetEngine
         char * _userInput;
         int _inputAction;
         int _maxInputSize;
-        void (*_callbackfn)(const int, char *);
+        WidgetCallback* _widgetCallback;
 };
 
 #endif // DOCUMENT

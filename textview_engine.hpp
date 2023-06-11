@@ -20,6 +20,10 @@ limitations under the License.
 #include "widget_engine.hpp"
 #include "app_globals.hpp"
 #include "menu_engine.hpp"
+#include "widget_callback.hpp"
+#include "video_engine.hpp"
+#include "keyboard_engine.hpp"
+
 
 /*
     Abstract class for Text View Engine
@@ -32,7 +36,6 @@ class TextViewEngine: public WidgetEngine
 
         TextViewEngine & setTitle(const char []);
         char * getTitle() const;
-        TextViewEngine & setCallbackfn(void (*fn)(void));
         int getViewLinesCount() const;
         int getViewLinePos() const;
         TextViewEngine & parseViewString(char *);
@@ -44,12 +47,12 @@ class TextViewEngine: public WidgetEngine
         TextViewEngine & closeView();
 
         virtual TextViewEngine & render() = 0;
+        virtual void run(VideoEngine *, KeyboardEngine *);
 
     private:
 
         MenuEngine * _menuEngineInstance;
         char * _title;
-        void (*_callbackfn)(void);
 };
 
 #endif // DOCUMENT

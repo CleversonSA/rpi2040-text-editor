@@ -27,14 +27,12 @@ using std::strcpy;
 
 #include "splashbox_engine.hpp"
 #include "app_globals.hpp"
+#include "video_engine.hpp"
+#include "keyboard_engine.hpp"
+
 
 SplashBoxEngine & SplashBoxEngine::setTitle(const char title[])
 {
-    if (_title != 0)
-    {
-        delete _title;
-    }
-
     _title = new char[strlen(title)];
     strcpy(_title, title);
 
@@ -48,11 +46,6 @@ char * SplashBoxEngine::getTitle() const
 
 SplashBoxEngine & SplashBoxEngine::setMessage(const char message[])
 {
-    if (_message != 0)
-    {
-        delete _message;
-    }
-
     _message = new char[strlen(message)];
     strcpy(_message, message);
 
@@ -62,14 +55,6 @@ SplashBoxEngine & SplashBoxEngine::setMessage(const char message[])
 char * SplashBoxEngine::getMessage() const
 {
     return _message;
-}
-
-
-SplashBoxEngine & SplashBoxEngine::setCallbackfn(void (*fn)(void))
-{
-    _callbackfn = fn;
-
-    return (*this);
 }
 
 SplashBoxEngine & SplashBoxEngine::setIconType(const int iconType)
@@ -88,28 +73,11 @@ int SplashBoxEngine::getIconType() const
 SplashBoxEngine & SplashBoxEngine::reset()
 {
 
-    if (_title != 0)
-    {
-        delete _title;
-    }
-
-    if (_message != 0)
-    {
-        delete _message;
-    }
-
     setIconType(SplashBoxEngine::NO_ICON);
-    _callbackfn = 0;
 
     return (*this);
 }
 
-SplashBoxEngine & SplashBoxEngine::hide()
-{
-    _callbackfn();
-
-    return (*this);
-}
 
 SplashBoxEngine::~SplashBoxEngine()
 {

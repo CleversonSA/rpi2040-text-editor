@@ -27,6 +27,10 @@ set(SOURCES
         widget_engine.hpp
         widget_callback.cpp
         widget_callback.hpp
+        inputbox_keyboard_callback.cpp
+        inputbox_keyboard_callback.hpp
+        inputbox_sample_callback.cpp
+        inputbox_sample_callback.hpp
         inputbox_engine.cpp
         inputbox_engine.hpp
         keyboard_engine.hpp
@@ -49,6 +53,8 @@ set(SOURCES
         msgbox_engine.cpp
         splashbox_engine.cpp
         splashbox_engine.hpp
+        textview_keyboard_callback.cpp
+        textview_keyboard_callback.hpp
         text_engine.cpp
         text_engine.hpp
         textview_engine.cpp

@@ -37,21 +37,16 @@ class SplashBoxEngine: public WidgetEngine
         char * getTitle() const;
         SplashBoxEngine & setMessage(const char[]);
         char * getMessage() const;
-        SplashBoxEngine & setCallbackfn(void (*fn)(void));
         SplashBoxEngine & reset();
         SplashBoxEngine & setIconType(const int);
         int getIconType() const;
 
-        SplashBoxEngine & hide();
-
         virtual SplashBoxEngine & render() = 0;
-
     private:
 
         char * _title;
         char * _message;
         int _iconType;
-        void (*_callbackfn)(void);
 };
 
 #endif // DOCUMENT
