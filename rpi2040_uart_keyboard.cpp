@@ -387,10 +387,14 @@ void Rpi2040UartKeyboard::onUartRXEvent()
 
 
     if (Rpi2040UartKeyboard::getInstance().isInterruptLoop()) {
-        //uart_puts(Rpi2040Uart::getInstance().getUart(), "loop interrompido!");
+        uart_puts(Rpi2040Uart::getInstance().getUart(), "+");
         return;
     }
 
+
+    if (uart_is_writable(Rpi2040Uart::getInstance().getUart())) {
+            uart_putc(Rpi2040Uart::getInstance().getUart(),'?');
+    }
 
     while (uart_is_readable_within_us(Rpi2040Uart::getInstance().getUart(), 200)) {
 
@@ -485,6 +489,9 @@ void Rpi2040UartKeyboard::onUartRXEvent()
         Rpi2040UartKeyboard::_uartBufferCounter = 0;
         KeyboardMessage::getInstance()._sharedInterruptedLoop = true;
 
+         if (uart_is_writable(Rpi2040Uart::getInstance().getUart())) {
+            uart_putc(Rpi2040Uart::getInstance().getUart(),'!');
+        }
     }
 
 }
