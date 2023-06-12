@@ -64,43 +64,43 @@ bool TextEngineKeyboardCallback::execute(const int keyboardCode, const char rawC
         case KeyboardEngine::KEY_ANY:
             (*doc).type(rawChar);
             (*getTextEngine()).render();
-            //(*getVideoEngine()).display();
+            (*getVideoEngine()).display();
             break;
         case KeyboardEngine::KEY_UP:
             (*doc).cursorMoveUp();
             (*getTextEngine()).render();
-            //(*getVideoEngine()).display();
+            (*getVideoEngine()).display();
             break;
         case KeyboardEngine::KEY_LEFT:
             (*doc).cursorMoveLeft();
             (*getTextEngine()).render();
-            //(*getVideoEngine()).display();
+            (*getVideoEngine()).display();
             break;
         case KeyboardEngine::KEY_RIGHT:
             (*doc).cursorMoveRight();
             (*getTextEngine()).render();
-            //(*getVideoEngine()).display();
+            (*getVideoEngine()).display();
             break;
         case KeyboardEngine::KEY_DOWN:
             (*doc).cursorMoveDown();
             (*getTextEngine()).render();
-            //(*getVideoEngine()).display();
+            (*getVideoEngine()).display();
             break;
         case KeyboardEngine::KEY_ENTER:
             (*doc).addNewLine();
             (*getTextEngine()).render();
-            //(*getVideoEngine()).display();
+            (*getVideoEngine()).display();
             break;
         case KeyboardEngine::KEY_BACKSPACE:
         case KeyboardEngine::KEY_DEL:
             (*doc).triggerBackspace();
             (*getTextEngine()).render();
-            //(*getVideoEngine()).display();
+            (*getVideoEngine()).display();
             break;
         case KeyboardEngine::KEY_SPACE:
             (*doc).type(' ');
             (*getTextEngine()).render();
-            //(*getVideoEngine()).display();
+            (*getVideoEngine()).display();
             break;
         default:
             break;

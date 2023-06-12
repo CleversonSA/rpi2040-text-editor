@@ -48,23 +48,22 @@ VideoEngine & Rpi2040UartVideo::display()
             // I noticed uart fails if I fb needs more speed on refresh and
             // not completed the last request to send data. Rpi freezes. Lets try
             // wait a little
-            if (!uart_is_writable(Rpi2040Uart::getInstance().getUart()))
+            /*if (!uart_is_writable(Rpi2040Uart::getInstance().getUart()))
             {
                 busy_wait_us(100);
                 uart_puts(Rpi2040Uart::getInstance().getUart(), "0");
             } else {
                 uart_puts(Rpi2040Uart::getInstance().getUart(), "1");
-            }
+            }*/
 
-            /*if ((*screenLine) == '\0')
+            if ((*screenLine) == '\0')
             {
                 uart_puts(Rpi2040Uart::getInstance().getUart(), " ");
             } else {
                 uart_putc(Rpi2040Uart::getInstance().getUart(), (*screenLine));
-            }*/
+            }
             screenLine++;
             totalMovs++;
-            busy_wait_us(100);
         }
 
         for (int j=0; j < totalMovs; j++)
@@ -74,7 +73,6 @@ VideoEngine & Rpi2040UartVideo::display()
         delete screenLine;
 
         uart_puts(Rpi2040Uart::getInstance().getUart(), VT100Utils::lineBreak());
-        busy_wait_us(10);
     }
 
 
