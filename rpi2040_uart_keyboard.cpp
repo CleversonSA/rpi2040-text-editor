@@ -390,7 +390,7 @@ void Rpi2040UartKeyboard::onUartRXEvent()
             uart_putc(Rpi2040Uart::getInstance().getUart(),'?');
     }*/
 
-    while (uart_is_readable_within_us(Rpi2040Uart::getInstance().getUart(), 500)) {
+    while (uart_is_readable_within_us(Rpi2040Uart::getInstance().getUart(), AppGlobals::RPI2040_UART_RX_WAIT_MS)) {
 
         ichar = uart_getc(Rpi2040Uart::getInstance().getUart());
 

@@ -316,7 +316,15 @@ Document & Document::triggerBackspace()
     DocCharacter * previousCharPtr = 0;
     DocCharacter * nextCharPtr = 0;
 
-    deadCandidatePtr = (*getCurrentRowPtr()).charPtrAt(getDocCol());
+    if (getDocCol() == 0)
+    {
+        deadCandidatePtr = (*getCurrentRowPtr()).getStartCharPtr();
+    } else {
+        deadCandidatePtr = (*getCurrentRowPtr()).charPtrAt(getDocCol());
+    }
+
+    if (deadCandidatePtr == 0)
+        return (*this);
 
     nextCharPtr = (*deadCandidatePtr).getNextCharPtr();
     if (nextCharPtr != 0)
@@ -326,16 +334,24 @@ Document & Document::triggerBackspace()
         {
             (*previousCharPtr).setNextCharPtr((*deadCandidatePtr).getNextCharPtr());
             (*nextCharPtr).setPreviousCharPtr(previousCharPtr);
-            setDocCol(getDocCol() - 1);
+            setDocCol(getDocCol()-1);
             delete deadCandidatePtr;
-        } else {
-            cursorMoveUp();
-            setDocCol((*getCurrentRowPtr()).getLength());
-            joinNextLine();
         }
     } else {
-        (*nextCharPtr).setChar('\0');
-        setDocCol(0);
+        previousCharPtr = (*deadCandidatePtr).getPreviousCharPtr();
+        if (previousCharPtr == 0)
+        {
+            /*cursorMoveUp();
+            setDocCol((*getCurrentRowPtr()).getLength());
+            joinNextLine();*/
+            (*getCurrentRowPtr()).setStartCharPtr(0);
+            delete deadCandidatePtr;
+            setDocCol(0);
+        } else {
+            (*previousCharPtr).setNextCharPtr(0);
+            setDocCol(getDocCol()-1);
+            delete deadCandidatePtr;
+        }
     }
 
     return (*this);

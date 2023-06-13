@@ -88,11 +88,15 @@ DocCharacter * DocRow::charPtrAt(DocCharacter * startCharPtr, int pos)
 {
     DocCharacter *currentCharPtr = 0;
 
-    if(pos < 0 || startCharPtr == 0) {
+    if (pos == 0 && startCharPtr != 0) {
+        return startCharPtr;
+    } else if(pos < 0 && startCharPtr != 0) {
+        return startCharPtr;
+    } else if (pos < 0 || startCharPtr == 0) {
         return 0;
     }
-
-    currentCharPtr = charPtrAt((*startCharPtr).getNextCharPtr(), --pos);
+    pos--;
+    currentCharPtr = charPtrAt((*startCharPtr).getNextCharPtr(), pos);
     if (currentCharPtr == 0)
     {
         return startCharPtr;
@@ -191,26 +195,38 @@ DocRow & DocRow::append(DocCharacter * charPtr, int pos)
     DocCharacter * lastCharPtr = 0;
     char aux = '\0';
 
-    if (pos < 0)
+    if (pos <= 0)
     {
-        lastCharPtr = charPtrAtEnd(_startCharPtr);
+        if (_startCharPtr != 0)
+        {
+            lastCharPtr = charPtrAtEnd(_startCharPtr);
 
-        (*lastCharPtr).setNextCharPtr(charPtr);
-        (*charPtr).setPreviousCharPtr(lastCharPtr);
-        (*lastCharPtr).setChar((*charPtr).getChar());
-        (*charPtr).setChar('\0');
-        (*charPtr).setNextCharPtr(0);
-
+            (*lastCharPtr).setNextCharPtr(charPtr);
+            (*charPtr).setPreviousCharPtr(lastCharPtr);
+            (*lastCharPtr).setChar((*charPtr).getChar());
+            (*charPtr).setChar('\0');
+            (*charPtr).setNextCharPtr(0);
+        } else {
+            (*charPtr).setNextCharPtr(0);
+            (*charPtr).setPreviousCharPtr(0);
+            _startCharPtr = charPtr;
+        }
     } else {
         lastCharPtr = charPtrAt(pos);
 
-        (*charPtr).setNextCharPtr((*lastCharPtr).getNextCharPtr());
-        (*lastCharPtr).setNextCharPtr(charPtr);
-        (*charPtr).setPreviousCharPtr(lastCharPtr);
-        aux = (*lastCharPtr).getChar();
-        (*lastCharPtr).setChar((*charPtr).getChar());
-        (*charPtr).setChar(aux);
 
+        if ((*lastCharPtr).getNextCharPtr() == 0) {
+            (*charPtr).setNextCharPtr(0);
+            (*lastCharPtr).setNextCharPtr(charPtr);
+            (*charPtr).setPreviousCharPtr(lastCharPtr);
+        } else {
+            (*charPtr).setNextCharPtr((*lastCharPtr).getNextCharPtr());
+            (*lastCharPtr).setNextCharPtr(charPtr);
+            (*charPtr).setPreviousCharPtr(lastCharPtr);
+            aux = (*lastCharPtr).getChar();
+            (*lastCharPtr).setChar((*charPtr).getChar());
+            (*charPtr).setChar(aux);
+        }
     }
 
     return (*this);
@@ -277,12 +293,7 @@ int DocRow::getLength (const DocCharacter * startCharPtr, int qtLength) const
 {
 
     if (startCharPtr != 0) {
-        if ((*startCharPtr).getChar() != '\0')
-        {
-            return getLength((*startCharPtr).getNextCharPtr(), ++qtLength);
-        } else {
-            return qtLength;
-        }
+       return getLength((*startCharPtr).getNextCharPtr(), ++qtLength);
     } else {
        return qtLength;
     }
@@ -365,8 +376,8 @@ _nextRowPtr(nextRowPtr),
 _previousRowPtr(previousRowPtr),
 _startCharPtr(startCharPtr)
 {
-    DocCharacter *dc = new DocCharacter('\0');
+    /*DocCharacter *dc = new DocCharacter('\0');
 
-    setStartCharPtr(dc);
+    setStartCharPtr(dc);*/
 }
 

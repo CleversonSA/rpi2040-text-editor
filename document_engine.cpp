@@ -23,6 +23,9 @@ using std::setw;
 #include <cstring>
 using std::strlen;
 
+#include <cstdio>
+using std::sprintf;
+
 #include "document_engine.hpp"
 #include "app_globals.hpp"
 #include "doc_row.hpp"
@@ -33,6 +36,7 @@ void DocumentEngine::render()
     bool hasLineContent = false;
     int lastDocRow = (*getDocument()).getDocRow();
     int lastDocCol = (*getDocument()).getDocCol();
+    char tmp[10];
 
     renderClearView();
     (*_document)
@@ -60,12 +64,22 @@ void DocumentEngine::render()
             // FIXME Slow as f*ck, please do it with a iterator
             DocCharacter * cPtr = (*rPtr).charPtrAt(c);
 
+            /*sprintf(tmp, "(%d,%d,%d,%d)", c+1, r+1, lastDocCol, lastDocRow);
+            int w = sizeof(tmp)/sizeof(tmp[0]);
+
+            for (int z=0; z < w; z++)
+            {
+                if (tmp[z] == '\0')
+                    break;
+                DocCharacter d(tmp[z],0,0);
+                renderCharacter(&d);
+            }*/
+
             if(isCursorAtEndOfViewLine())
             {
                 renderLineOverflowIndicator();
                 renderLineWithOverflowIndicator();
-                if ((lastDocCol < c)
-                    || (lastDocRow != r))
+                if ((lastDocCol < (c+1)) || (lastDocRow != (r+1)))
                 {
                     break;
                 } else {
@@ -99,9 +113,7 @@ void DocumentEngine::render()
                 break;
             }
 
-            if (lastDocRow == r &&
-                ((lastDocCol == (c+1))
-                 || (lastDocCol == c)))
+            if (lastDocRow == (r+1) && lastDocCol == (c+1))
             {
                 renderCursor();
             }

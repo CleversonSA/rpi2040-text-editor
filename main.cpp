@@ -78,10 +78,75 @@ int main()
         .setFrameBuffer(&fb);
 
     Document doc;
+
+    /*doc.type('1');
+    doc.type('2');
+    doc.type('3');
+    doc.type('4');
+    doc.type('5');
+
+    DocRow *dr = doc.getCurrentRowPtr();
+    DocCharacter *dc = (*dr).getStartCharPtr();
+    while (dc != 0) {
+        uart_putc(Rpi2040Uart::getInstance().getUart(),(*dc).getChar());
+        dc = (*dc).getNextCharPtr();
+    }
+
+    dc = (*dr).charPtrAt(-1);
+    if (dc == 0) {
+        uart_putc(Rpi2040Uart::getInstance().getUart(),'X');
+    } else {
+        uart_putc(Rpi2040Uart::getInstance().getUart(),(*dc).getChar());
+    }
+
+    dc = (*dr).charPtrAt(0);
+    if (dc == 0) {
+        uart_putc(Rpi2040Uart::getInstance().getUart(),'X');
+    } else {
+        uart_putc(Rpi2040Uart::getInstance().getUart(),(*dc).getChar());
+    }
+
+    dc = (*dr).charPtrAt(1);
+    if (dc == 0) {
+        uart_putc(Rpi2040Uart::getInstance().getUart(),'X');
+    } else {
+        uart_putc(Rpi2040Uart::getInstance().getUart(),(*dc).getChar());
+    }
+
+    dc = (*dr).charPtrAt(2);
+    if (dc == 0) {
+        uart_putc(Rpi2040Uart::getInstance().getUart(),'X');
+    } else {
+        uart_putc(Rpi2040Uart::getInstance().getUart(),(*dc).getChar());
+    }
+
+    dc = (*dr).charPtrAt(3);
+    if (dc == 0) {
+        uart_putc(Rpi2040Uart::getInstance().getUart(),'X');
+    } else {
+        uart_putc(Rpi2040Uart::getInstance().getUart(),(*dc).getChar());
+    }
+
+    dc = (*dr).charPtrAt(4);
+    if (dc == 0) {
+        uart_putc(Rpi2040Uart::getInstance().getUart(),'X');
+    } else {
+        uart_putc(Rpi2040Uart::getInstance().getUart(),(*dc).getChar());
+    }
+
+    dc = (*dr).charPtrAt(5);
+    if (dc == 0) {
+        uart_putc(Rpi2040Uart::getInstance().getUart(),'X');
+    } else {
+        uart_putc(Rpi2040Uart::getInstance().getUart(),(*dc).getChar());
+    }
+    */
+
     TextEngine textEngine(&doc, video);
 
     textEngine.render();
     textEngine.run(video, keyboard);
+
 
     cout << "Inicializado" << endl;
 
