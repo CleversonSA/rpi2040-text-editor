@@ -64,20 +64,6 @@ void DocumentEngine::render()
             // FIXME Slow as f*ck, please do it with a iterator
             DocCharacter * cPtr = (*rPtr).charPtrAt(c);
 
-            sprintf(tmp, "[%d] <- [%d](%c) -> [%d]", (*cPtr).getPreviousCharPtr(),cPtr, (*cPtr).getChar(),(*cPtr).getNextCharPtr());
-            cout << tmp << endl;
-
-            /*sprintf(tmp, "(%d,%d,%d,%d)", c+1, r+1, lastDocCol, lastDocRow);
-            int w = sizeof(tmp)/sizeof(tmp[0]);
-
-            for (int z=0; z < w; z++)
-            {
-                if (tmp[z] == '\0')
-                    break;
-                DocCharacter d(tmp[z],0,0);
-                renderCharacter(&d);
-            }*/
-
             if(isCursorAtEndOfViewLine())
             {
                 renderLineOverflowIndicator();
@@ -95,22 +81,10 @@ void DocumentEngine::render()
                     renderLineWithContentIndicator();
                     renderCarriageReturn();
                     hasLineContent = true;
-
-                    sprintf(tmp, "(%d)(%d)", rPtr, r+1);
-                    int w = sizeof(tmp)/sizeof(tmp[0]);
-
-                    for (int z=0; z < w; z++)
-                    {
-                        if (tmp[z] == '\0')
-                            break;
-                        DocCharacter d(tmp[z],0,0);
-                        renderCharacter(&d);
-                    }
-
                 }
             }
 
-            if (lastDocRow == (r+1) && lastDocCol == 0 && (c==0))
+            if (lastDocRow == r && lastDocCol == 0 && (c==0))
             {
                 renderCursor();
             }
@@ -133,7 +107,7 @@ void DocumentEngine::render()
                 break;
             }
 
-            if (lastDocRow == (r+1) && (lastDocCol == c) && (lastDocCol > 0))
+            if (lastDocRow == r && (lastDocCol == c) && (lastDocCol > 0))
             {
                 renderCursor();
             }
@@ -142,7 +116,7 @@ void DocumentEngine::render()
         }
 
 
-        if (lastDocRow == (r+1) && (lastDocCol == (*rPtr).getLength()) && (lastDocCol > 0))
+        if (lastDocRow == r && (lastDocCol == (*rPtr).getLength()) && (lastDocCol > 0))
         {
             renderCursor();
         }

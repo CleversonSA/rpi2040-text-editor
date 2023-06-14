@@ -39,23 +39,23 @@ using std::atoi;
 
 
 #include "VT100_utils.hpp"
-/*#include "rpi2040_uart.hpp"
+#include "rpi2040_uart.hpp"
 #include "rpi2040_uart_keyboard.hpp"
 #include "rpi2040_uart_video.hpp"
 
 #include "msgbox_sample_callback.hpp"
 #include "menu_sample_callback.hpp"
 #include "inputbox_sample_callback.hpp"
-*/
+
 
 //********************** RASPBERRY PI PICO TEST ****************************
-/*#include "pico/stdlib.h"
+#include "pico/stdlib.h"
 #include "hardware/uart.h"
 #include "hardware/irq.h"
 #include "pico/time.h"
 
 Rpi2040Uart rpi2040uart = Rpi2040Uart::getInstance();
-*/
+
 
 int getMemSize(CSAObject *);
 
@@ -65,38 +65,23 @@ int main()
     int pausa = 0;
     FrameBuffer fb(24,40);
 
-    /*rpi2040uart.setup();
+    rpi2040uart.setup();
     Rpi2040UartKeyboard rpiUartKb = Rpi2040UartKeyboard::getInstance();
     KeyboardEngine *keyboard = &rpiUartKb;
 
     Rpi2040UartVideo rpi2040UartVideo;
     rpi2040uart.setup();
-    VideoEngine *video = &rpi2040UartVideo;*/
-
-
-    ConsoleVideo consoleVideo;
-    VideoEngine *video = &consoleVideo;
+    VideoEngine *video = &rpi2040UartVideo;
 
     (*video)
         .setFrameBuffer(&fb);
 
 
     Document doc;
+
     TextEngine textEngine(&doc, video);
-
-    doc.type('1');
-    doc.type('2');
-    doc.type('3');
-
-    doc.triggerBackspace();
     textEngine.render();
-    (*video)
-        .display();
-
-
-
-
-    //textEngine.run(video, keyboard);
+    textEngine.run(video, keyboard);
 
 
     cout << "Inicializado" << endl;

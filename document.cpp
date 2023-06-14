@@ -96,9 +96,8 @@ Document & Document::addNewLine()
     } else {
         setStartRowPtr(newLinePtr);
     }
-    setDocCol(0);
+
     setDocRowEOF(getDocRowEOF() + 1);
-    setDocRow(getDocRowEOF());
     setCurrentRowPtr(newLinePtr);
     return (*this);
 }
@@ -113,13 +112,12 @@ Document & Document::addNewLine(int pos)
         pos = getDocRowEOF();
     }
 
-    if (pos == 1 || pos == 0) {
+    if (pos == 0) {
         lastLinePtr = getStartRowPtr();
     } else {
         lastLinePtr = rowAt(pos);
     }
 
-    char tmp[100];
     DocRow *previousRow = (*lastLinePtr).getPreviousRowPtr();
 
     (*newLinePtr).setPreviousRowPtr(previousRow);
@@ -130,25 +128,9 @@ Document & Document::addNewLine(int pos)
     }
 
     (*newLinePtr).setNextRowPtr(lastLinePtr);
-
     (*lastLinePtr).setPreviousRowPtr(newLinePtr);
 
-    if (previousRow != 0) {
-    sprintf(tmp, "[%d] <- [%d] -> [%d]", (*previousRow).getPreviousRowPtr(),*previousRow,(*previousRow).getNextRowPtr());
-    } else {
-    sprintf(tmp, "[0] <- [0] -> [0]");
-    }
-    cout << tmp << endl;
-    sprintf(tmp, "[%d] <- [%d] -> [%d]", (*newLinePtr).getPreviousRowPtr(),newLinePtr,(*newLinePtr).getNextRowPtr());
-    cout << tmp << endl;
-    sprintf(tmp, "[%d] <- [%d] -> [%d]", (*lastLinePtr).getPreviousRowPtr(),lastLinePtr,(*lastLinePtr).getNextRowPtr());
-    cout << tmp << endl;
-
-
-
     DocCharacter *candidateDc = (*getCurrentRowPtr()).charPtrAt(getDocCol());
-    sprintf(tmp, "[%d] <- [%d][%c] -> [%d]", (*candidateDc).getPreviousCharPtr(),candidateDc,(*candidateDc).getChar(),(*candidateDc).getNextCharPtr());
-    cout << tmp << endl;
 
     DocCharacter *lastDc = (*candidateDc).getPreviousCharPtr();
 
@@ -176,11 +158,9 @@ Document & Document::addNewLine(int pos)
     }
 
 
-    cout << getDocRow() << pos << endl;
     setCurrentRowPtr(rowAt(pos));
     setDocRowEOF(getDocRowEOF() + 1);
     cursorMoveDown();
-    cout << getDocRow() << endl;
     cursorMoveStartOfLine();
 
     return (*this);
@@ -229,9 +209,9 @@ Document & Document::cursorMoveUp()
     setDocCol(0);
     setDocRow(getDocRow() - 1);
 
-    if (getDocRow() < 1)
+    if (getDocRow() < 0)
     {
-        setDocRow(1);
+        setDocRow(0);
     }
 
     if ((*getCurrentRowPtr()).getPreviousRowPtr() != 0)
@@ -399,6 +379,18 @@ Document & Document::triggerBackspace()
             (*nextCharPtr).setPreviousCharPtr(previousCharPtr);
             setDocCol(getDocCol()-1);
             delete deadCandidatePtr;
+        } else {
+            nextCharPtr = (*deadCandidatePtr).getNextCharPtr();
+            if (nextCharPtr == 0) {
+                (*getCurrentRowPtr()).setStartCharPtr(0);
+                delete deadCandidatePtr;
+                setDocCol(0);
+                cursorMoveUp();
+            } else {
+                (*nextCharPtr).setPreviousCharPtr(0);
+                (*getCurrentRowPtr()).setStartCharPtr(nextCharPtr);
+                delete deadCandidatePtr;
+            }
         }
     } else {
         previousCharPtr = (*deadCandidatePtr).getPreviousCharPtr();
