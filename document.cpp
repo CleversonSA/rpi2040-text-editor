@@ -113,7 +113,11 @@ Document & Document::addNewLine(int pos)
         pos = getDocRowEOF();
     }
 
-    lastLinePtr = rowAt(pos);
+    if (pos == 1 || pos == 0) {
+        lastLinePtr = getStartRowPtr();
+    } else {
+        lastLinePtr = rowAt(pos);
+    }
 
     char tmp[100];
     DocRow *previousRow = (*lastLinePtr).getPreviousRowPtr();
@@ -129,37 +133,54 @@ Document & Document::addNewLine(int pos)
 
     (*lastLinePtr).setPreviousRowPtr(newLinePtr);
 
+    if (previousRow != 0) {
     sprintf(tmp, "[%d] <- [%d] -> [%d]", (*previousRow).getPreviousRowPtr(),*previousRow,(*previousRow).getNextRowPtr());
-    cout << tmp << endl;
-    sprintf(tmp, "[%d] <- [%d] -> [%d]", (*lastLinePtr).getPreviousRowPtr(),lastLinePtr,(*lastLinePtr).getNextRowPtr());
+    } else {
+    sprintf(tmp, "[0] <- [0] -> [0]");
+    }
     cout << tmp << endl;
     sprintf(tmp, "[%d] <- [%d] -> [%d]", (*newLinePtr).getPreviousRowPtr(),newLinePtr,(*newLinePtr).getNextRowPtr());
     cout << tmp << endl;
+    sprintf(tmp, "[%d] <- [%d] -> [%d]", (*lastLinePtr).getPreviousRowPtr(),lastLinePtr,(*lastLinePtr).getNextRowPtr());
+    cout << tmp << endl;
 
 
-    if (getDocCol() == (*getCurrentRowPtr()).getLength())
+
+    DocCharacter *candidateDc = (*getCurrentRowPtr()).charPtrAt(getDocCol());
+    sprintf(tmp, "[%d] <- [%d][%c] -> [%d]", (*candidateDc).getPreviousCharPtr(),candidateDc,(*candidateDc).getChar(),(*candidateDc).getNextCharPtr());
+    cout << tmp << endl;
+
+    DocCharacter *lastDc = (*candidateDc).getPreviousCharPtr();
+
+    if (candidateDc != 0)
     {
-        setDocCol(0);
-    } else {
-        DocCharacter *candidateDc = (*getCurrentRowPtr()).charPtrAt(getDocCol());
-        cout << (*candidateDc).getChar() << endl;
-
-        DocCharacter *lastDc = (*candidateDc).getPreviousCharPtr();
-        cout << (*lastDc).getChar() << endl;
-
-        (*lastDc).setNextCharPtr(0);
-
         (*candidateDc).setPreviousCharPtr(0);
-
-        (*newLinePtr).setStartCharPtr((*lastLinePtr).getStartCharPtr());
-        (*lastLinePtr).setStartCharPtr(candidateDc);
-
-        setDocCol(0);
+    }
+    if ( lastDc != 0)
+    {
+        (*lastDc).setNextCharPtr(0);
     }
 
+    if ((*lastLinePtr).getStartCharPtr() == candidateDc) {
+        char aux = (*candidateDc).getChar();
+        candidateDc = new DocCharacter(aux);
+    }
+
+    (*newLinePtr).setStartCharPtr((*lastLinePtr).getStartCharPtr());
+    (*lastLinePtr).setStartCharPtr(candidateDc);
+
+    setDocCol(0);
+
+    if (pos == 1 || pos == 0) {
+       setStartRowPtr(newLinePtr);
+    }
+
+
+    cout << getDocRow() << pos << endl;
     setCurrentRowPtr(rowAt(pos));
     setDocRowEOF(getDocRowEOF() + 1);
     cursorMoveDown();
+    cout << getDocRow() << endl;
     cursorMoveStartOfLine();
 
     return (*this);
@@ -279,7 +300,7 @@ Document & Document::cursorMoveEndLine()
 Document & Document::cursorMoveBegin()
 {
     setDocCol(0);
-    setDocRow(0);
+    setDocRow(1);
     setCurrentRowPtr(getStartRowPtr());
 
     return (*this);

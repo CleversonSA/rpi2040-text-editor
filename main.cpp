@@ -88,59 +88,10 @@ int main()
     doc.type('2');
     doc.type('3');
 
-    doc.cursorMoveLeft();
-    doc.cursorMoveLeft();
+    doc.triggerBackspace();
     textEngine.render();
     (*video)
         .display();
-    cin >> pausa;
-
-    doc.addNewLine();
-    textEngine.render();
-    (*video)
-        .display();
-
-    cin >> pausa;
-    doc.type('4');
-    doc.type('5');
-    doc.type('6');
-
-
-    doc.cursorMoveLeft();
-    textEngine.render();
-    (*video)
-        .display();
-    cin >> pausa;
-
-    doc.cursorMoveLeft();
-    textEngine.render();
-    (*video)
-        .display();
-    doc.addNewLine(doc.getDocRow());
-    textEngine.render();
-    (*video)
-        .display();
-
-    cin >> pausa;
-
-    doc.cursorMoveRight();
-    textEngine.render();
-    (*video)
-        .display();
-    textEngine.render();
-    (*video)
-        .display();
-
-
-    doc.type('7');
-    doc.type('\n');
-    doc.type({"Salamandra"});
-    doc.cursorMoveLeft();
-    doc.type({" manca"});
-    textEngine.render();
-    (*video)
-        .display();
-
 
 
 

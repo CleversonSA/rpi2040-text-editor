@@ -96,7 +96,7 @@ void DocumentEngine::render()
                     renderCarriageReturn();
                     hasLineContent = true;
 
-                    sprintf(tmp, "(%d)", rPtr);
+                    sprintf(tmp, "(%d)(%d)", rPtr, r+1);
                     int w = sizeof(tmp)/sizeof(tmp[0]);
 
                     for (int z=0; z < w; z++)
