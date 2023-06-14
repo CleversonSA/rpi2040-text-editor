@@ -33,7 +33,7 @@ class Rpi2040UartKeyboard: public KeyboardEngine
         // This is called by the uart RPI lib
         static void onUartRXEvent();
 
-        static inline uint8_t _uartBuffer[10] = {0,0,0,0,0,0,0,0,0,0};
+        static inline uint8_t _uartBuffer[64] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
         static int8_t  _uartBufferCounter;
 
         virtual void setup();

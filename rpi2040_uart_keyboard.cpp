@@ -398,8 +398,8 @@ void Rpi2040UartKeyboard::onUartRXEvent()
             Rpi2040UartKeyboard::_uartBuffer[Rpi2040UartKeyboard::_uartBufferCounter] = ichar;
 
             Rpi2040UartKeyboard::_uartBufferCounter ++;
-            if (Rpi2040UartKeyboard::_uartBufferCounter > 9) {
-                Rpi2040UartKeyboard::_uartBufferCounter = 1;
+            if (Rpi2040UartKeyboard::_uartBufferCounter > 64) {
+                Rpi2040UartKeyboard::_uartBufferCounter = 0;
 
             }
 

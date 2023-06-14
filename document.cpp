@@ -99,6 +99,7 @@ Document & Document::addNewLine()
 
     setDocRowEOF(getDocRowEOF() + 1);
     setCurrentRowPtr(newLinePtr);
+
     return (*this);
 }
 
@@ -217,6 +218,8 @@ Document & Document::cursorMoveUp()
     if ((*getCurrentRowPtr()).getPreviousRowPtr() != 0)
     {
         setCurrentRowPtr((*getCurrentRowPtr()).getPreviousRowPtr());
+    } else {
+        setCurrentRowPtr(getCurrentRowPtr());
     }
 
     return (*this);
@@ -235,6 +238,8 @@ Document & Document::cursorMoveDown()
     if ((*getCurrentRowPtr()).getNextRowPtr() != 0)
     {
         setCurrentRowPtr((*getCurrentRowPtr()).getNextRowPtr());
+    } else {
+        setCurrentRowPtr(getCurrentRowPtr());
     }
 
     return (*this);

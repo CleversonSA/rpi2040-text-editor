@@ -80,6 +80,7 @@ void Rpi2040Uart::setup()
 
     if (!isUartInitialized())
     {
+        gpio_pull_up(1);
 
         // Set up our UART with the required speed.
         uart_init(UART_ID, BAUD_RATE);

@@ -68,7 +68,7 @@ void DocumentEngine::render()
             {
                 renderLineOverflowIndicator();
                 renderLineWithOverflowIndicator();
-                if ((lastDocCol < (c+1)) || (lastDocRow != (r+1)))
+                if ((lastDocCol < c) || (lastDocRow != r))
                 {
                     break;
                 } else {

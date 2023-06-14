@@ -226,7 +226,7 @@ DocRow & DocRow::append(DocCharacter * charPtr, int pos)
             (*charPtr).setPreviousCharPtr(lastCharPtr);
             //aux = (*lastCharPtr).getChar();
             //(*lastCharPtr).setChar((*charPtr).getChar());
-            //(*charPtr).setChar(aux);
+            (*charPtr).setChar(aux);
         }
     }
 
