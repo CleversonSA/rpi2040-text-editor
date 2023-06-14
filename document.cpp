@@ -23,6 +23,8 @@ using std::setw;
 #include <cstring>
 using std::strlen;
 using std::strcpy;
+using std::memcpy;
+using std::sprintf;
 
 #include "doc_row.hpp"
 #include "document.hpp"
@@ -83,47 +85,82 @@ DocRow * Document::getStartRowPtr() const
 
 Document & Document::addNewLine()
 {
-    return addNewLine(-1);
+    DocRow * newLinePtr = new DocRow;
+    DocRow * lastLinePtr = 0;
+
+    if (getDocRowEOF() > 0) {
+        lastLinePtr = rowAt(-1);
+        (*lastLinePtr).setNextRowPtr(newLinePtr);
+        (*newLinePtr).setPreviousRowPtr(lastLinePtr);
+        (*newLinePtr).setNextRowPtr(0);
+    } else {
+        setStartRowPtr(newLinePtr);
+    }
+    setDocCol(0);
+    setDocRowEOF(getDocRowEOF() + 1);
+    setDocRow(getDocRowEOF());
+    setCurrentRowPtr(newLinePtr);
+    return (*this);
 }
 
 Document & Document::addNewLine(int pos)
 {
+
     DocRow * newLinePtr = new DocRow;
     DocRow * lastLinePtr = 0;
 
-    if (pos < 0 || getDocRowEOF() == 0)
-    {
-        if (getDocRowEOF() > 0) {
-            lastLinePtr = rowAt(-1);
-            (*lastLinePtr).setNextRowPtr(newLinePtr);
-            (*newLinePtr).setPreviousRowPtr(lastLinePtr);
-            (*newLinePtr).setNextRowPtr(0);
-        } else {
-            setStartRowPtr(newLinePtr);
-        }
-        setDocCol(0);
-        setDocRowEOF(getDocRowEOF() + 1);
-        setDocRow(getDocRowEOF());
-        setCurrentRowPtr(newLinePtr);
-
-    } else {
-
-        if (pos > getDocRowEOF()) {
-            pos = getDocRowEOF();
-        }
-
-        lastLinePtr = rowAt(pos);
-        (*newLinePtr).setNextRowPtr((*lastLinePtr).getNextRowPtr());
-        (*lastLinePtr).setNextRowPtr(newLinePtr);
-        (*newLinePtr).setPreviousRowPtr(lastLinePtr);
-
-        setDocCol(0);
-        setDocRowEOF(getDocRowEOF() + 1);
-        setDocRow(getDocRow()+1);
-        setCurrentRowPtr(newLinePtr);
-
+    if (pos > getDocRowEOF()) {
+        pos = getDocRowEOF();
     }
 
+    lastLinePtr = rowAt(pos);
+
+    char tmp[100];
+    DocRow *previousRow = (*lastLinePtr).getPreviousRowPtr();
+
+    (*newLinePtr).setPreviousRowPtr(previousRow);
+
+    if (previousRow != 0)
+    {
+        (*previousRow).setNextRowPtr(newLinePtr);
+    }
+
+    (*newLinePtr).setNextRowPtr(lastLinePtr);
+
+    (*lastLinePtr).setPreviousRowPtr(newLinePtr);
+
+    sprintf(tmp, "[%d] <- [%d] -> [%d]", (*previousRow).getPreviousRowPtr(),*previousRow,(*previousRow).getNextRowPtr());
+    cout << tmp << endl;
+    sprintf(tmp, "[%d] <- [%d] -> [%d]", (*lastLinePtr).getPreviousRowPtr(),lastLinePtr,(*lastLinePtr).getNextRowPtr());
+    cout << tmp << endl;
+    sprintf(tmp, "[%d] <- [%d] -> [%d]", (*newLinePtr).getPreviousRowPtr(),newLinePtr,(*newLinePtr).getNextRowPtr());
+    cout << tmp << endl;
+
+
+    if (getDocCol() == (*getCurrentRowPtr()).getLength())
+    {
+        setDocCol(0);
+    } else {
+        DocCharacter *candidateDc = (*getCurrentRowPtr()).charPtrAt(getDocCol());
+        cout << (*candidateDc).getChar() << endl;
+
+        DocCharacter *lastDc = (*candidateDc).getPreviousCharPtr();
+        cout << (*lastDc).getChar() << endl;
+
+        (*lastDc).setNextCharPtr(0);
+
+        (*candidateDc).setPreviousCharPtr(0);
+
+        (*newLinePtr).setStartCharPtr((*lastLinePtr).getStartCharPtr());
+        (*lastLinePtr).setStartCharPtr(candidateDc);
+
+        setDocCol(0);
+    }
+
+    setCurrentRowPtr(rowAt(pos));
+    setDocRowEOF(getDocRowEOF() + 1);
+    cursorMoveDown();
+    cursorMoveStartOfLine();
 
     return (*this);
 }
@@ -138,23 +175,28 @@ DocRow * Document::rowAt(DocRow * docRowPtr, int offset)
 
     DocRow * foundRowPtr = 0;
 
-    if (offset > 10000 || docRowPtr == 0) {
+    if (offset < 0 && docRowPtr == 0) {
         return 0;
     }
 
     if (offset == 0) {
         return docRowPtr;
+
     } else if (offset < 0) {
         foundRowPtr = rowAt((*docRowPtr).getNextRowPtr(), -1);
 
         if(foundRowPtr == 0) {
             return docRowPtr;
+        } else {
+            return foundRowPtr;
         }
     } else {
         foundRowPtr = rowAt((*docRowPtr).getNextRowPtr(), --offset);
 
         if(foundRowPtr == 0) {
             return docRowPtr;
+        }else {
+            return foundRowPtr;
         }
     }
 
@@ -166,9 +208,9 @@ Document & Document::cursorMoveUp()
     setDocCol(0);
     setDocRow(getDocRow() - 1);
 
-    if (getDocRow() < 0)
+    if (getDocRow() < 1)
     {
-        setDocRow(0);
+        setDocRow(1);
     }
 
     if ((*getCurrentRowPtr()).getPreviousRowPtr() != 0)
@@ -229,7 +271,7 @@ Document & Document::cursorMoveRight()
 
 Document & Document::cursorMoveEndLine()
 {
-    setDocCol((*getCurrentRowPtr()).getLength());
+    setDocCol((*getCurrentRowPtr()).getLength()-1);
 
     return (*this);
 }
@@ -251,7 +293,7 @@ Document & Document::type(const char character)
         addNewLine();
     } else if (character != '\0') {
         (*getCurrentRowPtr()).append(character, getDocCol());
-        setDocCol(getDocCol()+1);
+        cursorMoveRight();
     }
 
     return (*this);
@@ -267,7 +309,7 @@ Document & Document::type(const char text[])
         } else if (text[i] != '\0')
         {
             (*getCurrentRowPtr()).append(text[i], getDocCol());
-            setDocCol(getDocCol()+1);
+            cursorMoveRight();
         }
     }
 

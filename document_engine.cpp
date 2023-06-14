@@ -36,7 +36,7 @@ void DocumentEngine::render()
     bool hasLineContent = false;
     int lastDocRow = (*getDocument()).getDocRow();
     int lastDocCol = (*getDocument()).getDocCol();
-    char tmp[10];
+    char tmp[100];
 
     renderClearView();
     (*_document)
@@ -63,6 +63,9 @@ void DocumentEngine::render()
         {
             // FIXME Slow as f*ck, please do it with a iterator
             DocCharacter * cPtr = (*rPtr).charPtrAt(c);
+
+            sprintf(tmp, "[%d] <- [%d](%c) -> [%d]", (*cPtr).getPreviousCharPtr(),cPtr, (*cPtr).getChar(),(*cPtr).getNextCharPtr());
+            cout << tmp << endl;
 
             /*sprintf(tmp, "(%d,%d,%d,%d)", c+1, r+1, lastDocCol, lastDocRow);
             int w = sizeof(tmp)/sizeof(tmp[0]);
@@ -92,7 +95,24 @@ void DocumentEngine::render()
                     renderLineWithContentIndicator();
                     renderCarriageReturn();
                     hasLineContent = true;
+
+                    sprintf(tmp, "(%d)", rPtr);
+                    int w = sizeof(tmp)/sizeof(tmp[0]);
+
+                    for (int z=0; z < w; z++)
+                    {
+                        if (tmp[z] == '\0')
+                            break;
+                        DocCharacter d(tmp[z],0,0);
+                        renderCharacter(&d);
+                    }
+
                 }
+            }
+
+            if (lastDocRow == (r+1) && lastDocCol == 0 && (c==0))
+            {
+                renderCursor();
             }
 
             switch((*cPtr).getChar())
@@ -113,13 +133,20 @@ void DocumentEngine::render()
                 break;
             }
 
-            if (lastDocRow == (r+1) && lastDocCol == (c+1))
+            if (lastDocRow == (r+1) && (lastDocCol == c) && (lastDocCol > 0))
             {
                 renderCursor();
             }
 
             (*getDocument()).cursorMoveRight();
         }
+
+
+        if (lastDocRow == (r+1) && (lastDocCol == (*rPtr).getLength()) && (lastDocCol > 0))
+        {
+            renderCursor();
+        }
+
 
         (*getDocument())
             .cursorMoveDown()

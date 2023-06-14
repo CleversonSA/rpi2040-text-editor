@@ -116,7 +116,7 @@ void TextEngine::renderCarriageReturn()
 void TextEngine::renderCursor()
 {
     (*(*getVideoEngine()).getFrameBuffer())
-        .write('_');
+        .write('|');
 }
 
 void TextEngine::renderTabulation()
