@@ -1,0 +1,55 @@
+/*
+    Copyright 2023 Cleverson S A
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+#ifndef APPGLOBALS
+#define APPGLOBALS
+
+#include <malloc.h>
+#include <inttypes.h>
+
+/*
+  Global settings class
+*/
+class AppGlobals
+{
+    public:
+        static const int MAX_MENU_ITEMS_COUNT = 100;
+        static const int MAX_VIEW_TEXT_SIZE = 4096;
+        static const char MENU_ITEM_DELIM[];
+        static const char MENU_ITEM_DETAIL_DELIM[];
+        static const int RPI2040_UART_RX_WAIT_MS = 1000;
+
+        ~AppGlobals();
+
+        static AppGlobals & getInstance();
+
+        static uint32_t getFreeHeap();
+        static uint32_t getTotalHeap();
+
+        void setEnableObjDelLog(const bool);
+        bool getEnableObjDelLog() const;
+
+
+    private:
+        AppGlobals();
+
+        static AppGlobals* _me;
+
+        bool _enableObjDelLog;
+
+};
+
+#endif // DOCCHARACTER
+
