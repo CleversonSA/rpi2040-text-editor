@@ -18,6 +18,9 @@ limitations under the License.
 using std::cout;
 using std::endl;
 
+#include <cstdio>
+using std::sprintf;
+
 //********************** RASPBERRY PI PICO TEST ****************************
 #include "pico/stdlib.h"
 #include "hardware/uart.h"
@@ -27,13 +30,13 @@ using std::endl;
 #include "video_engine.hpp"
 #include "app_globals.hpp"
 #include "vt100_utils.hpp"
+#include "rpi2040_uart_keyboard.hpp"
 
 
 VideoEngine & Rpi2040UartVideo::display()
 {
     char * screenLine = 0;
     int totalMovs = 0;
-
 
     uart_puts(Rpi2040Uart::getInstance().getUart(), VT100Utils::gotoXY(1,1));
     uart_puts(Rpi2040Uart::getInstance().getUart(), VT100Utils::clearScreen());
@@ -58,7 +61,7 @@ VideoEngine & Rpi2040UartVideo::display()
 
             if ((*screenLine) == '\0')
             {
-                uart_puts(Rpi2040Uart::getInstance().getUart(), " ");
+                uart_putc(Rpi2040Uart::getInstance().getUart(), ' ');
             } else {
                 uart_putc(Rpi2040Uart::getInstance().getUart(), (*screenLine));
             }

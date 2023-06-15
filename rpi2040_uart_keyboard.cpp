@@ -406,7 +406,16 @@ void Rpi2040UartKeyboard::onUartRXEvent()
         }
 
         /*if (uart_is_writable(Rpi2040Uart::getInstance().getUart())) {
-            uart_putc(Rpi2040Uart::getInstance().getUart(),'#');
+
+            //uart_puts(Rpi2040Uart::getInstance().getUart(), VT100Utils::gotoXY(26,1));
+            uart_puts(Rpi2040Uart::getInstance().getUart(), VT100Utils::highlightAttribute());
+            char tmp[100];
+
+            sprintf(tmp, "(%c)",
+                    ichar,
+                    (char)ichar);
+            uart_puts(Rpi2040Uart::getInstance().getUart(), tmp);
+            uart_puts(Rpi2040Uart::getInstance().getUart(), VT100Utils::disableAttributes());
         }*/
 
     }
@@ -487,7 +496,7 @@ void Rpi2040UartKeyboard::onUartRXEvent()
         KeyboardMessage::getInstance()._sharedInterruptedLoop = true;
 
         /*if (uart_is_writable(Rpi2040Uart::getInstance().getUart())) {
-            uart_putc(Rpi2040Uart::getInstance().getUart(),'!');
+            uart_putc(Rpi2040Uart::getInstance().getUart(),(char)readCode);
         }*/
 
     }

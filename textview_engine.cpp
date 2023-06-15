@@ -34,7 +34,7 @@ using std::strtok;
 
 void TextViewEngine::run(VideoEngine *videoEngine, KeyboardEngine *keyboardEngine)
 {
-    (*videoEngine).display();
+    //(*videoEngine).display();
 
     TextViewKeyboardCallback *kcb = new TextViewKeyboardCallback;
 

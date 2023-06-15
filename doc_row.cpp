@@ -221,13 +221,14 @@ DocRow & DocRow::append(DocCharacter * charPtr, int pos)
             (*lastCharPtr).setNextCharPtr(charPtr);
             (*charPtr).setPreviousCharPtr(lastCharPtr);
         } else {
-            (*charPtr).setNextCharPtr((*lastCharPtr).getNextCharPtr());
-            (*lastCharPtr).setNextCharPtr(charPtr);
             (*charPtr).setPreviousCharPtr(lastCharPtr);
-            //aux = (*lastCharPtr).getChar();
-            //(*lastCharPtr).setChar((*charPtr).getChar());
-            (*charPtr).setChar(aux);
-        }
+            (*charPtr).setNextCharPtr((*lastCharPtr).getNextCharPtr());
+            DocCharacter *nextOfLastCharPtr = (*lastCharPtr).getNextCharPtr();
+            if (nextOfLastCharPtr != 0)
+            {
+                (*nextOfLastCharPtr).setPreviousCharPtr(charPtr);
+            }
+            (*lastCharPtr).setNextCharPtr(charPtr);        }
     }
 
     return (*this);
