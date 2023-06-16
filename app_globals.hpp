@@ -37,6 +37,7 @@ class AppGlobals
 
         static uint32_t getFreeHeap();
         static uint32_t getTotalHeap();
+        static int calculateSimpleChecksum(char *array, int length);
 
         void setEnableObjDelLog(const bool);
         bool getEnableObjDelLog() const;

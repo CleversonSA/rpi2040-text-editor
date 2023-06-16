@@ -37,36 +37,63 @@ VideoEngine & Rpi2040UartVideo::display()
 {
     char * screenLine = 0;
     int totalMovs = 0;
+    int checksumLine = 0;
 
     uart_puts(Rpi2040Uart::getInstance().getUart(), VT100Utils::gotoXY(1,1));
-    uart_puts(Rpi2040Uart::getInstance().getUart(), VT100Utils::clearScreen());
+
+    // Ruler
+    uart_puts(Rpi2040Uart::getInstance().getUart(), VT100Utils::inverseAttribute());
+    uart_putc(Rpi2040Uart::getInstance().getUart(), 'L');
+    for (int i=1; i< (*getFrameBuffer()).getMaxCols(); i++ )
+    {
+        uart_puts(Rpi2040Uart::getInstance().getUart(), VT100Utils::gotoXY(1,i+1));
+        if ((i % 5) == 0)
+            uart_putc(Rpi2040Uart::getInstance().getUart(), '#');
+        else
+            uart_putc(Rpi2040Uart::getInstance().getUart(), '-');
+    }
+    uart_putc(Rpi2040Uart::getInstance().getUart(), 'R');
+    uart_puts(Rpi2040Uart::getInstance().getUart(), VT100Utils::disableAttributes());
+
+    uart_puts(Rpi2040Uart::getInstance().getUart(), VT100Utils::gotoXY(2,1));
 
     for (int i=0; i < (*getFrameBuffer()).getMaxRows(); i++)
     {
         screenLine = (*getFrameBuffer()).getScreenRow(i);
+
         totalMovs = 0;
+        checksumLine = (*getFrameBuffer()).calculateScreenRowChecksum(i);
 
-        for (int j=0; j < (*getFrameBuffer()).getMaxCols(); j++)
-        {
-            // I noticed uart fails if I fb needs more speed on refresh and
-            // not completed the last request to send data. Rpi freezes. Lets try
-            // wait a little
-            /*if (!uart_is_writable(Rpi2040Uart::getInstance().getUart()))
-            {
-                busy_wait_us(100);
-                uart_puts(Rpi2040Uart::getInstance().getUart(), "0");
-            } else {
-                uart_puts(Rpi2040Uart::getInstance().getUart(), "1");
-            }*/
+        if (checksumLine != (*getFrameBuffer()).getScreenRowChecksum(i)) {
 
-            if ((*screenLine) == '\0')
+            uart_puts(Rpi2040Uart::getInstance().getUart(), VT100Utils::gotoXY(i+2,1));
+
+            for (int j=0; j < (*getFrameBuffer()).getMaxCols(); j++)
             {
-                uart_putc(Rpi2040Uart::getInstance().getUart(), ' ');
-            } else {
-                uart_putc(Rpi2040Uart::getInstance().getUart(), (*screenLine));
+                // I noticed uart fails if I fb needs more speed on refresh and
+                // not completed the last request to send data. Rpi freezes. Lets try
+                // wait a little
+                /*if (!uart_is_writable(Rpi2040Uart::getInstance().getUart()))
+                {
+                    busy_wait_us(100);
+                    uart_puts(Rpi2040Uart::getInstance().getUart(), "0");
+                } else {
+                    uart_puts(Rpi2040Uart::getInstance().getUart(), "1");
+                }*/
+
+                if ((*screenLine) == '\0')
+                {
+                    uart_putc(Rpi2040Uart::getInstance().getUart(), ' ');
+                } else {
+                    uart_putc(Rpi2040Uart::getInstance().getUart(), (*screenLine));
+                }
+                screenLine++;
+                totalMovs++;
+
+
             }
-            screenLine++;
-            totalMovs++;
+
+            (*getFrameBuffer()).updateScreenRowChecksum(i);
         }
 
         for (int j=0; j < totalMovs; j++)
@@ -75,7 +102,7 @@ VideoEngine & Rpi2040UartVideo::display()
         }
         delete screenLine;
 
-        uart_puts(Rpi2040Uart::getInstance().getUart(), VT100Utils::lineBreak());
+
     }
 
 

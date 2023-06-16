@@ -38,6 +38,7 @@ class FrameBuffer: public CSAObject
         int getRow() const;
 
         char * getScreenRow(const int) const;
+        int getScreenRowChecksum(int) const;
         bool isAtBottom() const;
         bool isAtTop() const;
         bool isAtStartOfLine() const;
@@ -56,6 +57,8 @@ class FrameBuffer: public CSAObject
         FrameBuffer & cursorMoveStartOfLine();
         FrameBuffer & clearScreen();
         FrameBuffer & clearLine();
+        FrameBuffer & updateScreenRowChecksum(int);
+        int calculateScreenRowChecksum(int);
 
         virtual void toString();
         virtual int getMemSize();
@@ -65,7 +68,8 @@ class FrameBuffer: public CSAObject
         int _maxCols;
         int _row;
         int _col;
-        char _screen[80][40];
+        char _screen[25][80];
+        int  _screenRowsChecksum[25];
 
         int getLineLength() const;
 };

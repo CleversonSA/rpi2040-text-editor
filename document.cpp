@@ -89,16 +89,22 @@ Document & Document::addNewLine()
     DocRow * lastLinePtr = 0;
 
     if (getDocRowEOF() > 0) {
-        lastLinePtr = rowAt(-1);
+        lastLinePtr = getCurrentRowPtr();
+        //Ta caindo em nulo
+        (*newLinePtr).setNextRowPtr((*(*lastLinePtr).getPreviousRowPtr()).getNextRowPtr());
+        if ((*lastLinePtr).getNextRowPtr() != 0) {
+            (*(*lastLinePtr).getNextRowPtr()).setPreviousRowPtr(newLinePtr);
+        }
         (*lastLinePtr).setNextRowPtr(newLinePtr);
         (*newLinePtr).setPreviousRowPtr(lastLinePtr);
-        (*newLinePtr).setNextRowPtr(0);
     } else {
         setStartRowPtr(newLinePtr);
     }
 
     setDocRowEOF(getDocRowEOF() + 1);
     setCurrentRowPtr(newLinePtr);
+    setDocCol(0);
+    setDocRow(getDocRow() + 1);
 
     return (*this);
 }
@@ -217,9 +223,19 @@ Document & Document::cursorMoveUp()
 
     if ((*getCurrentRowPtr()).getPreviousRowPtr() != 0)
     {
+        int tam = (*(*getCurrentRowPtr()).getPreviousRowPtr()).getLength();
+        if (tam >=1)
+            setDocCol(tam-1);
+        else
+            setDocCol(0);
         setCurrentRowPtr((*getCurrentRowPtr()).getPreviousRowPtr());
     } else {
         setCurrentRowPtr(getCurrentRowPtr());
+        int tam = (*getCurrentRowPtr()).getLength();
+        if (tam >=1)
+            setDocCol(tam-1);
+        else
+            setDocCol(0);
     }
 
     return (*this);
@@ -230,9 +246,9 @@ Document & Document::cursorMoveDown()
     setDocCol(0);
     setDocRow(getDocRow() + 1);
 
-    if (getDocRow() > getDocRowEOF())
+    if (getDocRow() >= getDocRowEOF())
     {
-        setDocRow(getDocRowEOF());
+        setDocRow(getDocRowEOF()-1);
     }
 
     if ((*getCurrentRowPtr()).getNextRowPtr() != 0)
@@ -267,7 +283,7 @@ Document & Document::cursorMoveRight()
 {
     setDocCol(getDocCol() + 1);
 
-    if (getDocCol() > (*getCurrentRowPtr()).getLength())
+    if (getDocCol() == (*getCurrentRowPtr()).getLength())
     {
         cursorMoveDown();
     }

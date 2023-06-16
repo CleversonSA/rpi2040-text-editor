@@ -43,6 +43,7 @@ using std::atoi;
 #include "rpi2040_uart_keyboard.hpp"
 #include "rpi2040_uart_video.hpp"
 
+
 #include "msgbox_sample_callback.hpp"
 #include "menu_sample_callback.hpp"
 #include "inputbox_sample_callback.hpp"
@@ -53,6 +54,7 @@ using std::atoi;
 #include "hardware/uart.h"
 #include "hardware/irq.h"
 #include "pico/time.h"
+
 
 Rpi2040Uart rpi2040uart = Rpi2040Uart::getInstance();
 
@@ -65,6 +67,7 @@ int main()
     int pausa = 0;
     FrameBuffer fb(24,40);
 
+
     rpi2040uart.setup();
     Rpi2040UartKeyboard rpiUartKb = Rpi2040UartKeyboard::getInstance();
     KeyboardEngine *keyboard = &rpiUartKb;
@@ -76,11 +79,21 @@ int main()
     (*video)
         .setFrameBuffer(&fb);
 
+    /*
+    ConsoleVideo consoleVideo;
+    VideoEngine *video = &consoleVideo;
 
+    (*video)
+        .setFrameBuffer(&fb);
+    */
     Document doc;
+
 
     TextEngine textEngine(&doc, video);
     textEngine.render();
+    (*video)
+        .display();
+
     textEngine.run(video, keyboard);
 
 

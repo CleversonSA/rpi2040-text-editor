@@ -37,21 +37,41 @@ bool AppGlobals::getEnableObjDelLog() const
 
 uint32_t AppGlobals::getTotalHeap(void)
 {
-   /*extern char __StackLimit, __bss_end__;
+   //extern char __StackLimit, __bss_end__;
 
-   return &__StackLimit  - &__bss_end__;*/
+   //return &__StackLimit  - &__bss_end__;
    return 0;
 }
 
 uint32_t AppGlobals::getFreeHeap(void)
 {
-   /*struct mallinfo m = mallinfo();
+   //struct mallinfo m = mallinfo();
 
-   return AppGlobals::getTotalHeap() - m.uordblks;*/
+   //return AppGlobals::getTotalHeap() - m.uordblks;
+
    return 0;
 }
 
+int AppGlobals::calculateSimpleChecksum(char *array, int length)
+{
+    //Code fom https://itecnote.com/tecnote/calculating-a-16-bit-checksum/
 
+    volatile size_t l = (int)length; // This is the length of the data
+    volatile uint16_t checksum = 0;
+    volatile size_t even_length = length - length%2; // Round down to multiple of 2
+    volatile int i = 0;
+
+    for (i = 0; i < even_length; i += 2) {
+        volatile uint16_t val = array[i] + 256 * array[i+1];
+        checksum += val;
+    }
+
+    if (i < length) { // Last byte if it's odd length
+        checksum += array[i];
+    }
+
+    return checksum;
+}
 
 AppGlobals& AppGlobals::getInstance()
 {

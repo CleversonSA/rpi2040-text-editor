@@ -127,6 +127,7 @@ int FrameBuffer::getLineLength() const
     return 0;
 }
 
+
 FrameBuffer & FrameBuffer::cursorMoveEndOfLine()
 {
     int qtItems = getLineLength();
@@ -269,6 +270,24 @@ int FrameBuffer::getMaxCols() const
     return _maxCols;
 }
 
+int FrameBuffer::getScreenRowChecksum(int row) const
+{
+    return _screenRowsChecksum[row];
+}
+
+FrameBuffer & FrameBuffer::updateScreenRowChecksum(int row)
+{
+    char *screenRow = _screen[row];
+
+    _screenRowsChecksum[row] = AppGlobals::getInstance().calculateSimpleChecksum(screenRow, _maxCols);
+
+    return (*this);
+}
+
+int FrameBuffer::calculateScreenRowChecksum(int row)
+{
+    return AppGlobals::getInstance().calculateSimpleChecksum(_screen[row], _maxCols);
+}
 
 void FrameBuffer::toString()
 {
@@ -309,7 +328,6 @@ _row(0),
 _col(0)
 {
     clearScreen();
-
 }
 
 
