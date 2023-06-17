@@ -76,26 +76,62 @@ int main()
     rpi2040uart.setup();
     VideoEngine *video = &rpi2040UartVideo;
 
-    (*video)
-        .setFrameBuffer(&fb);
-
-    /*
-    ConsoleVideo consoleVideo;
-    VideoEngine *video = &consoleVideo;
-
-    (*video)
-        .setFrameBuffer(&fb);
-    */
     Document doc;
 
+    (*video)
+        .setFrameBuffer(&fb);
 
     TextEngine textEngine(&doc, video);
     textEngine.render();
-    (*video)
-        .display();
 
+    (*video).display();
     textEngine.run(video, keyboard);
 
+
+
+
+    /*Document doc;
+
+    doc.type("123");
+    doc.addNewLine();
+    doc.type("456");
+    doc.addNewLine();
+    doc.type("789");
+
+    ConsoleVideo consoleVideo;
+    VideoEngine *video = &consoleVideo;
+    (*video)
+        .setFrameBuffer(&fb);
+
+    TextEngine textEngine(&doc, video);
+    textEngine.render();
+    (*video).display();
+
+    doc.addNewLine();
+    doc.type("012");
+    doc.cursorMoveLeft();
+    doc.cursorMoveLeft();
+    doc.cursorMoveLeft();
+    doc.cursorMoveLeft();
+    doc.triggerBackspace();
+    doc.triggerBackspace();
+    doc.triggerBackspace();
+    doc.triggerBackspace();
+    doc.cursorMoveUp();
+    doc.triggerBackspace();
+    doc.triggerBackspace();
+    doc.triggerBackspace();
+    doc.triggerBackspace();
+    doc.cursorMoveDown();
+    doc.cursorMoveStartOfLine();
+    doc.triggerBackspace();
+
+    textEngine.render();
+    (*video)
+        .display();
+    //textEngine.run(video, keyboard);
+
+*/
 
     cout << "Inicializado" << endl;
 

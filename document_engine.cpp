@@ -36,6 +36,8 @@ void DocumentEngine::render()
     bool hasLineContent = false;
     int lastDocRow = (*getDocument()).getDocRow();
     int lastDocCol = (*getDocument()).getDocCol();
+    int rowEOF =  (*getDocument()).getDocRowEOF();
+    int rowLength = 0;
     char tmp[100];
 
     renderClearView();
@@ -43,12 +45,14 @@ void DocumentEngine::render()
         .cursorMoveBegin();
 
 
-    for (int r = 0; r < (*getDocument()).getDocRowEOF(); r++)
+    for (int r = 0; r < rowEOF; r++)
     {
         DocRow * rPtr = (*getDocument()).getCurrentRowPtr();
+        cout << "Lindo a linha "<< r << "-" << rPtr << "-" << (*getDocument()).getCurrentRowPtr() << " tam=" << (*rPtr).getLength() << endl;
+        //(*rPtr).toString();
 
         if (isCursorAtBottomOfView()
-            && (lastDocRow < r)) {
+            && (lastDocRow < (r+1))) {
             break;
         }
 
@@ -58,8 +62,9 @@ void DocumentEngine::render()
 
         renderEmptyLineIndicator();
         hasLineContent = false;
+        rowLength = (*rPtr).getLength();
 
-        for (int c = 0; c < (*rPtr).getLength(); c++ )
+        for (int c = 0; c <rowLength ; c++ )
         {
             // FIXME Slow as f*ck, please do it with a iterator
             DocCharacter * cPtr = (*rPtr).charPtrAt(c);
@@ -68,7 +73,7 @@ void DocumentEngine::render()
             {
                 renderLineOverflowIndicator();
                 renderLineWithOverflowIndicator();
-                if ((lastDocCol < c) || (lastDocRow != r))
+                if (lastDocCol < (c+1) || (lastDocRow != (r+1)))
                 {
                     break;
                 } else {
@@ -84,10 +89,7 @@ void DocumentEngine::render()
                 }
             }
 
-            if (lastDocRow == r && lastDocCol == 0 && (c==0))
-            {
-                renderCursor();
-            }
+
 
             switch((*cPtr).getChar())
             {
@@ -107,31 +109,36 @@ void DocumentEngine::render()
                 break;
             }
 
-            if (lastDocRow == r && (lastDocCol == c) && (lastDocCol > 0))
+            if (lastDocRow == (r+1) && lastDocCol == 1 && (c==0))
             {
                 renderCursor();
             }
 
-            (*getDocument()).cursorMoveRight();
+            if (lastDocRow == (r+1) && (lastDocCol == (c+1)) && (c > 0))
+            {
+                renderCursor();
+            }
+
         }
 
 
-        if (lastDocRow == r && (lastDocCol == (*rPtr).getLength()) && (lastDocCol > 0))
-        {
-            renderCursor();
-        }
-
-
-        (*getDocument())
-            .cursorMoveDown()
-            .cursorMoveStartOfLine();
         renderLineBreak();
+        (*getDocument()).cursorMoveDown();
+
 
     }
 
     renderEOF();
-    (*getDocument()).setDocCol(lastDocCol);
-    (*getDocument()).setDocRow(lastDocRow);
+    (*getDocument()).cursorMoveBegin();
+    for (volatile int i=1; i<lastDocRow; i++)
+    {
+        (*getDocument()).cursorMoveDown();
+    }
+
+    for (volatile int i=1; i<lastDocCol; i++)
+    {
+        (*(*getDocument()).getCurrentRowPtr()).moveNextCharPtr();
+    }
     renderColRow();
 
 }

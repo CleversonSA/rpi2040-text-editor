@@ -43,6 +43,7 @@ VideoEngine & Rpi2040UartVideo::display()
 
     // Ruler
     uart_puts(Rpi2040Uart::getInstance().getUart(), VT100Utils::inverseAttribute());
+    uart_puts(Rpi2040Uart::getInstance().getUart(), VT100Utils::highlightAttribute());
     uart_putc(Rpi2040Uart::getInstance().getUart(), 'L');
     for (int i=1; i< (*getFrameBuffer()).getMaxCols(); i++ )
     {

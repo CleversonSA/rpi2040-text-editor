@@ -231,6 +231,8 @@ DocRow & DocRow::append(DocCharacter * charPtr, int pos)
             (*lastCharPtr).setNextCharPtr(charPtr);        }
     }
 
+    setCurrentCharPtr(charPtr);
+
     return (*this);
 }
 
@@ -293,12 +295,17 @@ int DocRow::getLength () const
 
 int DocRow::getLength (const DocCharacter * startCharPtr, int qtLength) const
 {
-
+    cout << "calculado " << qtLength << endl;
     if (startCharPtr != 0) {
+        cout << (*startCharPtr).getNextCharPtr() << endl;
        return getLength((*startCharPtr).getNextCharPtr(), ++qtLength);
+
     } else {
+        cout << "Retornou" << qtLength << endl;
        return qtLength;
     }
+
+
 
 }
 
@@ -350,14 +357,113 @@ void DocRow::deleteAllChars (const DocCharacter * startCharPtr)
 
 }
 
+DocRow & DocRow::setCurrentCharPtr(DocCharacter *cPtr)
+{
+    _currentCharPtr = cPtr;
+
+    return (*this);
+}
+
+
+DocCharacter * DocRow::getLastCharPtr() const
+{
+    return getLastCharPtr(getStartCharPtr());
+}
+
+
+DocCharacter * DocRow::getLastCharPtr(DocCharacter *charPtr) const
+{
+    DocCharacter *dc = 0;
+
+    if (charPtr == 0) {
+        return 0;
+    }
+
+    dc = getLastCharPtr((*charPtr).getNextCharPtr());
+    if (dc == 0) {
+        return charPtr;
+    }
+    return dc;
+}
+
+DocCharacter * DocRow::getCurrentCharPtr() const
+{
+    return _currentCharPtr;
+}
+
+DocRow & DocRow::movePreviousCharPtr()
+{
+    if (_currentCharPtr != 0) {
+        if ((*_currentCharPtr).getPreviousCharPtr() != 0) {
+            _currentCharPtr = (*_currentCharPtr).getPreviousCharPtr();
+        }
+    }
+
+    return (*this);
+}
+
+
+DocRow & DocRow::moveNextCharPtr()
+{
+    if (_currentCharPtr != 0) {
+        if ((*_currentCharPtr).getNextCharPtr() != 0) {
+            _currentCharPtr = (*_currentCharPtr).getNextCharPtr();
+        }
+    }
+
+    return (*this);
+}
+
+
+bool DocRow::isCurrentCharPtrAtEnd() const
+{
+    if (_currentCharPtr != 0) {
+        if ((*_currentCharPtr).getNextCharPtr() == 0)
+            {
+                return true;
+            }
+    }
+    return false;
+}
+
+bool DocRow::isCurrentCharPtrAtStart() const
+{
+    if (_currentCharPtr != 0) {
+        if ((*_currentCharPtr).getPreviousCharPtr() == 0)
+        {
+           return true;
+        }
+        return false;
+    }
+    return true;
+}
+
 void DocRow::toString()
 {
     cout << "[DocRow] [UID=" << CSAObject::getSerialVersionUID() << "] [SIZE=" << sizeof((*this)) <<"] "
-         << "[Addr=" << &(*this) << "] "
-         << "[startCharPtr=" << getStartCharPtr() << "] "
-         << "[previousRowPtr=" << getPreviousRowPtr() << "] "
-         << "[nextRowPtr=" << getNextRowPtr() << "] "
-         << endl;
+         << "[Addr=" << &(*this) << "] ";
+    if (getStartCharPtr() == 0)
+    {
+        cout <<  "[startCharPtr=" << 0 << "] ";
+    } else {
+        cout <<  "[startCharPtr=" << getStartCharPtr() << "] ";
+    }
+
+    if (getPreviousRowPtr() == 0)
+    {
+        cout << "[previousRowPtr=" << 0 << "] ";
+    } else {
+        cout << "[previousRowPtr=" << getPreviousRowPtr() << "] ";
+    }
+
+    if (getNextRowPtr() == 0)
+    {
+        cout << "[nextRowPtr=" << 0 << "] ";
+    } else {
+        cout << "[nextRowPtr=" << getNextRowPtr() << "] ";
+    }
+
+    cout << endl;
 }
 
 int DocRow::getMemSize()
@@ -376,7 +482,8 @@ DocRow::DocRow(DocCharacter * startCharPtr, DocRow * nextRowPtr, DocRow * previo
 CSAObject(),
 _nextRowPtr(nextRowPtr),
 _previousRowPtr(previousRowPtr),
-_startCharPtr(startCharPtr)
+_startCharPtr(startCharPtr),
+_currentCharPtr(startCharPtr)
 {
     /*DocCharacter *dc = new DocCharacter('\0');
 

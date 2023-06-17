@@ -178,7 +178,7 @@ void TextEngine::renderColRow()
     (*(*getVideoEngine()).getFrameBuffer())
       .gotoXY((*(*getVideoEngine()).getFrameBuffer()).getMaxRows() - 1,(*(*getVideoEngine()).getFrameBuffer()).getMaxCols()-10);
 
-    sprintf(number_array, "%d", ((*getDocument()).getDocRow()+1)+1000);
+    sprintf(number_array, "%d", ((*getDocument()).getDocRow())+1000);
 
     (*getVideoEngine()->getFrameBuffer())
         .write('[')
@@ -186,7 +186,7 @@ void TextEngine::renderColRow()
         .write(number_array[2])
         .write(number_array[3]);
 
-    sprintf(number_array, "%d", ((*getDocument()).getDocCol()+1)+1000);
+    sprintf(number_array, "%d", ((*getDocument()).getDocCol())+1000);
 
     (*getVideoEngine()->getFrameBuffer())
         .write(',')

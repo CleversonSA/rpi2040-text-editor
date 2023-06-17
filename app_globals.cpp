@@ -56,6 +56,8 @@ int AppGlobals::calculateSimpleChecksum(char *array, int length)
 {
     //Code fom https://itecnote.com/tecnote/calculating-a-16-bit-checksum/
 
+    //TODO Melhorar a performance desse calculo, nao esta bom
+
     volatile size_t l = (int)length; // This is the length of the data
     volatile uint16_t checksum = 0;
     volatile size_t even_length = length - length%2; // Round down to multiple of 2

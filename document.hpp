@@ -27,11 +27,8 @@ class Document: public CSAObject
 
         void setDocFileName(const char []);
         char * getDocFileName() const;
-        void setDocRow(const int);
         int getDocRow() const;
-        void setDocCol(const int);
         int getDocCol() const;
-        void setDocRowEOF(const int);
         int getDocRowEOF() const;
         void setStartRowPtr(DocRow *);
         DocRow * getStartRowPtr() const;
@@ -60,9 +57,6 @@ class Document: public CSAObject
 
         DocRow * _startRowPtr;
         DocRow * _currentRowPtr;
-        int _docRow;
-        int _docCol;
-        int _docRowEOF;
         char * _docFileName;
 
         DocRow * rowAt(DocRow *, int);
