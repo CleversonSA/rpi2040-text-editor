@@ -65,7 +65,7 @@ int main()
 {
 
     int pausa = 0;
-    FrameBuffer fb(24,40);
+    FrameBuffer fb(4,20);
 
 
     rpi2040uart.setup();

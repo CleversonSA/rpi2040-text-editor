@@ -496,6 +496,15 @@ Document & Document::triggerBackspace()
     return (*this);
 }
 
+bool Document::isEnabledLineWarp() const
+{
+    return _enableLineWarp;
+}
+
+void Document::setEnabledLineWarp(bool enabledLineWarp)
+{
+    _enableLineWarp = enabledLineWarp;
+}
 
 void Document::setCurrentRowPtr(DocRow * docRow)
 {
@@ -529,7 +538,8 @@ Document::Document():
 CSAObject(),
 _startRowPtr(0),
 _docFileName({"new_file.txt"}),
-_currentRowPtr(0)
+_currentRowPtr(0),
+_enableLineWarp(false)
 {
     addNewLine();
 }

@@ -58,7 +58,7 @@ VideoEngine * TextEngine::getVideoEngine() const
 bool TextEngine::isCursorAtBottomOfView() const
 {
 
-    if ((*(*getVideoEngine()).getFrameBuffer()).getRow() >= (*(*getVideoEngine()).getFrameBuffer()).getMaxRows() - 1)
+    if ((*(*getVideoEngine()).getFrameBuffer()).getRow() == (*(*getVideoEngine()).getFrameBuffer()).getMaxRows() - 1)
     {
         return true;
     }
@@ -69,7 +69,7 @@ bool TextEngine::isCursorAtEndOfViewLine() const
 {
      VideoEngine *video = getVideoEngine();
 
-    if ((*(*getVideoEngine()).getFrameBuffer()).getCol() >= (*(*getVideoEngine()).getFrameBuffer()).getMaxCols() - 1)
+    if ((*(*getVideoEngine()).getFrameBuffer()).getCol() == (*(*getVideoEngine()).getFrameBuffer()).getMaxCols() - 1)
     {
         return true;
     }

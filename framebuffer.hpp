@@ -57,7 +57,7 @@ class FrameBuffer: public CSAObject
         FrameBuffer & cursorMoveStartOfLine();
         FrameBuffer & clearScreen();
         FrameBuffer & clearLine();
-        FrameBuffer & updateScreenRowChecksum(int);
+        FrameBuffer & updateScreenRowChecksum(int, int);
         int calculateScreenRowChecksum(int);
 
         virtual void toString();

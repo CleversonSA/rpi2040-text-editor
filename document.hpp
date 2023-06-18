@@ -26,14 +26,16 @@ class Document: public CSAObject
         ~Document();
 
         void setDocFileName(const char []);
+        void setStartRowPtr(DocRow *);
+        void setCurrentRowPtr(DocRow *);
+        void setEnabledLineWarp(bool);
         char * getDocFileName() const;
         int getDocRow() const;
         int getDocCol() const;
         int getDocRowEOF() const;
-        void setStartRowPtr(DocRow *);
         DocRow * getStartRowPtr() const;
-        void setCurrentRowPtr(DocRow *);
         DocRow * getCurrentRowPtr() const;
+        bool isEnabledLineWarp() const;
 
         DocRow * rowAt(int);
         Document & addNewLine();
@@ -58,6 +60,7 @@ class Document: public CSAObject
         DocRow * _startRowPtr;
         DocRow * _currentRowPtr;
         char * _docFileName;
+        bool _enableLineWarp;
 
         DocRow * rowAt(DocRow *, int);
 };

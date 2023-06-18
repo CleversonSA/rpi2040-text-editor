@@ -213,8 +213,6 @@ DocRow & DocRow::append(DocCharacter * charPtr, int pos)
         }
     } else {
         lastCharPtr = charPtrAt(pos);
-        cout << (*lastCharPtr).getChar() << endl;
-
 
         if ((*lastCharPtr).getNextCharPtr() == 0) {
             (*charPtr).setNextCharPtr(0);

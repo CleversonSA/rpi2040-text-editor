@@ -275,11 +275,11 @@ int FrameBuffer::getScreenRowChecksum(int row) const
     return _screenRowsChecksum[row];
 }
 
-FrameBuffer & FrameBuffer::updateScreenRowChecksum(int row)
+FrameBuffer & FrameBuffer::updateScreenRowChecksum(int row, int checksum)
 {
     char *screenRow = _screen[row];
 
-    _screenRowsChecksum[row] = AppGlobals::getInstance().calculateSimpleChecksum(screenRow, _maxCols);
+    _screenRowsChecksum[row] = checksum;
 
     return (*this);
 }

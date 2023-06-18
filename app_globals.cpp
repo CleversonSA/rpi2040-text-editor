@@ -52,6 +52,20 @@ uint32_t AppGlobals::getFreeHeap(void)
    return 0;
 }
 
+int AppGlobals::calculateChecksum(char *array, uint16_t checksum, int i, size_t even_length)
+{
+    if (i == even_length) {
+        return checksum;
+    }
+
+    volatile uint16_t val = array[i] + 256 * array[i+1];
+    checksum += val;
+    i+=2;
+
+    return calculateChecksum(array, checksum, i, even_length);
+}
+
+
 int AppGlobals::calculateSimpleChecksum(char *array, int length)
 {
     //Code fom https://itecnote.com/tecnote/calculating-a-16-bit-checksum/
@@ -63,10 +77,11 @@ int AppGlobals::calculateSimpleChecksum(char *array, int length)
     volatile size_t even_length = length - length%2; // Round down to multiple of 2
     volatile int i = 0;
 
-    for (i = 0; i < even_length; i += 2) {
+    /*for (i = 0; i < even_length; i += 2) {
         volatile uint16_t val = array[i] + 256 * array[i+1];
         checksum += val;
-    }
+    }*/
+    checksum = calculateChecksum(array, checksum, i, even_length);
 
     if (i < length) { // Last byte if it's odd length
         checksum += array[i];
