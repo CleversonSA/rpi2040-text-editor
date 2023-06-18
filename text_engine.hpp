@@ -55,7 +55,7 @@ class TextEngine : public DocumentEngine
 
         virtual void run(VideoEngine *, KeyboardEngine *);
 
-    private:
+    protected:
 
         WidgetCallback* _widgetCallback;
         VideoEngine *_videoEngine;

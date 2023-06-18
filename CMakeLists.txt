@@ -59,6 +59,8 @@ set(SOURCES
         textengine_keyboard_callback.hpp
         text_engine.cpp
         text_engine.hpp
+        rpi2040_text_engine.cpp
+        rpi2040_text_engine.hpp
         textview_engine.cpp
         textview_engine.hpp
         video_engine.cpp

@@ -42,7 +42,7 @@ using std::atoi;
 #include "rpi2040_uart.hpp"
 #include "rpi2040_uart_keyboard.hpp"
 #include "rpi2040_uart_video.hpp"
-
+#include "rpi2040_text_engine.hpp"
 
 #include "msgbox_sample_callback.hpp"
 #include "menu_sample_callback.hpp"
@@ -81,12 +81,11 @@ int main()
     (*video)
         .setFrameBuffer(&fb);
 
-    TextEngine textEngine(&doc, video);
+    Rpi2040TextEngine textEngine(&doc, video);
     textEngine.render();
 
     (*video).display();
     textEngine.run(video, keyboard);
-
 
 
 
