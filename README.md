@@ -14,7 +14,7 @@ It´s in alpha stages yet, a lot of bugs, but I´ll improve this project in my s
 - Widgets architeture layer (yes, msgbox, inputbox, textview, splashview, menus...to use with serial or a LCD or VGA, maybe).
 - Keyboard architeture layer(I could use serial, usb, or implement a PS/2 keyboard support, even a custom one).
 - Framebuffer render architeture layer (I could output the screen in serial or console, LCD, in future).
-- 
+-
 
 ## Getting Started
 
@@ -24,7 +24,17 @@ It´s in alpha stages yet, a lot of bugs, but I´ll improve this project in my s
 
 ### Installing
 
-* I´ll write better when I have a beta version
+* The application is in alpha stage. If you wanna check just for fun, all you need is a:
+
+    - RPI 2040 board (with or wihout wifi, does not matter).
+    - A USB-Serial dongle
+    - Putty terminal (Windows) or stty (Linux/MAX)
+
+    1) Press BOOTSEC button on RPi Pico and upload to it the most recent file at "dist" dir (rpi2040_text_editor_x.x.x.uf2)
+    2) Wire TX/RX pins of UART 1 of Rpi Board to the USB-Serial dongle (beware the voltage, Rpi Pico is 3.3v only, with my generic dongle, I have no problems with voltage, but you could use a bidirectional logic converter (5v-3.3v) for more security)
+    3) Open terminal app and set baud rate to 115200 (VT100 style compatible)
+    4) Turn on the RPi and a editor window will be rendered
+    5) Type and fun.
 
 ## Help
 
