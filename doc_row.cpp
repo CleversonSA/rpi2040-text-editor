@@ -195,39 +195,24 @@ DocRow & DocRow::append(DocCharacter * charPtr, int pos)
     DocCharacter * lastCharPtr = 0;
     char aux = '\0';
 
-    if (pos <= 0)
+    if (_startCharPtr != 0)
     {
-        if (_startCharPtr != 0)
-        {
-            lastCharPtr = charPtrAtEnd(_startCharPtr);
+            lastCharPtr = getCurrentCharPtr();
 
+            DocCharacter *nextChar = (*lastCharPtr).getNextCharPtr();
+            if ( nextChar != 0) {
+                (*(*lastCharPtr).getNextCharPtr()).setPreviousCharPtr(charPtr);
+            }
+            (*charPtr).setNextCharPtr(nextChar);
             (*lastCharPtr).setNextCharPtr(charPtr);
             (*charPtr).setPreviousCharPtr(lastCharPtr);
-            (*lastCharPtr).setChar((*charPtr).getChar());
-            (*charPtr).setChar('\0');
-            (*charPtr).setNextCharPtr(0);
-        } else {
+
+    } else {
             (*charPtr).setNextCharPtr(0);
             (*charPtr).setPreviousCharPtr(0);
             _startCharPtr = charPtr;
-        }
-    } else {
-        lastCharPtr = charPtrAt(pos);
-
-        if ((*lastCharPtr).getNextCharPtr() == 0) {
-            (*charPtr).setNextCharPtr(0);
-            (*lastCharPtr).setNextCharPtr(charPtr);
-            (*charPtr).setPreviousCharPtr(lastCharPtr);
-        } else {
-            (*charPtr).setPreviousCharPtr(lastCharPtr);
-            (*charPtr).setNextCharPtr((*lastCharPtr).getNextCharPtr());
-            DocCharacter *nextOfLastCharPtr = (*lastCharPtr).getNextCharPtr();
-            if (nextOfLastCharPtr != 0)
-            {
-                (*nextOfLastCharPtr).setPreviousCharPtr(charPtr);
-            }
-            (*lastCharPtr).setNextCharPtr(charPtr);        }
     }
+
 
     setCurrentCharPtr(charPtr);
 

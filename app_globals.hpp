@@ -29,7 +29,7 @@ class AppGlobals
         static const int MAX_VIEW_TEXT_SIZE = 4096;
         static const char MENU_ITEM_DELIM[];
         static const char MENU_ITEM_DETAIL_DELIM[];
-        static const int RPI2040_UART_RX_WAIT_MS = 1000;
+        static const int RPI2040_UART_RX_WAIT_MS = 100;
 
         ~AppGlobals();
 

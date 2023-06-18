@@ -38,6 +38,7 @@ void DocumentEngine::render()
     int lastDocCol = (*getDocument()).getDocCol();
     int rowEOF =  (*getDocument()).getDocRowEOF();
     int rowLength = 0;
+    int bytes = 0;
     char tmp[100];
 
     renderClearView();
@@ -67,7 +68,7 @@ void DocumentEngine::render()
         for (int c = 0; c <rowLength ; c++ )
         {
             // FIXME Slow as f*ck, please do it with a iterator
-            DocCharacter * cPtr = (*rPtr).charPtrAt(c);
+            DocCharacter * cPtr = (*rPtr).getCurrentCharPtr();
 
             if(isCursorAtEndOfViewLine())
             {
@@ -119,6 +120,9 @@ void DocumentEngine::render()
                 renderCursor();
             }
 
+
+            (*rPtr).moveNextCharPtr();
+            bytes++;
         }
 
 
@@ -139,7 +143,7 @@ void DocumentEngine::render()
     {
         (*(*getDocument()).getCurrentRowPtr()).moveNextCharPtr();
     }
-    renderColRow();
+    renderColRow(lastDocRow, lastDocCol, bytes);
 
 }
 

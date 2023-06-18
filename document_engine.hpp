@@ -51,7 +51,7 @@ class DocumentEngine : public WidgetEngine
         virtual void renderLineWithContentIndicator() = 0;
         virtual void renderEOF() = 0;
         virtual void renderCharacter(DocCharacter *) = 0;
-        virtual void renderColRow() = 0;
+        virtual void renderColRow(int, int, int) = 0;
 
 
     private:

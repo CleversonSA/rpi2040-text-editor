@@ -58,7 +58,7 @@ VideoEngine * TextEngine::getVideoEngine() const
 bool TextEngine::isCursorAtBottomOfView() const
 {
 
-    if ((*(*getVideoEngine()).getFrameBuffer()).getRow() == (*(*getVideoEngine()).getFrameBuffer()).getMaxRows() - 1)
+    if ((*(*getVideoEngine()).getFrameBuffer()).getRow() == (*(*getVideoEngine()).getFrameBuffer()).getMaxRows() - 2)
     {
         return true;
     }
@@ -171,14 +171,24 @@ void TextEngine::renderCharacter(DocCharacter *dc)
     cout << "[" << (*(*getVideoEngine()).getFrameBuffer()).getRow() << "," << (*(*getVideoEngine()).getFrameBuffer()).getCol() << "]" << endl;
 }
 
-void TextEngine::renderColRow()
+void TextEngine::renderColRow(int row, int col, int bytes)
 {
     char number_array[5 + sizeof(char)];
 
     (*(*getVideoEngine()).getFrameBuffer())
-      .gotoXY((*(*getVideoEngine()).getFrameBuffer()).getMaxRows() - 1,(*(*getVideoEngine()).getFrameBuffer()).getMaxCols()-10);
+      .gotoXY((*(*getVideoEngine()).getFrameBuffer()).getMaxRows() - 1,(*(*getVideoEngine()).getFrameBuffer()).getMaxCols()-18);
 
-    sprintf(number_array, "%d", ((*getDocument()).getDocRow())+1000);
+    sprintf(number_array, "%d", (bytes)+10000);
+    (*getVideoEngine()->getFrameBuffer())
+        .write('(')
+        .write(number_array[1])
+        .write(number_array[2])
+        .write(number_array[3])
+        .write(number_array[4])
+        .write(')')
+        .write(' ');
+
+    sprintf(number_array, "%d", (row)+1000);
 
     (*getVideoEngine()->getFrameBuffer())
         .write('[')
@@ -186,7 +196,7 @@ void TextEngine::renderColRow()
         .write(number_array[2])
         .write(number_array[3]);
 
-    sprintf(number_array, "%d", ((*getDocument()).getDocCol())+1000);
+    sprintf(number_array, "%d", (col)+1000);
 
     (*getVideoEngine()->getFrameBuffer())
         .write(',')

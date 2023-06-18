@@ -46,7 +46,7 @@ class TextEngine : public DocumentEngine
         virtual void renderLineWithContentIndicator();
         virtual void renderEOF();
         virtual void renderCharacter(DocCharacter *);
-        virtual void renderColRow();
+        virtual void renderColRow(int, int, int);
 
         virtual VideoEngine * getVideoEngine() const;
 
