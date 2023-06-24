@@ -3,3 +3,5 @@ obj
 *.depend
 *.cbp
 build
+cmake-build-debug
+.idea
