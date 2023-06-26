@@ -20,7 +20,7 @@ limitations under the License.
 #include "../csa_object.hpp"
 #include "../keyboard/keyboard_message.hpp"
 #include "../keyboard/keyboard_callback.hpp"
-/*
+/*q
     Abstract class for agnostic keyboard input (may be a console, USB or Serial Keyboard)
 */
 class KeyboardEngine: public CSAObject
@@ -114,6 +114,7 @@ class KeyboardEngine: public CSAObject
         static const int KEY_UUML_LC_CODE    = 117;
         static const int KEY_UUML_UC_CODE    = 118;
 
+
         static const int KEY_1RST_CODE       = 119;
         static const int KEY_2ND_CODE        = 120;
         static const int KEY_3RD_CODE        = 121;
@@ -121,6 +122,11 @@ class KeyboardEngine: public CSAObject
         static const int KEY_PARA_CODE       = 123;
         static const int KEY_DOTA_CODE       = 124;
         static const int KEY_GRAU_CODE       = 125;
+        static const int KEY_TILDE           = 126;
+        static const int KEY_ACUTE           = 127;
+        static const int KEY_AGRAVE          = 128;
+        static const int KEY_ACIRC           = 129;
+        static const int KEY_AUML            = 130;
 
         KeyboardEngine();
         ~KeyboardEngine();

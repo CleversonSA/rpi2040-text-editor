@@ -33,6 +33,7 @@ class KeyboardMessage
 
         bool _sharedInterruptedLoop = false;
         int  _keyboardKeyCode = -1;
+        int  _qtIgnoreKeyPress = 0;
         char  _rawCode = '\0';
 
     private:

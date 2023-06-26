@@ -8,6 +8,8 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPICO_USE_MALLOC_MUTEX=1")
 #add_subdirectory(littlefs-lib)
 #add_subdirectory(stdinit-lib)
 set(SOURCES
+        tusb_config.h
+        rpi2040_sdk/hid_app.cpp
         main.cpp
         app_globals.cpp
         app_globals.hpp
@@ -79,14 +81,20 @@ set(SOURCES
         rpi2040/rpi2040_uart_keyboard.hpp
         rpi2040/rpi2040_uart_video.cpp
         rpi2040/rpi2040_uart_video.hpp
-
+        rpi2040/rpi2040_usb_keyboard.cpp
+        rpi2040/rpi2040_usb_keyboard.hpp
         )
 foreach(name IN ITEMS main)
     add_executable(${name} ${SOURCES})
     pico_enable_stdio_uart(${name} 1)
     pico_enable_stdio_usb(${name} 0)
     #target_link_libraries(${name} PRIVATE pico_stdlib littlefs-lib stdinit-lib)
-    target_link_libraries(${name} PRIVATE pico_stdlib)
+    target_link_libraries(${name} PRIVATE
+            pico_stdlib
+            tinyusb_host
+            tinyusb_board
+            )
+    target_include_directories(main PRIVATE ${CMAKE_CURRENT_LIST_DIR})
     pico_add_extra_outputs(${name})
 endforeach()
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g")

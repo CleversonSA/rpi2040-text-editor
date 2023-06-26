@@ -43,6 +43,7 @@ using std::atoi;
 #include "rpi2040/rpi2040_uart_keyboard.hpp"
 #include "rpi2040/rpi2040_uart_video.hpp"
 #include "rpi2040/rpi2040_text_engine.hpp"
+#include "rpi2040/rpi2040_usb_keyboard.hpp"
 
 #include "keyboard_samples/msgbox_sample_callback.hpp"
 #include "keyboard_samples/menu_sample_callback.hpp"
@@ -69,12 +70,18 @@ int main()
 
 
     rpi2040uart.setup();
-    Rpi2040UartKeyboard rpiUartKb = Rpi2040UartKeyboard::getInstance();
+
+    /*Rpi2040UartKeyboard rpiUartKb = Rpi2040UartKeyboard::getInstance();
     KeyboardEngine *keyboard = &rpiUartKb;
+    */
+    Rpi2040UsbKeyboard rpi2040UsbKeyboard = Rpi2040UsbKeyboard::getInstance();
+    KeyboardEngine *keyboard = &rpi2040UsbKeyboard;
 
     Rpi2040UartVideo rpi2040UartVideo;
     rpi2040uart.setup();
     VideoEngine *video = &rpi2040UartVideo;
+
+    sleep_ms(15000);
 
     Document doc;
 
