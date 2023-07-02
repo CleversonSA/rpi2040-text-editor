@@ -26,6 +26,8 @@ limitations under the License.
 class MsgBoxEngine: public WidgetEngine
 {
     public:
+        static const int DISPLAY_CONTEXT_ID = 16004;
+
         static const int NO_ICON = 53600;
         static const int EXCLAMATION_ICON = 53601;
         static const int ERROR_ICON = 53602;

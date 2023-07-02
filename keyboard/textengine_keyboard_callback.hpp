@@ -20,7 +20,7 @@ limitations under the License.
 #include "../csa_object.hpp"
 #include "../engine/video_engine.hpp"
 #include "keyboard_callback.hpp"
-#include "../engine/text_engine.hpp"
+#include "../engine/text_render_engine.hpp"
 
 /*
   Handle the callback of a keyboard completition for document editor
@@ -34,8 +34,8 @@ class TextEngineKeyboardCallback : public KeyboardCallback
 
         void setVideoEngine(VideoEngine *);
         VideoEngine * getVideoEngine();
-        void setTextEngine(TextEngine *);
-        TextEngine * getTextEngine();
+        void setTextEngine(TextRenderEngine *);
+        TextRenderEngine * getTextEngine();
 
         virtual bool execute(const int, const char);
 
@@ -45,7 +45,7 @@ class TextEngineKeyboardCallback : public KeyboardCallback
     private:
 
         VideoEngine *_videoEngine;
-        TextEngine *_textEngine;
+        TextRenderEngine *_textEngine;
 };
 
 #endif // DOCCHARACTER

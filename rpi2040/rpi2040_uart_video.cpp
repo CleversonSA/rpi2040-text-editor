@@ -32,8 +32,9 @@ using std::sprintf;
 #include "../utils/vt100_utils.hpp"
 #include "rpi2040_uart_keyboard.hpp"
 
+#include "../engine/text_render_engine.hpp"
 
-VideoEngine & Rpi2040UartVideo::display()
+void Rpi2040UartVideo::displayDocumentContext()
 {
     char * screenLine = 0;
     int totalMovs = 0;
@@ -55,7 +56,6 @@ VideoEngine & Rpi2040UartVideo::display()
     }
     uart_putc(Rpi2040Uart::getInstance().getUart(), 'R');
     uart_puts(Rpi2040Uart::getInstance().getUart(), VT100Utils::disableAttributes());
-
     uart_puts(Rpi2040Uart::getInstance().getUart(), VT100Utils::gotoXY(2,1));
 
 
@@ -107,7 +107,19 @@ VideoEngine & Rpi2040UartVideo::display()
 
     }
 
+}
 
+
+VideoEngine & Rpi2040UartVideo::display(int displayContextId)
+{
+
+    switch(displayContextId) {
+        case TextRenderEngine::DISPLAY_CONTEXT_ID:
+            displayDocumentContext();
+            break;
+        default:
+            break;
+    }
 
     return (*this);
 }

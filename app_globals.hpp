@@ -31,6 +31,8 @@ class AppGlobals
         static const char MENU_ITEM_DETAIL_DELIM[];
         static const int RPI2040_UART_RX_WAIT_MS = 100;
 
+        static const char STORAGE_DOCUMENTS_DIR[];
+
         ~AppGlobals();
 
         static AppGlobals & getInstance();

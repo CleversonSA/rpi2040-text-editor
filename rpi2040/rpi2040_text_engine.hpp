@@ -19,8 +19,7 @@ limitations under the License.
 #include "../engine/document_engine.hpp"
 #include "../document/document.hpp"
 #include "../engine/video_engine.hpp"
-#include "../engine/keyboard_engine.hpp"
-#include "../engine/widget_callback.hpp"
+#include "../engine/text_render_engine.hpp"
 
 //********************** RASPBERRY PI PICO TEST ****************************
 #include "pico/stdlib.h"
@@ -28,7 +27,7 @@ limitations under the License.
 /*
   Document engine processing for RPI2040 only
 */
-class Rpi2040TextEngine : public TextEngine
+class Rpi2040TextEngine : public TextRenderEngine
 {
     public:
         Rpi2040TextEngine(Document *, VideoEngine *);

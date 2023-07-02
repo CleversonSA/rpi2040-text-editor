@@ -24,6 +24,7 @@ limitations under the License.
 class SplashBoxEngine: public WidgetEngine
 {
     public:
+        static const int DISPLAY_CONTEXT_ID = 16005;
         static const int NO_ICON = 73600;
         static const int EXCLAMATION_ICON = 73601;
         static const int ERROR_ICON = 73602;

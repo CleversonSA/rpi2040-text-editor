@@ -34,6 +34,8 @@ class TextViewEngine: public WidgetEngine
         TextViewEngine(MenuEngine *);
         ~TextViewEngine();
 
+        static const int DISPLAY_CONTEXT_ID = 16007;
+
         TextViewEngine & setTitle(const char []);
         char * getTitle() const;
         int getViewLinesCount() const;

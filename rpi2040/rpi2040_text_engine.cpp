@@ -24,7 +24,7 @@ using std::setw;
 using std::strlen;
 using std::sprintf;
 
-#include "../engine/text_engine.hpp"
+#include "../engine/text_render_engine.hpp"
 #include "rpi2040_text_engine.hpp"
 
 //********************** RASPBERRY PI PICO TEST ****************************
@@ -33,7 +33,7 @@ using std::sprintf;
 
 void Rpi2040TextEngine::renderColRow(int row, int col, int bytes)
 {
-    TextEngine::renderColRow(row, col, bytes);
+    TextRenderEngine::renderColRow(row, col, bytes);
 
     if(_ledOn == 1)
     {
@@ -64,7 +64,7 @@ Rpi2040TextEngine::~Rpi2040TextEngine()
 }
 
 Rpi2040TextEngine::Rpi2040TextEngine(Document * document, VideoEngine *videoEngine):
-TextEngine(document, videoEngine),
+TextRenderEngine(document, videoEngine),
 _ledOn(1)
 {
     #ifndef PICO_DEFAULT_LED_PIN

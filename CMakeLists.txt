@@ -53,8 +53,10 @@ set(SOURCES
         keyboard/textview_keyboard_callback.hpp
         keyboard/textengine_keyboard_callback.cpp
         keyboard/textengine_keyboard_callback.hpp
-        engine/text_engine.cpp
-        engine/text_engine.hpp
+        engine/text_render_engine.cpp
+        engine/text_render_engine.hpp
+        engine/text_persistence_engine.cpp
+        engine/text_persistence_engine.hpp
         rpi2040/rpi2040_text_engine.cpp
         rpi2040/rpi2040_text_engine.hpp
         engine/textview_engine.cpp
@@ -83,6 +85,14 @@ set(SOURCES
         rpi2040/rpi2040_uart_video.hpp
         rpi2040/rpi2040_usb_keyboard.cpp
         rpi2040/rpi2040_usb_keyboard.hpp
+        littlefs/lfs.c
+        littlefs/lfs.h
+        littlefs/lfs_util.c
+        littlefs/lfs_util.h
+        engine/disk_engine.h
+        engine/disk_engine.cpp
+        rpi2040/rpi2040_disk_engine.hpp
+        rpi2040/rpi2040_disk_engine.cpp
         )
 foreach(name IN ITEMS main)
     add_executable(${name} ${SOURCES})
@@ -93,6 +103,7 @@ foreach(name IN ITEMS main)
             pico_stdlib
             tinyusb_host
             tinyusb_board
+            hardware_flash
             )
     target_include_directories(main PRIVATE ${CMAKE_CURRENT_LIST_DIR})
     pico_add_extra_outputs(${name})

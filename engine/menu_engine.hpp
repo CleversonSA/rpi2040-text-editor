@@ -31,6 +31,8 @@ class MenuEngine: public WidgetEngine
         MenuEngine();
         ~MenuEngine();
 
+        static const int DISPLAY_CONTEXT_ID = 16003;
+
         MenuEngine & setTitle(const char []);
         char * getTitle() const;
         MenuEngine & setCallback(WidgetCallback *);

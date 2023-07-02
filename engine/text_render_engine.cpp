@@ -24,15 +24,15 @@ using std::setw;
 using std::strlen;
 using std::sprintf;
 
-#include "text_engine.hpp"
+#include "text_render_engine.hpp"
 #include "video_engine.hpp"
 #include "keyboard_engine.hpp"
 #include "../keyboard/textengine_keyboard_callback.hpp"
 
 
-void TextEngine::run(VideoEngine *videoEngine, KeyboardEngine *keyboardEngine)
+void TextRenderEngine::run(VideoEngine *videoEngine, KeyboardEngine *keyboardEngine)
 {
-    (*videoEngine).display();
+    (*videoEngine).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
 
     TextEngineKeyboardCallback *kcb = new TextEngineKeyboardCallback;
 
@@ -47,12 +47,12 @@ void TextEngine::run(VideoEngine *videoEngine, KeyboardEngine *keyboardEngine)
 }
 
 
-VideoEngine * TextEngine::getVideoEngine() const
+VideoEngine * TextRenderEngine::getVideoEngine() const
 {
     return _videoEngine;
 }
 
-bool TextEngine::isCursorAtBottomOfView() const
+bool TextRenderEngine::isCursorAtBottomOfView() const
 {
 
     if ((*(*getVideoEngine()).getFrameBuffer()).getRow() == (*(*getVideoEngine()).getFrameBuffer()).getMaxRows() - 2)
@@ -62,7 +62,7 @@ bool TextEngine::isCursorAtBottomOfView() const
     return false;
 }
 
-bool TextEngine::isCursorAtEndOfViewLine() const
+bool TextRenderEngine::isCursorAtEndOfViewLine() const
 {
      VideoEngine *video = getVideoEngine();
 
@@ -73,7 +73,7 @@ bool TextEngine::isCursorAtEndOfViewLine() const
     return false;
 }
 
-void TextEngine::renderClearView()
+void TextRenderEngine::renderClearView()
 {
    (*(*getVideoEngine()).getFrameBuffer())
         .clearScreen()
@@ -81,12 +81,12 @@ void TextEngine::renderClearView()
 
 }
 
-void TextEngine::renderClearLine()
+void TextRenderEngine::renderClearLine()
 {
     (*(*getVideoEngine()).getFrameBuffer()).clearLine();
 }
 
-void TextEngine::renderLineBreak()
+void TextRenderEngine::renderLineBreak()
 {
     if ((*getVideoEngine()->getFrameBuffer()).getRow() == ((*getVideoEngine()->getFrameBuffer()).getMaxRows() - 1))
     {
@@ -103,59 +103,59 @@ void TextEngine::renderLineBreak()
     }
 }
 
-void TextEngine::renderCarriageReturn()
+void TextRenderEngine::renderCarriageReturn()
 {
    (*(*getVideoEngine()).getFrameBuffer())
         .cursorMoveStartOfLine()
         .cursorMoveRight();
 }
 
-void TextEngine::renderCursor()
+void TextRenderEngine::renderCursor()
 {
     (*(*getVideoEngine()).getFrameBuffer())
         .write('|');
 }
 
-void TextEngine::renderTabulation()
+void TextRenderEngine::renderTabulation()
 {
     (*(*getVideoEngine()).getFrameBuffer())
         .write(' ');
 }
 
-void TextEngine::renderLineOverflowIndicator()
+void TextRenderEngine::renderLineOverflowIndicator()
 {
     (*(*getVideoEngine()).getFrameBuffer())
         .gotoXY((*getVideoEngine()->getFrameBuffer()).getRow(), (*getVideoEngine()->getFrameBuffer()).getMaxCols() - 1)
         .fixedWrite('>');
 }
 
-void TextEngine::renderLineWithOverflowIndicator()
+void TextRenderEngine::renderLineWithOverflowIndicator()
 {
     (*(*getVideoEngine()).getFrameBuffer())
         .gotoXY((*getVideoEngine()->getFrameBuffer()).getRow(), 0)
         .fixedWrite('+');
 }
 
-void TextEngine::renderEmptyLineIndicator()
+void TextRenderEngine::renderEmptyLineIndicator()
 {
     (*(*getVideoEngine()).getFrameBuffer())
         .gotoXY((*getVideoEngine()->getFrameBuffer()).getRow(), 0)
         .fixedWrite('~');
 }
 
-void TextEngine::renderLineWithContentIndicator()
+void TextRenderEngine::renderLineWithContentIndicator()
 {
     (*(*getVideoEngine()).getFrameBuffer())
         .gotoXY((*getVideoEngine()->getFrameBuffer()).getRow(), 0)
         .fixedWrite('.');
 }
 
-void TextEngine::renderEOF()
+void TextRenderEngine::renderEOF()
 {
 
 }
 
-void TextEngine::renderCharacter(DocCharacter *dc)
+void TextRenderEngine::renderCharacter(DocCharacter *dc)
 {
     if ((*dc).getChar() == '\0')
     {
@@ -168,7 +168,7 @@ void TextEngine::renderCharacter(DocCharacter *dc)
     cout << "[" << (*(*getVideoEngine()).getFrameBuffer()).getRow() << "," << (*(*getVideoEngine()).getFrameBuffer()).getCol() << "]" << endl;
 }
 
-void TextEngine::renderColRow(int row, int col, int bytes)
+void TextRenderEngine::renderColRow(int row, int col, int bytes)
 {
     char number_array[5 + sizeof(char)];
 
@@ -203,25 +203,25 @@ void TextEngine::renderColRow(int row, int col, int bytes)
         .write(']');
 }
 
-void TextEngine::toString()
+void TextRenderEngine::toString()
 {
     cout << "[TextEngine] [UID=" << CSAObject::getSerialVersionUID() << "] [SIZE=" << sizeof((*this)) <<"] "
          << endl;
 }
 
-int TextEngine::getMemSize()
+int TextRenderEngine::getMemSize()
 {
     return sizeof((*this));
 }
 
-TextEngine::~TextEngine()
+TextRenderEngine::~TextRenderEngine()
 {
     if(AppGlobals::getInstance().getEnableObjDelLog() == true) {
-        cout << "[TextEngine] [destUID=" << CSAObject::getSerialVersionUID() << "]" << endl;
+        cout << "[TextRenderEngine] [destUID=" << CSAObject::getSerialVersionUID() << "]" << endl;
     }
 }
 
-TextEngine::TextEngine(Document * document, VideoEngine *videoEngine):
+TextRenderEngine::TextRenderEngine(Document * document, VideoEngine *videoEngine):
 DocumentEngine(document),
 _videoEngine(videoEngine)
 {

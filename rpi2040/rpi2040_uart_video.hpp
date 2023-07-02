@@ -30,7 +30,9 @@ class Rpi2040UartVideo: public VideoEngine
         Rpi2040UartVideo();
         ~Rpi2040UartVideo();
 
-       virtual VideoEngine & display();
+        void displayDocumentContext();
+
+       virtual VideoEngine & display(int);
 
        virtual void toString(); // Yes, you know, Java feelings rs
        virtual int getMemSize();

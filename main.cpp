@@ -20,7 +20,7 @@ using std::atoi;
 #include "document/document.hpp"
 #include "video/framebuffer.hpp"
 
-#include "engine/text_engine.hpp"
+#include "engine/text_render_engine.hpp"
 #include "engine/msgbox_engine.hpp"
 #include "engine/inputbox_engine.hpp"
 #include "engine/splashbox_engine.hpp"
@@ -28,6 +28,8 @@ using std::atoi;
 #include "engine/textview_engine.hpp"
 #include "engine/keyboard_engine.hpp"
 #include "engine/video_engine.hpp"
+#include "engine/disk_engine.h"
+#include "engine/text_persistence_engine.hpp"
 
 #include "widgets/lcd4x20_msgbox.hpp"
 #include "widgets/lcd4x20_inputbox.hpp"
@@ -44,6 +46,7 @@ using std::atoi;
 #include "rpi2040/rpi2040_uart_video.hpp"
 #include "rpi2040/rpi2040_text_engine.hpp"
 #include "rpi2040/rpi2040_usb_keyboard.hpp"
+#include "rpi2040/rpi2040_disk_engine.hpp"
 
 #include "keyboard_samples/msgbox_sample_callback.hpp"
 #include "keyboard_samples/menu_sample_callback.hpp"
@@ -55,7 +58,7 @@ using std::atoi;
 #include "hardware/uart.h"
 #include "hardware/irq.h"
 #include "pico/time.h"
-
+#include "bsp/board.h"
 
 Rpi2040Uart rpi2040uart = Rpi2040Uart::getInstance();
 
@@ -64,6 +67,8 @@ int getMemSize(CSAObject *);
 
 int main()
 {
+
+    board_init();
 
     int pausa = 0;
     FrameBuffer fb(24,40);
@@ -81,10 +86,38 @@ int main()
     rpi2040uart.setup();
     VideoEngine *video = &rpi2040UartVideo;
 
+    Rpi2040DiskEngine rpi2040DiskEngine;
+    rpi2040DiskEngine.setup();
+
+    DiskEngine *disk = &rpi2040DiskEngine;
+
     sleep_ms(15000);
 
     Document doc;
+    doc.setDocFileName("saluton_mondo");
 
+    doc.type("Ola mundo! Esse e um texto salvo")
+        .addNewLine()
+        .type("Essa e a segunda linha!");
+
+    TextPersistenceEngine textPersistenceEngine(&doc, disk);
+    textPersistenceEngine.store();
+
+    char * arquivos = (*disk).dir(AppGlobals::STORAGE_DOCUMENTS_DIR);
+    if (arquivos == 0) {
+        cout << "Files in storage (My Briefcase):" << "(Empty)" << endl;
+    } else {
+        cout << "Files in storage: (My Briefcase)" << arquivos << endl;
+    }
+
+    cout << "Printing" << endl;
+    (*disk).type(AppGlobals::STORAGE_DOCUMENTS_DIR,"saluton_mondo");
+
+    (*disk).del(AppGlobals::STORAGE_DOCUMENTS_DIR,"saluton_mondo");
+
+    (*disk).destroy();
+
+    /*
     (*video)
         .setFrameBuffer(&fb);
 
@@ -93,7 +126,7 @@ int main()
 
     (*video).display();
     textEngine.run(video, keyboard);
-
+    */
 
 
     /*Document doc;

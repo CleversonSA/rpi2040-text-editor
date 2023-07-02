@@ -28,6 +28,7 @@ class InputBoxEngine: public WidgetEngine
     public:
         static const int CANCEL_TRIGGERED = 60000;
         static const int OK_TRIGGERED = 60500;
+        static const int DISPLAY_CONTEXT_ID = 16001;
 
         InputBoxEngine();
         ~InputBoxEngine();
