@@ -52,6 +52,35 @@ int syncBlockDeviceWrapperFn(const struct lfs_config *c)
 }
 
 //=================== CLASS IMPLEMENTATION ==================================
+int DiskEngine::getOpenedFileSize() {
+    indicateIOBeginStatus();
+    int err = lfs_file_rewind(getLfsPtr(), getFilePtr());
+    if (err < 0) {
+        indicateIOErrorStatus(err);
+        indicateIOEndStatus();
+        return err;
+    }
+    cout << "rewinding.."<< endl;
+
+    int size = (int)lfs_file_size(getLfsPtr(), getFilePtr());
+
+    cout << "counted"<< size << endl;
+
+    lfs_file_rewind(getLfsPtr(), getFilePtr());
+    if (err < 0) {
+        indicateIOErrorStatus(err);
+        indicateIOEndStatus();
+        return err;
+    }
+
+    cout << "rewinding"<< endl;
+
+    indicateIOEndStatus();
+
+    cout << "rewinding2"<< endl;
+    return size;
+}
+
 char DiskEngine::read()
 {
     indicateIOBeginStatus();
@@ -79,7 +108,6 @@ void DiskEngine::closeFile()
 {
     indicateIOBeginStatus();
     if(getFilePtr() == 0) {
-        delete getFilePtr();
         indicateIOEndStatus();
         return;
     }
@@ -91,12 +119,14 @@ void DiskEngine::closeFile()
         setFilePtr(0);
         return;
     }
+
+    delete getFilePtr();
     setFilePtr(0);
     indicateIOEndStatus();
 }
 
 
-void DiskEngine::openFile(const char *path, const char *fileName, int flags)
+int DiskEngine::openFile(const char *path, const char *fileName, int flags)
 {
     int err = 0;
     char fullPathSource[255];
@@ -121,13 +151,19 @@ void DiskEngine::openFile(const char *path, const char *fileName, int flags)
         indicateIOErrorStatus(err);
         indicateIOEndStatus();
         setFilePtr(0);
-        cout << "Erro ao criar o arquivo" << err << endl;
-        return;
+        return err;
     }
 
-    lfs_file_rewind(getLfsPtr(), getFilePtr());
+    err = lfs_file_rewind(getLfsPtr(), getFilePtr());
+    if (err < 0) {
+        indicateIOErrorStatus(err);
+        indicateIOEndStatus();
+        setFilePtr(0);
+        return err;
+    }
 
     indicateIOEndStatus();
+    return 0;
 }
 
 void DiskEngine::indicateIOBeginStatus()

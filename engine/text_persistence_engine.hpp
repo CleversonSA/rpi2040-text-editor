@@ -51,7 +51,8 @@ class TextPersistenceEngine : public DocumentEngine
         virtual void toString(); // Yes, you know, Java feelings rs
         virtual int getMemSize();
 
-        virtual void store();
+        virtual int store();
+        virtual int load(const char *);
 
     protected:
 

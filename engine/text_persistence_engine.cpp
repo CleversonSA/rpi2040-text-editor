@@ -27,15 +27,54 @@ using std::sprintf;
 #include "text_persistence_engine.hpp"
 #include "disk_engine.h"
 
-
-void TextPersistenceEngine::store()
+int TextPersistenceEngine::load(const char *fileName)
 {
-    (*getDiskEngine()).openFile(AppGlobals::STORAGE_DOCUMENTS_DIR,
-                                (*getDocument()).getDocFileName(),
-                                DiskEngine::FILE_OPEN_CREATE | DiskEngine::FILE_OPEN_READWRITE);
-    render();
+    int err = (*getDiskEngine()).openFile(AppGlobals::STORAGE_DOCUMENTS_DIR,
+                                          fileName,
+                                DiskEngine::FILE_OPEN_READONLY);
+    int byteCounter = 0;
+    if (err < 0)
+    {
+        cout << "Error " << err << endl;
+        return err;
+    }
+
+    (*getDocument()).destroy();
+    //Workaround to avoid nullptr
+    (*getDocument()).type(" ");
+    (*getDocument()).setDocFileName(fileName);
+
+    int fileSize = (*getDiskEngine()).getOpenedFileSize();
+    for (byteCounter = 0; byteCounter < fileSize; byteCounter++)
+    {
+        char c = (*getDiskEngine()).read();
+        if (c == '\n')
+        {
+            (*getDocument()).addNewLine();
+        } else {
+            (*getDocument()).type(c);
+        }
+
+    }
+
     (*getDiskEngine()).closeFile();
 
+    return 0;
+}
+
+int TextPersistenceEngine::store()
+{
+    int err = (*getDiskEngine()).openFile(AppGlobals::STORAGE_DOCUMENTS_DIR,
+                                (*getDocument()).getDocFileName(),
+                                DiskEngine::FILE_OPEN_CREATE | DiskEngine::FILE_OPEN_READWRITE);
+    if (err < 0)
+    {
+        return err;
+    }
+    render();
+
+    (*getDiskEngine()).closeFile();
+    return 0;
 }
 
 

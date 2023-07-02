@@ -30,8 +30,26 @@ using std::sprintf;
 #include "document.hpp"
 #include "../app_globals.hpp"
 
+void Document::destroy() {
+    destroy(getStartRowPtr());
+    setStartRowPtr(0);
+    setCurrentRowPtr(0);
+    addNewLine();
+}
 
-void Document::setDocFileName(const char filename[] )
+void Document::destroy(DocRow *docPtr) {
+    if (docPtr == 0) {
+        return;
+    }
+
+    destroy((*docPtr).getNextRowPtr());
+
+    (*docPtr).destroy();
+
+    delete docPtr;
+}
+
+void Document::setDocFileName(const char *filename )
 {
     _docFileName = new char[strlen(filename)];
 
@@ -537,7 +555,7 @@ Document::~Document()
 Document::Document():
 CSAObject(),
 _startRowPtr(0),
-_docFileName({"new_file.txt"}),
+_docFileName("new_file.txt"),
 _currentRowPtr(0),
 _enableLineWarp(false)
 {

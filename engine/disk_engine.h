@@ -49,10 +49,11 @@ public:
     virtual int copy(const char *, const char *, const char *, const char *);
     virtual int touch(const char *, const char *);
     virtual void type(const char *, const char *);
-    virtual void openFile(const char *, const char *, int);
+    virtual int openFile(const char *, const char *, int);
     virtual void closeFile();
     virtual void write(const char);
     virtual char read();
+    virtual int getOpenedFileSize();
 
     virtual lfs_size_t getBlockDeviceCount() = 0;
 

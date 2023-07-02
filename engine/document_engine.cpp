@@ -153,7 +153,7 @@ void DocumentEngine::render()
  }
 
 
- Document * DocumentEngine::getDocument() const
+ Document * DocumentEngine::getDocument()
  {
      return _document;
  }

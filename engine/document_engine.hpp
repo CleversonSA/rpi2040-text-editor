@@ -34,7 +34,7 @@ class DocumentEngine : public WidgetEngine
         static const int DISPLAY_CONTEXT_ID = 16000;
 
         void setDocument(Document *);
-        Document * getDocument() const;
+        Document * getDocument();
 
         void render();
 

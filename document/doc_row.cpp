@@ -26,6 +26,20 @@ using std::strlen;
 #include "doc_row.hpp"
 #include "../app_globals.hpp"
 
+void DocRow::destroy() {
+    destroy(getStartCharPtr());
+    setStartCharPtr(0);
+    setCurrentCharPtr(0);
+}
+
+void DocRow::destroy(DocCharacter *docPtr) {
+    if (docPtr == 0) {
+        return;
+    }
+    destroy((*docPtr).getNextCharPtr());
+    delete docPtr;
+}
+
 void DocRow::setStartCharPtr(DocCharacter * startCharPtr)
 {
     _startCharPtr = startCharPtr;

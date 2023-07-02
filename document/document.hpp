@@ -25,7 +25,7 @@ class Document: public CSAObject
         Document();
         ~Document();
 
-        void setDocFileName(const char []);
+        void setDocFileName(const char *);
         void setStartRowPtr(DocRow *);
         void setCurrentRowPtr(DocRow *);
         void setEnabledLineWarp(bool);
@@ -52,6 +52,8 @@ class Document: public CSAObject
         Document & type(const char);
         Document & joinNextLine();
 
+        void destroy();
+
         virtual void toString();
         virtual int getMemSize();
 
@@ -61,6 +63,8 @@ class Document: public CSAObject
         DocRow * _currentRowPtr;
         char * _docFileName;
         bool _enableLineWarp;
+
+        void destroy(DocRow *);
 
         DocRow * rowAt(DocRow *, int);
 };

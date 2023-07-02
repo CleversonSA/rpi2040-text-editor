@@ -66,6 +66,8 @@ class DocRow : public CSAObject
         virtual void toString(); // Yes, you know, Java feelings rs
         virtual int getMemSize();
 
+        virtual void destroy();
+
     private:
 
         int getSize (const DocCharacter * startCharPtr);
@@ -73,6 +75,7 @@ class DocRow : public CSAObject
         DocCharacter * charPtrAt(DocCharacter *, int);
         DocCharacter * charPtrAtEnd (DocCharacter *);
         DocCharacter * getLastCharPtr(DocCharacter *) const;
+        void destroy(DocCharacter *);
 
         void fromCharArray(const char [], DocRow &);
         void readAllChars (const DocCharacter * startCharPtr);

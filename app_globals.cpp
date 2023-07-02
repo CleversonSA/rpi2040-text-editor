@@ -38,19 +38,17 @@ bool AppGlobals::getEnableObjDelLog() const
 
 uint32_t AppGlobals::getTotalHeap(void)
 {
-   //extern char __StackLimit, __bss_end__;
+   extern char __StackLimit, __bss_end__;
 
-   //return &__StackLimit  - &__bss_end__;
-   return 0;
+   return &__StackLimit  - &__bss_end__;
 }
 
 uint32_t AppGlobals::getFreeHeap(void)
 {
-   //struct mallinfo m = mallinfo();
+   struct mallinfo m = mallinfo();
 
-   //return AppGlobals::getTotalHeap() - m.uordblks;
+   return AppGlobals::getTotalHeap() - m.uordblks;
 
-   return 0;
 }
 
 int AppGlobals::calculateChecksum(char *array, uint16_t checksum, int i, size_t even_length)

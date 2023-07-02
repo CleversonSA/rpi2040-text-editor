@@ -115,18 +115,21 @@ int main()
 
     (*disk).del(AppGlobals::STORAGE_DOCUMENTS_DIR,"saluton_mondo");
 
-    (*disk).destroy();
+    sleep_ms(5000);
 
-    /*
-    (*video)
-        .setFrameBuffer(&fb);
+    cout << "Free memory " << AppGlobals::getFreeHeap() << endl;
+
+
+    textPersistenceEngine.load("lorem_4k.txt");
+
+
+    (*video).setFrameBuffer(&fb);
 
     Rpi2040TextEngine textEngine(&doc, video);
     textEngine.render();
 
     (*video).display();
     textEngine.run(video, keyboard);
-    */
 
 
     /*Document doc;
