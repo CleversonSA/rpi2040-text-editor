@@ -25,7 +25,7 @@ using std::strlen;
 using std::sprintf;
 
 #include "text_persistence_engine.hpp"
-#include "disk_engine.h"
+#include "engine/disk_engine.h"
 
 int TextPersistenceEngine::load(const char *fileName)
 {
@@ -41,6 +41,7 @@ int TextPersistenceEngine::load(const char *fileName)
 
     (*getDocument()).destroy();
     //Workaround to avoid nullptr
+    (*getDocument()).addNewLine();
     (*getDocument()).type(" ");
     (*getDocument()).setDocFileName(fileName);
 

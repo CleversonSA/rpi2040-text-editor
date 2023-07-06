@@ -16,11 +16,11 @@ limitations under the License.
 #ifndef DOCUMENTENGINE
 #define DOCUMENTENGINE
 
-#include "../csa_object.hpp"
-#include "../document/doc_character.hpp"
-#include "../document/document.hpp"
-#include "../document/doc_character.hpp"
-#include "widget_engine.hpp"
+#include "csa_object.hpp"
+#include "doc_character.hpp"
+#include "document.hpp"
+#include "doc_character.hpp"
+#include "engine/widget_engine.hpp"
 
 /*
   The abstract document engine processing
@@ -36,7 +36,7 @@ class DocumentEngine : public WidgetEngine
         void setDocument(Document *);
         Document * getDocument();
 
-        void render();
+        virtual void render();
 
         virtual bool isCursorAtEndOfViewLine() const = 0;
         virtual bool isCursorAtBottomOfView() const = 0;

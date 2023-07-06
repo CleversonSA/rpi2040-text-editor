@@ -13,24 +13,24 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef TEXTENGINEKEYBOARDCALLBACK
-#define TEXTENGINEKEYBOARDCALLBACK
+#ifndef TEXTRENDERENGINEKEYBOARDCALLBACK
+#define TEXTRENDERENGINEKEYBOARDCALLBACK
 
 #include "../app_globals.hpp"
 #include "../csa_object.hpp"
 #include "../engine/video_engine.hpp"
 #include "keyboard_callback.hpp"
-#include "../engine/text_render_engine.hpp"
+#include "core/text_render_engine.hpp"
 
 /*
-  Handle the callback of a keyboard completition for document editor
+  Handle the callback of a keyboard completition for core editor
 */
-class TextEngineKeyboardCallback : public KeyboardCallback
+class TextRenderEngineKeyboardCallback : public KeyboardCallback
 {
     public:
 
-        ~TextEngineKeyboardCallback();
-        TextEngineKeyboardCallback();
+        ~TextRenderEngineKeyboardCallback();
+        TextRenderEngineKeyboardCallback();
 
         void setVideoEngine(VideoEngine *);
         VideoEngine * getVideoEngine();

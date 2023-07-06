@@ -13,21 +13,25 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef TEXTPERSISTENCEENGINE
-#define TEXTPERSISTENCEENGINE
+#ifndef TEXTRENDERENGINE
+#define TEXTRENDERENGINE
 
 #include "document_engine.hpp"
-#include "../document/document.hpp"
-#include "disk_engine.h"
+#include "document.hpp"
+#include "engine/video_engine.hpp"
+#include "engine/keyboard_engine.hpp"
+#include "engine/widget_callback.hpp"
 
 /*
-  Engine to process store document in a storage disk
+  The abstract document engine processing
 */
-class TextPersistenceEngine : public DocumentEngine
+class TextRenderEngine : public DocumentEngine
 {
     public:
-        TextPersistenceEngine(Document *, DiskEngine *);
-        ~TextPersistenceEngine();
+        TextRenderEngine(Document *, VideoEngine *);
+        ~TextRenderEngine();
+
+        static const int DISPLAY_CONTEXT_ID = 16006;
 
         virtual bool isCursorAtEndOfViewLine() const;
         virtual bool isCursorAtBottomOfView() const;
@@ -46,17 +50,17 @@ class TextPersistenceEngine : public DocumentEngine
         virtual void renderCharacter(DocCharacter *);
         virtual void renderColRow(int, int, int);
 
-        virtual DiskEngine * getDiskEngine() const;
+        virtual VideoEngine * getVideoEngine() const;
 
         virtual void toString(); // Yes, you know, Java feelings rs
         virtual int getMemSize();
 
-        virtual int store();
-        virtual int load(const char *);
+        virtual void run(VideoEngine *, KeyboardEngine *);
 
     protected:
 
-        DiskEngine *_diskEngine;
+        WidgetCallback* _widgetCallback;
+        VideoEngine *_videoEngine;
 };
 
 #endif // DOCCHARACTER

@@ -25,16 +25,16 @@ using std::strlen;
 using std::sprintf;
 
 #include "text_render_engine.hpp"
-#include "video_engine.hpp"
-#include "keyboard_engine.hpp"
-#include "../keyboard/textengine_keyboard_callback.hpp"
+#include "engine/video_engine.hpp"
+#include "engine/keyboard_engine.hpp"
+#include "keyboard/text_render_engine_keyboard_callback.hpp"
 
 
 void TextRenderEngine::run(VideoEngine *videoEngine, KeyboardEngine *keyboardEngine)
 {
     (*videoEngine).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
 
-    TextEngineKeyboardCallback *kcb = new TextEngineKeyboardCallback;
+    TextRenderEngineKeyboardCallback *kcb = new TextRenderEngineKeyboardCallback;
 
     (*kcb).setVideoEngine(videoEngine);
     (*kcb).setTextEngine(this);
@@ -55,7 +55,7 @@ VideoEngine * TextRenderEngine::getVideoEngine() const
 bool TextRenderEngine::isCursorAtBottomOfView() const
 {
 
-    if ((*(*getVideoEngine()).getFrameBuffer()).getRow() == (*(*getVideoEngine()).getFrameBuffer()).getMaxRows() - 2)
+    if ((*(*getVideoEngine()).getFrameBuffer()).getRow() == (*(*getVideoEngine()).getFrameBuffer()).getMaxRows() - 1)
     {
         return true;
     }
@@ -173,7 +173,7 @@ void TextRenderEngine::renderColRow(int row, int col, int bytes)
     char number_array[5 + sizeof(char)];
 
     (*(*getVideoEngine()).getFrameBuffer())
-      .gotoXY((*(*getVideoEngine()).getFrameBuffer()).getMaxRows() - 1,(*(*getVideoEngine()).getFrameBuffer()).getMaxCols()-18);
+      .gotoXY((*(*getVideoEngine()).getFrameBuffer()).getMaxRows()-1,(*(*getVideoEngine()).getFrameBuffer()).getMaxCols()-18);
 
     sprintf(number_array, "%d", (bytes)+10000);
     (*getVideoEngine()->getFrameBuffer())

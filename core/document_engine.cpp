@@ -27,9 +27,9 @@ using std::strlen;
 using std::sprintf;
 
 #include "document_engine.hpp"
-#include "../app_globals.hpp"
-#include "../document/doc_row.hpp"
-#include "../document/doc_character.hpp"
+#include "app_globals.hpp"
+#include "doc_row.hpp"
+#include "doc_character.hpp"
 
 void DocumentEngine::render()
 {
