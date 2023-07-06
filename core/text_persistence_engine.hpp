@@ -21,7 +21,7 @@ limitations under the License.
 #include "engine/disk_engine.h"
 
 /*
-  Engine to process store document in a storage disk
+  Engine to process store core in a storage disk
 */
 class TextPersistenceEngine : public DocumentEngine
 {

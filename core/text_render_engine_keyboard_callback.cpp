@@ -17,12 +17,12 @@ limitations under the License.
 using std::cout;
 using std::endl;
 
-#include "../app_globals.hpp"
-#include "../csa_object.hpp"
+#include "app_globals.hpp"
+#include "csa_object.hpp"
 #include "text_render_engine_keyboard_callback.hpp"
-#include "../engine/keyboard_engine.hpp"
+#include "engine/keyboard_engine.hpp"
 #include "core/text_render_engine.hpp"
-#include "../core/document.hpp"
+#include "document.hpp"
 
 void TextRenderEngineKeyboardCallback::setVideoEngine(VideoEngine * videoEngine)
 {

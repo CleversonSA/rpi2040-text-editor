@@ -10,6 +10,7 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPICO_USE_MALLOC_MUTEX=1")
 set(SOURCES
         tusb_config.h
         rpi2040_sdk/hid_app.cpp
+        rpi2040_sdk/lcd_1602_i2c.c
         main.cpp
         app_globals.cpp
         app_globals.hpp
@@ -17,14 +18,14 @@ set(SOURCES
         csa_object.hpp
         video/framebuffer.cpp
         video/framebuffer.hpp
-        document/doc_character.cpp
-        document/doc_character.hpp
-        document/doc_row.cpp
-        document/doc_row.hpp
-        document/document.cpp
-        document/document.hpp
-        engine/document_engine.cpp
-        engine/document_engine.hpp
+        core/doc_character.cpp
+        core/doc_character.hpp
+        core/doc_row.cpp
+        core/doc_row.hpp
+        core/document.cpp
+        core/document.hpp
+        core/document_engine.cpp
+        core/document_engine.hpp
         engine/widget_engine.cpp
         engine/widget_engine.hpp
         engine/widget_callback.cpp
@@ -49,14 +50,20 @@ set(SOURCES
         engine/msgbox_engine.cpp
         engine/splashbox_engine.cpp
         engine/splashbox_engine.hpp
+        engine/utils_engine.cpp
+        engine/utils_engine.hpp
         keyboard/textview_keyboard_callback.cpp
         keyboard/textview_keyboard_callback.hpp
-        keyboard/textengine_keyboard_callback.cpp
-        keyboard/textengine_keyboard_callback.hpp
-        engine/text_render_engine.cpp
-        engine/text_render_engine.hpp
-        engine/text_persistence_engine.cpp
-        engine/text_persistence_engine.hpp
+        core/text_render_engine_keyboard_callback.cpp
+        core/text_render_engine_keyboard_callback.hpp
+        core/text_render_engine.cpp
+        core/text_render_engine.hpp
+        core/text_persistence_engine.cpp
+        core/text_persistence_engine.hpp
+        core/open_file_menu.cpp
+        core/open_file_menu.hpp
+        core/open_file_menu_keyboard_callback.cpp
+        core/open_file_menu_keyboard_callback.hpp
         rpi2040/rpi2040_text_engine.cpp
         rpi2040/rpi2040_text_engine.hpp
         engine/textview_engine.cpp
@@ -93,6 +100,14 @@ set(SOURCES
         engine/disk_engine.cpp
         rpi2040/rpi2040_disk_engine.hpp
         rpi2040/rpi2040_disk_engine.cpp
+        rpi2040/rpi2040_lcd4x20_video.cpp
+        rpi2040/rpi2040_lcd4x20_video.hpp
+        rpi2040/rpi2040_utils_engine.cpp
+        rpi2040/rpi2040_utils_engine.hpp
+        resource_collection.cpp
+        resource_collection.hpp
+        core_collection.cpp
+        core_collection.hpp
         )
 foreach(name IN ITEMS main)
     add_executable(${name} ${SOURCES})
@@ -104,6 +119,7 @@ foreach(name IN ITEMS main)
             tinyusb_host
             tinyusb_board
             hardware_flash
+            hardware_i2c
             )
     target_include_directories(main PRIVATE ${CMAKE_CURRENT_LIST_DIR})
     pico_add_extra_outputs(${name})

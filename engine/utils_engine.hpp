@@ -14,33 +14,29 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef RPI2040UARTVIDEO
-#define RPI2040UARTVIDEO
+#ifndef UTILSENGINE
+#define UTILSENGINE
 
 #include "../app_globals.hpp"
-#include "../engine/video_engine.hpp"
+#include "../csa_object.hpp"
 
 /*
-    Display the App GUI at RPI UART Serial Console
+    Abstract class for extra utils that does not fit in any agnostic engine.
 */
-class Rpi2040UartVideo: public VideoEngine
+class UtilsEngine: public CSAObject
 {
-    public:
+public:
 
-        Rpi2040UartVideo();
-        ~Rpi2040UartVideo();
+    UtilsEngine();
+    ~UtilsEngine();
 
-        void displayDocumentContext();
-        void displayContext();
+    virtual void sleepMs(long) = 0;
 
-       virtual VideoEngine & display(int);
+private:
 
-       virtual void toString(); // Yes, you know, Java feelings rs
-       virtual int getMemSize();
 
 };
 
 #endif // DOCUMENT
-
 
 

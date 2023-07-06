@@ -13,42 +13,36 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef RPI2040TEXTENGINE
-#define RPI2040TEXTENGINE
+#ifndef OPENFILEMENU
+#define OPENFILEMENU
 
-#include "core/document_engine.hpp"
-#include "../core/document.hpp"
+#include "../csa_object.hpp"
+#include "../engine/keyboard_engine.hpp"
 #include "../engine/video_engine.hpp"
-#include "core/text_render_engine.hpp"
-
-//********************** RASPBERRY PI PICO TEST ****************************
-#include "pico/stdlib.h"
+#include "document.hpp"
+#include "../engine/disk_engine.h"
+#include "../engine/menu_engine.hpp"
 
 /*
-  Document engine processing for RPI2040 only
+  Menu selection or dialog for open text file for editing
 */
-class Rpi2040TextEngine : public TextRenderEngine
+class OpenFileMenu : public CSAObject
 {
     public:
-        Rpi2040TextEngine(Document *, VideoEngine *);
-        ~Rpi2040TextEngine();
 
-        virtual void render();
+        OpenFileMenu();
+        ~OpenFileMenu();
+
+        void run();
+        void open(char *);
 
         virtual void toString(); // Yes, you know, Java feelings rs
         virtual int getMemSize();
 
-
     private:
 
-        uint LED_PIN;
-        uint _ledOn;
 
 
 };
 
 #endif // DOCCHARACTER
-
-
-
-

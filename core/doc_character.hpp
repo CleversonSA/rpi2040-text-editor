@@ -18,7 +18,7 @@ limitations under the License.
 
 #include "../csa_object.hpp"
 /*
-  The minimum part of a document, a character, that indicates the next and
+  The minimum part of a core, a character, that indicates the next and
   previous one
 */
 class DocCharacter : public CSAObject

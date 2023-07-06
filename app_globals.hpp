@@ -25,11 +25,19 @@ limitations under the License.
 class AppGlobals
 {
     public:
+        static const char APP_VERSION[];
+
         static const int MAX_MENU_ITEMS_COUNT = 100;
         static const int MAX_VIEW_TEXT_SIZE = 4096;
         static const char MENU_ITEM_DELIM[];
         static const char MENU_ITEM_DETAIL_DELIM[];
+
         static const int RPI2040_UART_RX_WAIT_MS = 100;
+        static const int RPI2040_USB_IO_LED_PIN = 19;
+        static const int RPI2040_DISK_IO_LED_PIN = 18;
+
+        static const int FRAMEBUFFER_MAX_ROWS = 4;
+        static const int FRAMEBUFFER_MAX_COLS = 20;
 
         static const char STORAGE_DOCUMENTS_DIR[];
 

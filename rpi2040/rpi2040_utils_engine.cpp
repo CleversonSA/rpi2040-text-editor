@@ -24,50 +24,41 @@ using std::setw;
 using std::strlen;
 using std::sprintf;
 
-#include "core/text_render_engine.hpp"
-#include "rpi2040_text_engine.hpp"
+#include "rpi2040_utils_engine.hpp"
 
 //********************** RASPBERRY PI PICO TEST ****************************
 #include "pico/stdlib.h"
 
 
-void Rpi2040TextEngine::render()
+void Rpi2040UtilsEngine::sleepMs(long ms)
 {
-    gpio_put(LED_PIN, 1);
-    sleep_ms(5);
-
-    TextRenderEngine::render();
-
-    gpio_put(LED_PIN, 0);
-    sleep_ms(5);
+    cout << "dormindo " << ms << "secs" << endl;
+    sleep_ms(ms);
 }
 
 
-void Rpi2040TextEngine::toString()
+void Rpi2040UtilsEngine::toString()
 {
-    cout << "[Rpi2040TextEngine] [UID=" << CSAObject::getSerialVersionUID() << "] [SIZE=" << sizeof((*this)) <<"] "
+    cout << "[Rpi2040UtilsEngine] [UID=" << CSAObject::getSerialVersionUID() << "] [SIZE=" << sizeof((*this)) <<"] "
          << endl;
 }
 
-int Rpi2040TextEngine::getMemSize()
+int Rpi2040UtilsEngine::getMemSize()
 {
     return sizeof((*this));
 }
 
-Rpi2040TextEngine::~Rpi2040TextEngine()
+Rpi2040UtilsEngine::~Rpi2040UtilsEngine()
 {
     if(AppGlobals::getInstance().getEnableObjDelLog() == true) {
-        cout << "[Rpi2040TextEngine] [destUID=" << CSAObject::getSerialVersionUID() << "]" << endl;
+        cout << "[Rpi2040UtilsEngine] [destUID=" << CSAObject::getSerialVersionUID() << "]" << endl;
     }
 }
 
-Rpi2040TextEngine::Rpi2040TextEngine(Document * document, VideoEngine *videoEngine):
-TextRenderEngine(document, videoEngine),
-_ledOn(1)
+Rpi2040UtilsEngine::Rpi2040UtilsEngine():
+UtilsEngine()
 {
-   LED_PIN = AppGlobals::RPI2040_USB_IO_LED_PIN;
-   gpio_init(LED_PIN);
-   gpio_set_dir(LED_PIN, GPIO_OUT);
+
 }
 
 

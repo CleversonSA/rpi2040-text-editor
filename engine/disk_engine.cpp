@@ -83,24 +83,19 @@ int DiskEngine::getOpenedFileSize() {
 
 char DiskEngine::read()
 {
-    indicateIOBeginStatus();
 
     char c = '\0';
 
     lfs_file_read(getLfsPtr(),getFilePtr(),&c,sizeof(char));
-
-    indicateIOEndStatus();
 
     return c;
 }
 
 void DiskEngine::write(const char c)
 {
-    indicateIOBeginStatus();
 
     lfs_file_write(getLfsPtr(),getFilePtr(),&c,sizeof(char));
 
-    indicateIOEndStatus();
 }
 
 
@@ -410,13 +405,13 @@ char * DiskEngine::dir(const char *path)
 
                 switch (info.type) {
                     case LFS_TYPE_REG:
-                        sprintf(fileNameStr, "%s|%s(%*u%sB)|", info.name, info.name,  4-(i != 0), info.size >> 10*i, prefixes[i]);
+                        sprintf(fileNameStr, "%s;%s%*u%sB|", info.name, info.name,  4-(i != 0), info.size >> 10*i, prefixes[i]);
                         break;
                     case LFS_TYPE_DIR:
-                        sprintf(fileNameStr, "DIR|%s <DIR>|", info.name);
+                        sprintf(fileNameStr, "DIR;%s <DIR>|", info.name);
                         break;
                     default:
-                        sprintf(fileNameStr, "UNK|%s <???>|", info.name);
+                        sprintf(fileNameStr, "UNK;%s <???>|", info.name);
                         break;
                 }
 

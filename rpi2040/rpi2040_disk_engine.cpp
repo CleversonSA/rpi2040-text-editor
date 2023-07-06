@@ -33,6 +33,31 @@ using std::endl;
 #include "rpi2040_disk_engine.hpp"
 #include "../app_globals.hpp"
 
+
+void Rpi2040DiskEngine::indicateIOBeginStatus()
+{
+    gpio_put(AppGlobals::RPI2040_DISK_IO_LED_PIN, 1);
+    sleep_ms(50);
+}
+
+void Rpi2040DiskEngine::indicateIOEndStatus()
+{
+    gpio_put(AppGlobals::RPI2040_DISK_IO_LED_PIN, 0);
+    sleep_ms(100);
+    gpio_put(AppGlobals::RPI2040_DISK_IO_LED_PIN, 1);
+    sleep_ms(100);
+    gpio_put(AppGlobals::RPI2040_DISK_IO_LED_PIN, 0);
+    sleep_ms(100);
+    gpio_put(AppGlobals::RPI2040_DISK_IO_LED_PIN, 1);
+    sleep_ms(100);
+    gpio_put(AppGlobals::RPI2040_DISK_IO_LED_PIN, 0);
+    sleep_ms(100);
+    gpio_put(AppGlobals::RPI2040_DISK_IO_LED_PIN, 1);
+    sleep_ms(100);
+    gpio_put(AppGlobals::RPI2040_DISK_IO_LED_PIN, 0);
+    sleep_ms(100);
+}
+
 bool Rpi2040DiskEngine::test()
 {
     // read current count
@@ -138,5 +163,6 @@ Rpi2040DiskEngine::~Rpi2040DiskEngine()
 Rpi2040DiskEngine::Rpi2040DiskEngine():
    DiskEngine()
 {
-
+    gpio_init(AppGlobals::RPI2040_DISK_IO_LED_PIN);
+    gpio_set_dir(AppGlobals::RPI2040_DISK_IO_LED_PIN, GPIO_OUT);
 }

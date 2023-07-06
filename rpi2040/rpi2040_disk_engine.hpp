@@ -37,6 +37,9 @@ public:
     virtual int eraseBlockDeviceFn(const struct lfs_config *, lfs_block_t);
     virtual int syncBlockDeviceFn(const struct lfs_config *);
 
+    virtual void indicateIOBeginStatus();
+    virtual void indicateIOEndStatus();
+
     virtual lfs_size_t getBlockDeviceCount();
 
     virtual void setup();
@@ -48,6 +51,7 @@ public:
 
 
 private:
+
 
 
 };

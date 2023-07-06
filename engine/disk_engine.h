@@ -27,7 +27,7 @@ class DiskEngine: public CSAObject
 public:
 
     /*
-     * Just a wrapper to avoid attach the document engine with LFS
+     * Just a wrapper to avoid attach the core engine with LFS
      */
     static const int FILE_OPEN_CREATE = LFS_O_CREAT;
     static const int FILE_OPEN_READONLY = LFS_O_RDONLY;

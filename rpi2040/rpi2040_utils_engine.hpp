@@ -13,37 +13,30 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef RPI2040TEXTENGINE
-#define RPI2040TEXTENGINE
+#ifndef RPI2040UTILSENGINE
+#define RPI2040UTILSENGINE
 
-#include "core/document_engine.hpp"
-#include "../core/document.hpp"
-#include "../engine/video_engine.hpp"
-#include "core/text_render_engine.hpp"
+#include "../engine/utils_engine.hpp"
 
 //********************** RASPBERRY PI PICO TEST ****************************
 #include "pico/stdlib.h"
 
 /*
-  Document engine processing for RPI2040 only
+  Utils extra functions  for RPI2040 only
 */
-class Rpi2040TextEngine : public TextRenderEngine
+class Rpi2040UtilsEngine : public UtilsEngine
 {
-    public:
-        Rpi2040TextEngine(Document *, VideoEngine *);
-        ~Rpi2040TextEngine();
+public:
+    Rpi2040UtilsEngine();
+    ~Rpi2040UtilsEngine();
 
-        virtual void render();
+    virtual void sleepMs(long);
 
-        virtual void toString(); // Yes, you know, Java feelings rs
-        virtual int getMemSize();
+    virtual void toString(); // Yes, you know, Java feelings rs
+    virtual int getMemSize();
 
 
-    private:
-
-        uint LED_PIN;
-        uint _ledOn;
-
+private:
 
 };
 

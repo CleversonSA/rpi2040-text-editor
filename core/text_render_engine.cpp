@@ -27,11 +27,13 @@ using std::sprintf;
 #include "text_render_engine.hpp"
 #include "engine/video_engine.hpp"
 #include "engine/keyboard_engine.hpp"
-#include "keyboard/text_render_engine_keyboard_callback.hpp"
+#include "text_render_engine_keyboard_callback.hpp"
 
 
 void TextRenderEngine::run(VideoEngine *videoEngine, KeyboardEngine *keyboardEngine)
 {
+    render();
+
     (*videoEngine).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
 
     TextRenderEngineKeyboardCallback *kcb = new TextRenderEngineKeyboardCallback;

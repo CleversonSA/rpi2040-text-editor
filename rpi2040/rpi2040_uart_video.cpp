@@ -32,7 +32,50 @@ using std::sprintf;
 #include "../utils/vt100_utils.hpp"
 #include "rpi2040_uart_keyboard.hpp"
 
-#include "../engine/text_render_engine.hpp"
+#include "core/text_render_engine.hpp"
+
+
+void Rpi2040UartVideo::displayContext()
+{
+    char * screenLine = 0;
+    int totalMovs = 0;
+
+    uart_puts(Rpi2040Uart::getInstance().getUart(), VT100Utils::clearScreen());
+    uart_puts(Rpi2040Uart::getInstance().getUart(), VT100Utils::gotoXY(1,1));
+
+    for (int i=0; i < (*getFrameBuffer()).getMaxRows(); i++)
+    {
+        screenLine = (*getFrameBuffer()).getScreenRow(i);
+
+        totalMovs = 0;
+
+
+        uart_puts(Rpi2040Uart::getInstance().getUart(), VT100Utils::gotoXY(i+1,1));
+
+        for (int j=0; j < (*getFrameBuffer()).getMaxCols(); j++)
+        {
+
+            if ((*screenLine) == '\0')
+            {
+                uart_putc(Rpi2040Uart::getInstance().getUart(), ' ');
+            } else {
+                uart_putc(Rpi2040Uart::getInstance().getUart(), (*screenLine));
+            }
+            screenLine++;
+            totalMovs++;
+
+        }
+
+
+        for (int j=0; j < totalMovs; j++)
+        {
+            screenLine--;
+        }
+        delete screenLine;
+
+    }
+
+}
 
 void Rpi2040UartVideo::displayDocumentContext()
 {
@@ -118,6 +161,7 @@ VideoEngine & Rpi2040UartVideo::display(int displayContextId)
             displayDocumentContext();
             break;
         default:
+            displayContext();
             break;
     }
 
@@ -126,7 +170,7 @@ VideoEngine & Rpi2040UartVideo::display(int displayContextId)
 
 void Rpi2040UartVideo::toString()
 {
-    cout << "[Rpi2040UartVideo] [UID=" << CSAObject::getSerialVersionUID() << "] [SIZE=" << sizeof((*this)) <<"] "
+    cout << "[Rpi2040LCD4X20Video] [UID=" << CSAObject::getSerialVersionUID() << "] [SIZE=" << sizeof((*this)) <<"] "
          << endl;
 }
 
@@ -139,7 +183,7 @@ int Rpi2040UartVideo::getMemSize()
 Rpi2040UartVideo::~Rpi2040UartVideo()
 {
     if(AppGlobals::getInstance().getEnableObjDelLog() == true) {
-        cout << "[Rpi2040UartVideo] [destUID=" << CSAObject::getSerialVersionUID() << "]" << endl;
+        cout << "[Rpi2040LCD4X20Video] [destUID=" << CSAObject::getSerialVersionUID() << "]" << endl;
     }
 }
 

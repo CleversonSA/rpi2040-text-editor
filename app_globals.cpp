@@ -22,9 +22,13 @@ using std::strcpy;
 using std::strlen;
 
 AppGlobals * AppGlobals::_me = 0;
+
+const char AppGlobals::APP_VERSION[] = "0.7.0";
+
 const char AppGlobals::MENU_ITEM_DELIM[] = "|";
 const char AppGlobals::MENU_ITEM_DETAIL_DELIM[] = ";";
 const char AppGlobals::STORAGE_DOCUMENTS_DIR[] = "/My Briefcase";
+
 
 void AppGlobals::setEnableObjDelLog(const bool opt)
 {

@@ -14,29 +14,26 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef RPI2040UARTVIDEO
-#define RPI2040UARTVIDEO
+#ifndef RPI2040LCD4X20VIDEO
+#define RPI2040LCD4X20VIDEO
 
 #include "../app_globals.hpp"
 #include "../engine/video_engine.hpp"
 
 /*
-    Display the App GUI at RPI UART Serial Console
+    Display the App GUI at RPI LCD 4X20 Character LCD via i2c
 */
-class Rpi2040UartVideo: public VideoEngine
+class Rpi2040Lcd4x20Video: public VideoEngine
 {
-    public:
+public:
 
-        Rpi2040UartVideo();
-        ~Rpi2040UartVideo();
+    Rpi2040Lcd4x20Video();
+    ~Rpi2040Lcd4x20Video();
 
-        void displayDocumentContext();
-        void displayContext();
+    virtual VideoEngine & display(int);
 
-       virtual VideoEngine & display(int);
-
-       virtual void toString(); // Yes, you know, Java feelings rs
-       virtual int getMemSize();
+    virtual void toString(); // Yes, you know, Java feelings rs
+    virtual int getMemSize();
 
 };
 

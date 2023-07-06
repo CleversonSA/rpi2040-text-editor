@@ -23,7 +23,7 @@ limitations under the License.
 #include "engine/widget_callback.hpp"
 
 /*
-  The abstract document engine processing
+  The abstract core engine processing
 */
 class TextRenderEngine : public DocumentEngine
 {

@@ -16,10 +16,10 @@ limitations under the License.
 #ifndef TEXTRENDERENGINEKEYBOARDCALLBACK
 #define TEXTRENDERENGINEKEYBOARDCALLBACK
 
-#include "../app_globals.hpp"
-#include "../csa_object.hpp"
-#include "../engine/video_engine.hpp"
-#include "keyboard_callback.hpp"
+#include "app_globals.hpp"
+#include "csa_object.hpp"
+#include "engine/video_engine.hpp"
+#include "keyboard/keyboard_callback.hpp"
 #include "core/text_render_engine.hpp"
 
 /*

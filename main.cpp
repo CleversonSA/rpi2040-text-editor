@@ -14,13 +14,15 @@ using std::strtok;
 using std::atoi;
 
 #include "csa_object.hpp"
-#include "document/doc_character.hpp"
-#include "document/doc_row.hpp"
+#include "core/doc_character.hpp"
+#include "core/doc_row.hpp"
 #include "app_globals.hpp"
-#include "document/document.hpp"
+#include "core/document.hpp"
 #include "video/framebuffer.hpp"
+#include "resource_collection.hpp"
+#include "core_collection.hpp"
 
-#include "engine/text_render_engine.hpp"
+#include "core/text_render_engine.hpp"
 #include "engine/msgbox_engine.hpp"
 #include "engine/inputbox_engine.hpp"
 #include "engine/splashbox_engine.hpp"
@@ -29,7 +31,8 @@ using std::atoi;
 #include "engine/keyboard_engine.hpp"
 #include "engine/video_engine.hpp"
 #include "engine/disk_engine.h"
-#include "engine/text_persistence_engine.hpp"
+#include "core/text_persistence_engine.hpp"
+#include "core/open_file_menu.hpp"
 
 #include "widgets/lcd4x20_msgbox.hpp"
 #include "widgets/lcd4x20_inputbox.hpp"
@@ -47,143 +50,149 @@ using std::atoi;
 #include "rpi2040/rpi2040_text_engine.hpp"
 #include "rpi2040/rpi2040_usb_keyboard.hpp"
 #include "rpi2040/rpi2040_disk_engine.hpp"
+#include "rpi2040/rpi2040_lcd4x20_video.hpp"
+#include "rpi2040/rpi2040_utils_engine.hpp"
 
-#include "keyboard_samples/msgbox_sample_callback.hpp"
-#include "keyboard_samples/menu_sample_callback.hpp"
-#include "keyboard_samples/inputbox_sample_callback.hpp"
-
-
-//********************** RASPBERRY PI PICO TEST ****************************
-#include "pico/stdlib.h"
-#include "hardware/uart.h"
-#include "hardware/irq.h"
-#include "pico/time.h"
 #include "bsp/board.h"
+#include "tusb.h"
 
-Rpi2040Uart rpi2040uart = Rpi2040Uart::getInstance();
-
-
-int getMemSize(CSAObject *);
-
-int main()
-{
-
-    board_init();
-
-    int pausa = 0;
-    FrameBuffer fb(24,40);
+/**
+ * Prepare all resources to be used specific for Raspberry PI PICO 2040 board
+ */
+void prepareRpi2040();
+void showIntroWindow();
+void startDocumentWindow();
 
 
-    rpi2040uart.setup();
+//======================================================================
+// Main kernel of app
+//======================================================================
 
-    /*Rpi2040UartKeyboard rpiUartKb = Rpi2040UartKeyboard::getInstance();
-    KeyboardEngine *keyboard = &rpiUartKb;
-    */
-    Rpi2040UsbKeyboard rpi2040UsbKeyboard = Rpi2040UsbKeyboard::getInstance();
-    KeyboardEngine *keyboard = &rpi2040UsbKeyboard;
+int main() {
 
-    Rpi2040UartVideo rpi2040UartVideo;
-    rpi2040uart.setup();
-    VideoEngine *video = &rpi2040UartVideo;
+    //board_init();
 
-    Rpi2040DiskEngine rpi2040DiskEngine;
-    rpi2040DiskEngine.setup();
-
-    DiskEngine *disk = &rpi2040DiskEngine;
-
-    sleep_ms(15000);
-
-    Document doc;
-    doc.setDocFileName("saluton_mondo");
-
-    doc.type("Ola mundo! Esse e um texto salvo")
-        .addNewLine()
-        .type("Essa e a segunda linha!");
-
-    TextPersistenceEngine textPersistenceEngine(&doc, disk);
-    textPersistenceEngine.store();
-
-    char * arquivos = (*disk).dir(AppGlobals::STORAGE_DOCUMENTS_DIR);
-    if (arquivos == 0) {
-        cout << "Files in storage (My Briefcase):" << "(Empty)" << endl;
-    } else {
-        cout << "Files in storage: (My Briefcase)" << arquivos << endl;
-    }
-
-    cout << "Printing" << endl;
-    (*disk).type(AppGlobals::STORAGE_DOCUMENTS_DIR,"saluton_mondo");
-
-    (*disk).del(AppGlobals::STORAGE_DOCUMENTS_DIR,"saluton_mondo");
+    //Rpi2040Uart rpi2040uart = Rpi2040Uart::getInstance();
+    //rpi2040uart.setup();
 
     sleep_ms(5000);
 
-    cout << "Free memory " << AppGlobals::getFreeHeap() << endl;
+    cout << "Inicializando sistema" << endl;
 
 
-    textPersistenceEngine.load("lorem_4k.txt");
+    //======================================================================
+    // Platform specific initialization
+    //======================================================================
+    prepareRpi2040();
 
 
-    (*video).setFrameBuffer(&fb);
+    cout << "Resources OK 1" << endl;
 
-    Rpi2040TextEngine textEngine(&doc, video);
-    textEngine.render();
+    (*ResourceCollection::getInstance().getUtils()).sleepMs(5000);
 
-    (*video).display();
-    textEngine.run(video, keyboard);
+    cout << "Resources OK 2" << endl;
 
+    //======================================================================
+    // Core initialization
+    //======================================================================
+    showIntroWindow();
 
-    /*Document doc;
+    cout << "Intro OK" << endl;
 
-    doc.type("123");
-    doc.addNewLine();
-    doc.type("456");
-    doc.addNewLine();
-    doc.type("789");
-
-    ConsoleVideo consoleVideo;
-    VideoEngine *video = &consoleVideo;
-    (*video)
-        .setFrameBuffer(&fb);
-
-    TextEngine textEngine(&doc, video);
-    textEngine.render();
-    (*video).display();
-
-    doc.addNewLine();
-    doc.type("012");
-    doc.cursorMoveLeft();
-    doc.cursorMoveLeft();
-    doc.cursorMoveLeft();
-    doc.cursorMoveLeft();
-    doc.triggerBackspace();
-    doc.triggerBackspace();
-    doc.triggerBackspace();
-    doc.triggerBackspace();
-    doc.cursorMoveUp();
-    doc.triggerBackspace();
-    doc.triggerBackspace();
-    doc.triggerBackspace();
-    doc.triggerBackspace();
-    doc.cursorMoveDown();
-    doc.cursorMoveStartOfLine();
-    doc.triggerBackspace();
-
-    textEngine.render();
-    (*video)
-        .display();
-    //textEngine.run(video, keyboard);
-
-*/
+    startDocumentWindow();
 
     cout << "Inicializado" << endl;
-
-
-
 }
 
+//======================================================================
+// End Main kernel of app
+//======================================================================
 
-int getMemSize(CSAObject *obj)
+
+
+void startDocumentWindow()
 {
-    return obj->getMemSize();
+    TextRenderEngine *component = CoreCollection::getInstance().getTextRenderEngine();
+    VideoEngine *video = ResourceCollection::getInstance().getVideoEngine();
+    KeyboardEngine *keyboardEngine = ResourceCollection::getInstance().getKeyboardEngine();
+
+    (*component)
+        .render();
+
+    (*component)
+        .run(video, keyboardEngine);
 }
 
+
+void showIntroWindow()
+{
+    char tmp[50];
+
+    sprintf(tmp, "Firmware v%s", AppGlobals::APP_VERSION);
+
+    (*ResourceCollection::getInstance().getSplashBoxEngine())
+        .reset()
+        .setTitle("Text Editor")
+        .setMessage(tmp)
+        .render();
+
+    (*ResourceCollection::getInstance().getVideoEngine()).display();
+
+    (*ResourceCollection::getInstance().getUtils()).sleepMs(5000);
+
+    cout << "Saiu" << endl;
+
+}
+
+
+void prepareCoreComponents(Document *currentDocument)
+{
+
+
+
+}
+
+
+void prepareRpi2040()
+{
+    Document *currentDocument = new Document();
+    FrameBuffer *fb = new FrameBuffer(AppGlobals::FRAMEBUFFER_MAX_ROWS, AppGlobals::FRAMEBUFFER_MAX_COLS);
+
+    Rpi2040Lcd4x20Video *rpi2040Lcd4X20Video = new Rpi2040Lcd4x20Video;
+    Rpi2040DiskEngine *rpi2040DiskEngine = new Rpi2040DiskEngine;
+    Rpi2040TextEngine *rpi2040TextEngine = new Rpi2040TextEngine(currentDocument, rpi2040Lcd4X20Video);
+    Rpi2040UtilsEngine *utilsEngine = new Rpi2040UtilsEngine;
+
+    LCD4X20InputBox *lcd4X20InputBox = new LCD4X20InputBox(fb);
+    LCD4X20Menu *lcd4X20Menu = new LCD4X20Menu(fb);
+    LCD4X20MsgBox *lcd4X20MsgBox = new LCD4X20MsgBox(fb);
+    LCD4X20Splashbox *lcd4X20Splashbox = new LCD4X20Splashbox(fb);
+    LCD4X20TextView *lcd4X20TextView = new LCD4X20TextView(fb, lcd4X20Menu);
+
+    TextPersistenceEngine *textPersistenceEngine = new TextPersistenceEngine(currentDocument,
+                                                                             rpi2040DiskEngine);
+
+
+    (*rpi2040DiskEngine).setup();
+    Rpi2040UsbKeyboard::getInstance().setup();
+    (*rpi2040Lcd4X20Video).setFrameBuffer(fb);
+
+    ResourceCollection::getInstance().setKeyboardEngine(&Rpi2040UsbKeyboard::getInstance());
+    ResourceCollection::getInstance().setVideoEngine(rpi2040Lcd4X20Video);
+
+    ResourceCollection::getInstance().setInputBoxEngine(lcd4X20InputBox);
+    ResourceCollection::getInstance().setMenuEngine(lcd4X20Menu);
+    ResourceCollection::getInstance().setMsgBoxEngine(lcd4X20MsgBox);
+    ResourceCollection::getInstance().setSplashBoxEngine(lcd4X20Splashbox);
+    ResourceCollection::getInstance().setTextViewEngine(lcd4X20TextView);
+    ResourceCollection::getInstance().setUtilsEngine(utilsEngine);
+    ResourceCollection::getInstance().setDiskEngine(rpi2040DiskEngine);
+
+    OpenFileMenu *openFileMenu = new OpenFileMenu();
+
+    CoreCollection::getInstance().setCurrentDocument(currentDocument);
+    CoreCollection::getInstance().setTextPersistenceEngine(textPersistenceEngine);
+    CoreCollection::getInstance().setTextRenderEngine(rpi2040TextEngine);
+    CoreCollection::getInstance().setOpenFileMenu(openFileMenu);
+
+}
