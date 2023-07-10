@@ -64,8 +64,6 @@ class Document: public CSAObject
         char * _docFileName;
         bool _enableLineWarp;
 
-        void destroy(DocRow *);
-
         DocRow * rowAt(DocRow *, int);
 };
 

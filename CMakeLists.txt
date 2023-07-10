@@ -62,8 +62,12 @@ set(SOURCES
         core/text_persistence_engine.hpp
         core/open_file_menu.cpp
         core/open_file_menu.hpp
+        core/main_menu.cpp
+        core/main_menu.hpp
         core/open_file_menu_keyboard_callback.cpp
         core/open_file_menu_keyboard_callback.hpp
+        core/main_menu_keyboard_callback.cpp
+        core/main_menu_keyboard_callback.hpp
         rpi2040/rpi2040_text_engine.cpp
         rpi2040/rpi2040_text_engine.hpp
         engine/textview_engine.cpp
@@ -122,6 +126,10 @@ foreach(name IN ITEMS main)
             hardware_i2c
             )
     target_include_directories(main PRIVATE ${CMAKE_CURRENT_LIST_DIR})
+    target_compile_definitions(main PRIVATE
+            PICO_STACK_SIZE=4096
+            PICO_HEAP_SIZE=0x1000
+            )
     pico_add_extra_outputs(${name})
 endforeach()
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g")

@@ -66,7 +66,7 @@ int DiskEngine::getOpenedFileSize() {
 
     cout << "counted"<< size << endl;
 
-    lfs_file_rewind(getLfsPtr(), getFilePtr());
+    err = lfs_file_rewind(getLfsPtr(), getFilePtr());
     if (err < 0) {
         indicateIOErrorStatus(err);
         indicateIOEndStatus();

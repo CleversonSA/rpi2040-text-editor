@@ -26,6 +26,7 @@ using std::sprintf;
 
 #include "text_persistence_engine.hpp"
 #include "engine/disk_engine.h"
+#include "../core_collection.hpp"
 
 int TextPersistenceEngine::load(const char *fileName)
 {
@@ -40,23 +41,39 @@ int TextPersistenceEngine::load(const char *fileName)
     }
 
     (*getDocument()).destroy();
-    //Workaround to avoid nullptr
-    (*getDocument()).addNewLine();
-    (*getDocument()).type(" ");
+
+    /**
+     * \\___//
+     * d O O b
+     *  \ o / So FAR NOT SO GOOD! I was expecting to destroy the document object and recreate it again
+     *        but after almost 1 day spent to it, seeing youtube videos, tutorials, tips, tweaking the RPI 2040
+     *        I decided to destroy the last one object and create a new one to avoid the misterious
+     *        PANIC MEMORY ERRO FROM RPI!
+     */
+    Document *docNew = new Document;
+    (*docNew).addNewLine();
+    (*docNew).type(" ");
+    setDocument(docNew);
+
+    CoreCollection::getInstance().setCurrentDocument(docNew);
+    CoreCollection::getInstance().getTextRenderEngine()->setDocument(docNew);
+
     (*getDocument()).setDocFileName(fileName);
 
     int fileSize = (*getDiskEngine()).getOpenedFileSize();
     for (byteCounter = 0; byteCounter < fileSize; byteCounter++)
     {
         char c = (*getDiskEngine()).read();
-        if (c == '\n')
+        if (c == '\n' || c == '\0')
         {
             (*getDocument()).addNewLine();
+            cout << "Nova linha adicionada " << byteCounter << endl;
         } else {
             (*getDocument()).type(c);
+            cout << c ;
         }
-
     }
+    cout << "File READ " << endl;
 
     (*getDiskEngine()).closeFile();
 

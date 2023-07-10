@@ -72,6 +72,9 @@ DocCharacter::~DocCharacter()
     if(AppGlobals::getInstance().getEnableObjDelLog() == true) {
         cout << "[DocCharacter] [destUID=" << CSAObject::getSerialVersionUID() << "]" << endl;
     }
+
+    _nextCharPtr = 0;
+    _previousCharPtr = 0;
 }
 
 DocCharacter::DocCharacter(char character, DocCharacter * nextCharPtr, DocCharacter * previousCharPtr):

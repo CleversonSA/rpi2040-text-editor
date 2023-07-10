@@ -54,6 +54,8 @@ void OpenFileMenu::run()
         .setCallback(cb)
         .render()
         .run(video, keyboard);
+
+    delete cb;
 }
 
 void OpenFileMenu::open(char * fileName)

@@ -29,6 +29,8 @@ class TextRenderEngineKeyboardCallback : public KeyboardCallback
 {
     public:
 
+        static int _ESCAPE_PRESSES_COUNT;
+
         ~TextRenderEngineKeyboardCallback();
         TextRenderEngineKeyboardCallback();
 

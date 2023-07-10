@@ -33,6 +33,7 @@ using std::atoi;
 #include "engine/disk_engine.h"
 #include "core/text_persistence_engine.hpp"
 #include "core/open_file_menu.hpp"
+#include "core/main_menu.hpp"
 
 #include "widgets/lcd4x20_msgbox.hpp"
 #include "widgets/lcd4x20_inputbox.hpp"
@@ -75,7 +76,7 @@ int main() {
     //Rpi2040Uart rpi2040uart = Rpi2040Uart::getInstance();
     //rpi2040uart.setup();
 
-    sleep_ms(5000);
+    //sleep_ms(5000);
 
     cout << "Inicializando sistema" << endl;
 
@@ -98,6 +99,11 @@ int main() {
     showIntroWindow();
 
     cout << "Intro OK" << endl;
+
+    startDocumentWindow();
+
+    // Callbacks callbacks, I see callbacks everytime....
+    cout << "chegou " << endl;
 
     startDocumentWindow();
 
@@ -145,14 +151,6 @@ void showIntroWindow()
 }
 
 
-void prepareCoreComponents(Document *currentDocument)
-{
-
-
-
-}
-
-
 void prepareRpi2040()
 {
     Document *currentDocument = new Document();
@@ -189,10 +187,12 @@ void prepareRpi2040()
     ResourceCollection::getInstance().setDiskEngine(rpi2040DiskEngine);
 
     OpenFileMenu *openFileMenu = new OpenFileMenu();
+    MainMenu *mainMenu = new MainMenu();
 
     CoreCollection::getInstance().setCurrentDocument(currentDocument);
     CoreCollection::getInstance().setTextPersistenceEngine(textPersistenceEngine);
     CoreCollection::getInstance().setTextRenderEngine(rpi2040TextEngine);
     CoreCollection::getInstance().setOpenFileMenu(openFileMenu);
+    CoreCollection::getInstance().setMainMenu(mainMenu);
 
 }

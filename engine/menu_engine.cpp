@@ -54,7 +54,7 @@ void MenuEngine::run(VideoEngine *videoEngine, KeyboardEngine *keyboardEngine)
     (*keyboardEngine).setCallback(kcb);
     (*keyboardEngine).loop();
 
-    delete kcb;
+    //delete kcb;
 }
 
 MenuEngine & MenuEngine::setTitle(const char title[])

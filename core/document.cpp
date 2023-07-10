@@ -31,27 +31,45 @@ using std::sprintf;
 #include "../app_globals.hpp"
 
 void Document::destroy() {
-    destroy(getStartRowPtr());
+
+    DocRow* docPtr = getStartRowPtr();
+    setCurrentRowPtr(0);
+
+    DocRow* pointers[8096];
+    int ptrCount = 0;
+
+    while (docPtr != 0)
+    {
+        DocRow * nextCharPtr = docPtr->getNextRowPtr();
+        if (nextCharPtr == 0)
+            break;
+        docPtr = nextCharPtr;
+        pointers[ptrCount] = docPtr;
+        ptrCount ++;
+
+        cout << "Linha " << ptrCount << endl;
+    }
+    ptrCount --;
+    while (ptrCount >= 0)
+    {
+        (*pointers[ptrCount]).destroy();
+        delete pointers[ptrCount];
+        ptrCount --;
+
+        cout << "Apagada linha " << ptrCount << endl;
+    }
+
+
     setStartRowPtr(0);
     setCurrentRowPtr(0);
     addNewLine();
 }
 
-void Document::destroy(DocRow *docPtr) {
-    if (docPtr == 0) {
-        return;
-    }
-
-    destroy((*docPtr).getNextRowPtr());
-
-    (*docPtr).destroy();
-
-    delete docPtr;
-}
 
 void Document::setDocFileName(const char *filename )
 {
     _docFileName = new char[strlen(filename)];
+    _docFileName[0] = '\0';
 
     strcpy(_docFileName, filename);
 }
@@ -145,7 +163,12 @@ int Document::getDocRowEOF() const
     }
     while (rPtr != 0)
     {
-        cout << "correndo linha " << rows << endl;
+        if (rPtr == 0) {
+            cout << "correndo linha " << rows << " - " << "null" << endl;
+        } else {
+            cout << "correndo linha " << rows << " - " << rPtr << endl;
+        }
+
 
         if ((*rPtr).getNextRowPtr() == 0)
         {
@@ -159,6 +182,8 @@ int Document::getDocRowEOF() const
     {
         rPtr = (*rPtr).getPreviousRowPtr();
     }
+    cout << AppGlobals::getInstance().getFreeHeap() << " - " << AppGlobals::getInstance().getTotalHeap() << endl;
+    cout << "** EOF REACHED **" << endl;
     return rows+1;
 }
 

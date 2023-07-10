@@ -25,19 +25,40 @@ using std::strlen;
 
 #include "doc_row.hpp"
 #include "../app_globals.hpp"
+#include "../resource_collection.hpp"
 
 void DocRow::destroy() {
-    destroy(getStartCharPtr());
+
+    cout << AppGlobals::getInstance().getFreeHeap() << " - " << AppGlobals::getInstance().getTotalHeap() << endl;
+
+    DocCharacter* docPtr = getStartCharPtr();
+    setCurrentCharPtr(0);
+
+    DocCharacter* pointers[8096];
+    int ptrCount = 0;
+
+    while (docPtr != 0)
+    {
+        DocCharacter * nextCharPtr = docPtr->getNextCharPtr();
+        if (nextCharPtr == 0)
+            break;
+
+        docPtr = nextCharPtr;
+        pointers[ptrCount] = docPtr;
+        ptrCount ++;
+        //cout << "Car " << ptrCount << endl;
+    }
+    ptrCount--;
+
+    while (ptrCount >= 0)
+    {
+        delete pointers[ptrCount];
+        ptrCount --;
+        //cout << "Apagada Car " << ptrCount << endl;
+    }
+
     setStartCharPtr(0);
     setCurrentCharPtr(0);
-}
-
-void DocRow::destroy(DocCharacter *docPtr) {
-    if (docPtr == 0) {
-        return;
-    }
-    destroy((*docPtr).getNextCharPtr());
-    delete docPtr;
 }
 
 void DocRow::setStartCharPtr(DocCharacter * startCharPtr)
@@ -292,9 +313,7 @@ int DocRow::getLength () const
 
 int DocRow::getLength (const DocCharacter * startCharPtr, int qtLength) const
 {
-    cout << "calculado " << qtLength << endl;
     if (startCharPtr != 0) {
-        cout << (*startCharPtr).getNextCharPtr() << endl;
        return getLength((*startCharPtr).getNextCharPtr(), ++qtLength);
 
     } else {
@@ -473,6 +492,9 @@ DocRow::~DocRow()
     if(AppGlobals::getInstance().getEnableObjDelLog() == true) {
         cout << "[DocRow] [destUID=" << CSAObject::getSerialVersionUID() << "]" << endl;
     }
+
+   _nextRowPtr = 0;
+    _previousRowPtr = 0;
 }
 
 DocRow::DocRow(DocCharacter * startCharPtr, DocRow * nextRowPtr, DocRow * previousRowPtr):

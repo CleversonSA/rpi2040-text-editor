@@ -59,7 +59,7 @@ class AppGlobals
 
         static AppGlobals* _me;
 
-        bool _enableObjDelLog;
+        bool _enableObjDelLog = true;
 
 };
 

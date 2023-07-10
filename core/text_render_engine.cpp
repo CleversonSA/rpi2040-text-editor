@@ -175,17 +175,7 @@ void TextRenderEngine::renderColRow(int row, int col, int bytes)
     char number_array[5 + sizeof(char)];
 
     (*(*getVideoEngine()).getFrameBuffer())
-      .gotoXY((*(*getVideoEngine()).getFrameBuffer()).getMaxRows()-1,(*(*getVideoEngine()).getFrameBuffer()).getMaxCols()-18);
-
-    sprintf(number_array, "%d", (bytes)+10000);
-    (*getVideoEngine()->getFrameBuffer())
-        .write('(')
-        .write(number_array[1])
-        .write(number_array[2])
-        .write(number_array[3])
-        .write(number_array[4])
-        .write(')')
-        .write(' ');
+      .gotoXY((*(*getVideoEngine()).getFrameBuffer()).getMaxRows()-1,(*(*getVideoEngine()).getFrameBuffer()).getMaxCols()-10);
 
     sprintf(number_array, "%d", (row)+1000);
 

@@ -25,6 +25,11 @@ using std::setw;
 
 CoreCollection * CoreCollection::_me = 0;
 
+MainMenu * CoreCollection::getMainMenu()
+{
+    return _mainMenuPtr;
+}
+
 Document * CoreCollection::getCurrentDocument()
 {
     return _currentDocumentPtr;
@@ -65,6 +70,13 @@ void CoreCollection::setOpenFileMenu(OpenFileMenu *openFileMenu)
     _openFileMenuPtr = openFileMenu;
 }
 
+void CoreCollection::setMainMenu(MainMenu *mainMenu)
+{
+    _mainMenuPtr = mainMenu;
+}
+
+
+
 void CoreCollection::toString()
 {
     cout << "[CoreCollection] [UID=" << CSAObject::getSerialVersionUID() << "] [SIZE=" << sizeof((*this)) <<"] "
@@ -98,7 +110,8 @@ CSAObject(),
 _openFileMenuPtr(0),
 _textPersistenceEnginePtr(0),
 _textRenderEnginePtr(0),
-_currentDocumentPtr(0)
+_currentDocumentPtr(0),
+_mainMenuPtr(0)
 {
 
 }
