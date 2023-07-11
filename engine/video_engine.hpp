@@ -34,6 +34,7 @@ class VideoEngine: public CSAObject
         FrameBuffer * getFrameBuffer();
         VideoEngine & setFrameBuffer(FrameBuffer *);
 
+        virtual VideoEngine & reset();
 
         // The int value is a optional identifier for specific display depending
         // of the app context.

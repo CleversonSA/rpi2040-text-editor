@@ -60,19 +60,24 @@ void OpenFileMenu::run()
 
 void OpenFileMenu::open(char * fileName)
 {
-    TextPersistenceEngine *persistence = CoreCollection::getInstance().getTextPersistenceEngine();
-    Document *doc = CoreCollection::getInstance().getCurrentDocument();
-    VideoEngine *video =  ResourceCollection::getInstance().getVideoEngine();
-    KeyboardEngine *keyboard = ResourceCollection::getInstance().getKeyboardEngine();
-    TextRenderEngine *text = CoreCollection::getInstance().getTextRenderEngine();
+    UtilsEngine *utils = ResourceCollection::getInstance().getUtils();
+    VideoEngine *video = ResourceCollection::getInstance().getVideoEngine();
 
-    (*persistence).setDocument(doc);
-    (*persistence).load(fileName);
+    AppGlobals::getInstance().setLastOpennedDocument(fileName);
+    AppGlobals::getInstance().saveConstants();
 
-    // Callbacks callbacks, I see callbacks everytime....
-    cout << "chegou " << endl;
-    (*text)
-        .run(video, keyboard);
+    /**
+     * Ok, let´s explain a litte about soft reset when loading file. Microcontrollers has a big problem
+     * with memory fragmentation. I tried to clean up the document many times, but even with almost
+     * 80% memory free, I got malloc errors due the fragmentation. The same problem I has with
+     * Micropython, so, instead of create a large document to allocate memory at startup
+     * just reboot the microcontroller. To end user, will looks like a normal usage flow. Beautiful, not
+     * , but come on, it´s a microcontroller not a x86 PC (may be future?)
+     */
+    (*video).reset();
+    (*utils).sleepMs(1000);
+    (*utils).softReset();
+
 }
 
 void OpenFileMenu::toString()

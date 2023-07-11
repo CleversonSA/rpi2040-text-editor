@@ -39,11 +39,9 @@ const char AppGlobals::STORAGE_DOCUMENTS_DIR[] = "/My Briefcase";
 
 void AppGlobals::saveConstants()
 {
-    cout << "mas que porra" << endl;
     DiskEngine *disk = ResourceCollection::getInstance().getDiskEngine();
 
     (*disk).del(AppGlobals::STORAGE_DOCUMENTS_DIR, "settings.properties");
-    cout << "Apagando, foda-se" << endl;
 
     cout << AppGlobals::getInstance().getFreeHeap() << " - " << AppGlobals::getInstance().getTotalHeap() << endl;
 
@@ -52,17 +50,18 @@ void AppGlobals::saveConstants()
        cerr << "Failed when saving settings.properties - " << err << endl;
        return;
    }
-    cout << "mas que porra" << endl;
-
 
    char *tmp = new char[100];
    tmp[0] = '\0';
 
-   strcat(tmp, "lastOpennedFile");strcat(tmp, "=");strcat(tmp, _lastOpennedDocument);strcat(tmp, "\n");
-   cout << tmp << endl;
-   (*disk).writeLn(tmp);
+   if (_lastOpennedDocument == 0) {
+       strcat(tmp, "lastOpennedFile=\n");
+   } else {
+       strcat(tmp, "lastOpennedFile");strcat(tmp, "=");strcat(tmp, _lastOpennedDocument);strcat(tmp, "\n");
+   }
 
-    (*disk).closeFile();
+   (*disk).writeLn(tmp);
+   (*disk).closeFile();
 
 }
 
@@ -76,6 +75,14 @@ void AppGlobals::loadConstants()
         return;
     }
 
+    setLastOpennedDocument(loadProperty(disk, "lastOpennedFile"));
+
+    (*disk).closeFile();
+}
+
+
+char * AppGlobals::loadProperty(DiskEngine *disk, char * property2Find)
+{
     char *property = new char[255];
     char *value = new char[255];
     property[0] = '\0';
@@ -83,12 +90,13 @@ void AppGlobals::loadConstants()
 
 
     int fileSize = (*disk).getOpenedFileSize();
-    err = (*disk).rewind();
+    int err = (*disk).rewind();
     if (err < 0) {
         cerr << "Failed when rewinding settings.properties - " << err << endl;
         (*disk).closeFile();
-        return;
+        return 0;
     }
+
     bool propertyFound = false;
     for (int byteCounter = 0; byteCounter < fileSize; byteCounter++)
     {
@@ -107,22 +115,18 @@ void AppGlobals::loadConstants()
             else
                 strcat(property,new char[2]{c, '\0'});
 
-            if (!propertyFound && strcmp(property,"lastOpennedFile") == 0)
+            if (!propertyFound && strcmp(property,property2Find) == 0)
             {
                 value[0] = '\0';
                 propertyFound = true;
-                cout << "Propriedade encontrada" << endl;
                 (*disk).read();
                 byteCounter++;
                 continue;
-            } else {
-                cout << property << value << endl;
             }
         }
     }
-    setLastOpennedDocument(value);
 
-    (*disk).closeFile();
+    return value;
 }
 
 void AppGlobals::setLastOpennedDocument(const char * filename) {

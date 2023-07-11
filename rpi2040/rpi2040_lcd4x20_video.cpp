@@ -32,6 +32,12 @@ using std::sprintf;
 #include "core/text_render_engine.hpp"
 #include "../rpi2040_sdk/lcd_1602_i2c.c"
 
+VideoEngine & Rpi2040Lcd4x20Video::reset()
+{
+    i2c_deinit(i2c_default);
+
+    return (*this);
+}
 
 VideoEngine & Rpi2040Lcd4x20Video::display(int context)
 {
@@ -113,7 +119,7 @@ VideoEngine()
     lcd_init();
     lcd_clear();
     lcd_set_cursor(0,0);
-    lcd_string(" 4x20 LCD OK");
+    lcd_string(" Processing...");
 #endif
 }
 

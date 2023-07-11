@@ -31,6 +31,17 @@ using std::sprintf;
 #include "hardware/watchdog.h"
 
 
+void Rpi2040UtilsEngine::deactivateActStatus() {
+    gpio_put(AppGlobals::RPI2040_USB_IO_LED_PIN, 0);
+    sleep_ms(50);
+}
+
+void Rpi2040UtilsEngine::activateActStatus() {
+    gpio_put(AppGlobals::RPI2040_USB_IO_LED_PIN, 1);
+    sleep_ms(50);
+}
+
+
 void Rpi2040UtilsEngine::softReset() {
     watchdog_enable(1, 1);
     while(1);

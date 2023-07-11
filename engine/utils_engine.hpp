@@ -32,6 +32,8 @@ public:
 
     virtual void sleepMs(long) = 0;
     virtual void softReset() = 0;
+    virtual void activateActStatus() = 0;
+    virtual void deactivateActStatus () = 0;
 
 private:
 

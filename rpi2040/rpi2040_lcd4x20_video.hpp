@@ -30,6 +30,7 @@ public:
     Rpi2040Lcd4x20Video();
     ~Rpi2040Lcd4x20Video();
 
+    virtual VideoEngine & reset();
     virtual VideoEngine & display(int);
 
     virtual void toString(); // Yes, you know, Java feelings rs

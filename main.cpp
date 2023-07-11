@@ -62,7 +62,9 @@ using std::atoi;
  */
 void prepareRpi2040();
 void showIntroWindow();
+void loadFileWindow();
 void startDocumentWindow();
+void startUartDebug();
 
 
 //======================================================================
@@ -71,52 +73,39 @@ void startDocumentWindow();
 
 int main() {
 
-    board_init();
+    cout << "System booting..." << endl;
 
-    Rpi2040Uart rpi2040uart = Rpi2040Uart::getInstance();
-    rpi2040uart.setup();
-
-     sleep_ms(5000);
-
-    cout << "Inicializando sistema" << endl;
-
+    //======================================================================
+    // UART DEBUG
+    //======================================================================
+    //startUartDebug();
 
     //======================================================================
     // Platform specific initialization
     //======================================================================
     prepareRpi2040();
 
-
-    cout << "Resources OK 1" << endl;
-
-    (*ResourceCollection::getInstance().getUtils()).sleepMs(5000);
-
-    cout << "Resources OK 2" << endl;
+    cout << "Resources initialized OK" << endl;
 
     //======================================================================
     // Core initialization
     //======================================================================
-    showIntroWindow();
-
-    cout << "Intro OK" << endl;
+    cout << "Loading constants..." << endl;
 
     AppGlobals::getInstance().loadConstants();
-    cout << "L1" << endl;
-    AppGlobals::getInstance().setLastOpennedDocument("lorem_4k.txt");
-    cout << "L2" << endl;
-    AppGlobals::getInstance().saveConstants();
-    cout << "L3" << endl;
-    AppGlobals::getInstance().setLastOpennedDocument("xxxxxx");
-    cout << "L4" << endl;
-    AppGlobals::getInstance().loadConstants();
-    cout << "L5" << endl;
-    cout << "** Parametro:" << AppGlobals::getInstance().getLastOpennedDocument() << endl;
+
+    if (AppGlobals::getInstance().getLastOpennedDocument() != 0
+        && !strcmp(AppGlobals::getInstance().getLastOpennedDocument(),"") == 0)
+    {
+        cout << "Loading file [" << AppGlobals::getInstance().getLastOpennedDocument() << "]" << endl;
+        loadFileWindow();
+        AppGlobals::getInstance().setLastOpennedDocument(0);
+        AppGlobals::getInstance().saveConstants();
+    } else {
+        showIntroWindow();
+    }
 
     startDocumentWindow();
-
-
-    cout << "Inicializado" << endl;
-
 
 }
 
@@ -124,7 +113,40 @@ int main() {
 // End Main kernel of app
 //======================================================================
 
+void startUartDebug()
+{
+    board_init();
 
+    Rpi2040Uart rpi2040uart = Rpi2040Uart::getInstance();
+    rpi2040uart.setup();
+
+    cout << "Debug initialized..." << endl;
+}
+
+void loadFileWindow()
+{
+    VideoEngine *video = ResourceCollection::getInstance().getVideoEngine();
+    UtilsEngine *utils = ResourceCollection::getInstance().getUtils();
+    TextPersistenceEngine *persistence = CoreCollection::getInstance().getTextPersistenceEngine();
+
+    char tmp[50];
+
+    sprintf(tmp, "File: %s", AppGlobals::getInstance().getLastOpennedDocument());
+
+    (*ResourceCollection::getInstance().getSplashBoxEngine())
+            .reset()
+            .setTitle("Loading...")
+            .setMessage(tmp)
+            .render();
+
+    (*video).display();
+    (*utils).sleepMs(200);
+
+    (*utils).activateActStatus();
+    (*persistence).load(AppGlobals::getInstance().getLastOpennedDocument());
+    (*utils).deactivateActStatus();
+
+}
 
 void startDocumentWindow()
 {
@@ -156,8 +178,6 @@ void showIntroWindow()
 
     (*ResourceCollection::getInstance().getUtils()).sleepMs(5000);
 
-    cout << "Saiu" << endl;
-
 }
 
 
@@ -165,6 +185,8 @@ void prepareRpi2040()
 {
     Document *currentDocument = new Document();
     FrameBuffer *fb = new FrameBuffer(AppGlobals::FRAMEBUFFER_MAX_ROWS, AppGlobals::FRAMEBUFFER_MAX_COLS);
+    
+    Rpi2040UsbKeyboard::getInstance().setup();
 
     Rpi2040Lcd4x20Video *rpi2040Lcd4X20Video = new Rpi2040Lcd4x20Video;
     Rpi2040DiskEngine *rpi2040DiskEngine = new Rpi2040DiskEngine;
@@ -182,7 +204,6 @@ void prepareRpi2040()
 
 
     (*rpi2040DiskEngine).setup();
-    Rpi2040UsbKeyboard::getInstance().setup();
     (*rpi2040Lcd4X20Video).setFrameBuffer(fb);
 
     ResourceCollection::getInstance().setKeyboardEngine(&Rpi2040UsbKeyboard::getInstance());

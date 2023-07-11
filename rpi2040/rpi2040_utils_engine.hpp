@@ -32,6 +32,9 @@ public:
 
     virtual void sleepMs(long);
     virtual void softReset();
+    virtual void activateActStatus();
+    virtual void deactivateActStatus();
+
 
     virtual void toString(); // Yes, you know, Java feelings rs
     virtual int getMemSize();

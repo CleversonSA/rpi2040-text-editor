@@ -18,6 +18,7 @@ limitations under the License.
 
 #include <malloc.h>
 #include <inttypes.h>
+#include "engine/disk_engine.h"
 
 /*
   Global settings class
@@ -50,12 +51,10 @@ class AppGlobals
         static int calculateSimpleChecksum(char *array, int length);
         static int calculateChecksum(char *, uint16_t, int, size_t);
 
-
         void setEnableObjDelLog(const bool);
         bool getEnableObjDelLog() const;
         void setLastOpennedDocument(const char *);
         char * getLastOpennedDocument();
-
 
         void loadConstants();
         void saveConstants();
@@ -64,6 +63,8 @@ class AppGlobals
         AppGlobals();
 
         static AppGlobals* _me;
+
+        char * loadProperty(DiskEngine *, char *);
 
         bool _enableObjDelLog = true;
         char * _lastOpennedDocument;

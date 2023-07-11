@@ -21,6 +21,11 @@ using std::endl;
 #include "video_engine.hpp"
 #include "../app_globals.hpp"
 
+VideoEngine & VideoEngine::reset()
+{
+    return (*this);
+}
+
 FrameBuffer * VideoEngine::getFrameBuffer()
 {
     return _fb;
