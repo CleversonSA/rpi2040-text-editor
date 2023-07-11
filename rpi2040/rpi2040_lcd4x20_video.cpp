@@ -116,10 +116,21 @@ VideoEngine()
     // Make the I2C pins available to picotool
     bi_decl(bi_2pins_with_func(PICO_DEFAULT_I2C_SDA_PIN, PICO_DEFAULT_I2C_SCL_PIN, GPIO_FUNC_I2C));
 
+
     lcd_init();
+    sleep_ms(100);
     lcd_clear();
+    sleep_ms(100);
+    lcd_init();
+    sleep_ms(100);
+    lcd_clear();
+    sleep_ms(100);
+    lcd_clear();
+    sleep_ms(100);
     lcd_set_cursor(0,0);
+    sleep_ms(100);
     lcd_string(" Processing...");
+    sleep_ms(100);
 #endif
 }
 
