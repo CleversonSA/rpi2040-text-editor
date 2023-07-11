@@ -71,12 +71,12 @@ void startDocumentWindow();
 
 int main() {
 
-    //board_init();
+    board_init();
 
-    //Rpi2040Uart rpi2040uart = Rpi2040Uart::getInstance();
-    //rpi2040uart.setup();
+    Rpi2040Uart rpi2040uart = Rpi2040Uart::getInstance();
+    rpi2040uart.setup();
 
-    //sleep_ms(5000);
+     sleep_ms(5000);
 
     cout << "Inicializando sistema" << endl;
 
@@ -100,14 +100,24 @@ int main() {
 
     cout << "Intro OK" << endl;
 
+    AppGlobals::getInstance().loadConstants();
+    cout << "L1" << endl;
+    AppGlobals::getInstance().setLastOpennedDocument("lorem_4k.txt");
+    cout << "L2" << endl;
+    AppGlobals::getInstance().saveConstants();
+    cout << "L3" << endl;
+    AppGlobals::getInstance().setLastOpennedDocument("xxxxxx");
+    cout << "L4" << endl;
+    AppGlobals::getInstance().loadConstants();
+    cout << "L5" << endl;
+    cout << "** Parametro:" << AppGlobals::getInstance().getLastOpennedDocument() << endl;
+
     startDocumentWindow();
 
-    // Callbacks callbacks, I see callbacks everytime....
-    cout << "chegou " << endl;
-
-    startDocumentWindow();
 
     cout << "Inicializado" << endl;
+
+
 }
 
 //======================================================================

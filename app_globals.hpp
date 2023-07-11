@@ -50,9 +50,15 @@ class AppGlobals
         static int calculateSimpleChecksum(char *array, int length);
         static int calculateChecksum(char *, uint16_t, int, size_t);
 
+
         void setEnableObjDelLog(const bool);
         bool getEnableObjDelLog() const;
+        void setLastOpennedDocument(const char *);
+        char * getLastOpennedDocument();
 
+
+        void loadConstants();
+        void saveConstants();
 
     private:
         AppGlobals();
@@ -60,8 +66,8 @@ class AppGlobals
         static AppGlobals* _me;
 
         bool _enableObjDelLog = true;
+        char * _lastOpennedDocument;
 
 };
 
 #endif // DOCCHARACTER
-

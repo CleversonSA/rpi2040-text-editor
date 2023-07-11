@@ -129,6 +129,8 @@ foreach(name IN ITEMS main)
     target_compile_definitions(main PRIVATE
             PICO_STACK_SIZE=4096
             PICO_HEAP_SIZE=0x1000
+            PICO_MALLOC_PANIC=1
+            PICO_DEBUG_MALLOC=1
             )
     pico_add_extra_outputs(${name})
 endforeach()

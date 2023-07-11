@@ -31,6 +31,7 @@ public:
     ~UtilsEngine();
 
     virtual void sleepMs(long) = 0;
+    virtual void softReset() = 0;
 
 private:
 

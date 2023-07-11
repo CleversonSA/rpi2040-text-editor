@@ -52,6 +52,17 @@ int syncBlockDeviceWrapperFn(const struct lfs_config *c)
 }
 
 //=================== CLASS IMPLEMENTATION ==================================
+int DiskEngine::rewind()
+{
+    int err = lfs_file_rewind(getLfsPtr(), getFilePtr());
+    if (err < 0) {
+        indicateIOErrorStatus(err);
+        indicateIOEndStatus();
+        return err;
+    }
+    return 0;
+}
+
 int DiskEngine::getOpenedFileSize() {
     indicateIOBeginStatus();
     int err = lfs_file_rewind(getLfsPtr(), getFilePtr());
@@ -86,14 +97,27 @@ char DiskEngine::read()
 
     char c = '\0';
 
-    lfs_file_read(getLfsPtr(),getFilePtr(),&c,sizeof(char));
+    int err = lfs_file_read(getLfsPtr(),getFilePtr(),&c,sizeof(char));
+    if (err < 0) {
+        indicateIOErrorStatus(err);
+        indicateIOEndStatus();
+        return '\0';
+    }
+
 
     return c;
 }
 
+void DiskEngine::writeLn(const char * lineStr) {
+    int len = strlen(lineStr);
+
+    for (int i = 0; i<len; i++) {
+        write(lineStr[i]);
+    }
+}
+
 void DiskEngine::write(const char c)
 {
-
     lfs_file_write(getLfsPtr(),getFilePtr(),&c,sizeof(char));
 
 }
@@ -115,7 +139,7 @@ void DiskEngine::closeFile()
         return;
     }
 
-    delete getFilePtr();
+    //delete getFilePtr();
     setFilePtr(0);
     indicateIOEndStatus();
 }
@@ -134,11 +158,16 @@ int DiskEngine::openFile(const char *path, const char *fileName, int flags)
     strcat(fullPathSource,fileName);
 
     if(getFilePtr() != 0) {
-        delete getFilePtr();
+        lfs_file_t *aux = getFilePtr();
+        setFilePtr(0);
+        delete aux;
     }
 
+    cout << "Passou aqui disk" << endl;
     lfs_file *file = new lfs_file;
     setFilePtr(file);
+
+    cout << "Passou aqui disk 2" << endl;
 
     indicateIOBeginStatus();
     err = lfs_file_open(getLfsPtr(), getFilePtr(),fullPathSource,flags);

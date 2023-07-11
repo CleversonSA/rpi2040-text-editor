@@ -72,6 +72,7 @@ int TextPersistenceEngine::load(const char *fileName)
             (*getDocument()).type(c);
             cout << c ;
         }
+        cout << AppGlobals::getInstance().getFreeHeap() << " - " << AppGlobals::getInstance().getTotalHeap() << endl;
     }
     cout << "File READ " << endl;
 

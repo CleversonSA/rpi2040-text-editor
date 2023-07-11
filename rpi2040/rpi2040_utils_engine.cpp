@@ -28,7 +28,13 @@ using std::sprintf;
 
 //********************** RASPBERRY PI PICO TEST ****************************
 #include "pico/stdlib.h"
+#include "hardware/watchdog.h"
 
+
+void Rpi2040UtilsEngine::softReset() {
+    watchdog_enable(1, 1);
+    while(1);
+}
 
 void Rpi2040UtilsEngine::sleepMs(long ms)
 {

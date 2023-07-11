@@ -31,6 +31,7 @@ public:
     ~Rpi2040UtilsEngine();
 
     virtual void sleepMs(long);
+    virtual void softReset();
 
     virtual void toString(); // Yes, you know, Java feelings rs
     virtual int getMemSize();

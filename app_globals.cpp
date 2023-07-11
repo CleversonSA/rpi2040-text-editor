@@ -16,6 +16,13 @@ limitations under the License.
 #include "app_globals.hpp"
 #include <malloc.h>
 #include <inttypes.h>
+#include "resource_collection.hpp"
+#include "engine/disk_engine.h"
+
+#include <iostream>
+using std::cerr;
+using std::cout;
+using std::endl;
 
 #include <cstring>
 using std::strcpy;
@@ -28,6 +35,108 @@ const char AppGlobals::APP_VERSION[] = "0.7.5";
 const char AppGlobals::MENU_ITEM_DELIM[] = "|";
 const char AppGlobals::MENU_ITEM_DETAIL_DELIM[] = ";";
 const char AppGlobals::STORAGE_DOCUMENTS_DIR[] = "/My Briefcase";
+
+
+void AppGlobals::saveConstants()
+{
+    cout << "mas que porra" << endl;
+    DiskEngine *disk = ResourceCollection::getInstance().getDiskEngine();
+
+    (*disk).del(AppGlobals::STORAGE_DOCUMENTS_DIR, "settings.properties");
+    cout << "Apagando, foda-se" << endl;
+
+    cout << AppGlobals::getInstance().getFreeHeap() << " - " << AppGlobals::getInstance().getTotalHeap() << endl;
+
+   int err = (*disk).openFile(AppGlobals::STORAGE_DOCUMENTS_DIR, "settings.properties",DiskEngine::FILE_OPEN_CREATE | DiskEngine::FILE_OPEN_READWRITE);
+   if (err < 0) {
+       cerr << "Failed when saving settings.properties - " << err << endl;
+       return;
+   }
+    cout << "mas que porra" << endl;
+
+
+   char *tmp = new char[100];
+   tmp[0] = '\0';
+
+   strcat(tmp, "lastOpennedFile");strcat(tmp, "=");strcat(tmp, _lastOpennedDocument);strcat(tmp, "\n");
+   cout << tmp << endl;
+   (*disk).writeLn(tmp);
+
+    (*disk).closeFile();
+
+}
+
+void AppGlobals::loadConstants()
+{
+    DiskEngine *disk = ResourceCollection::getInstance().getDiskEngine();
+
+    int err = (*disk).openFile(AppGlobals::STORAGE_DOCUMENTS_DIR, "settings.properties",DiskEngine::FILE_OPEN_READONLY);
+    if (err < 0) {
+        cerr << "Failed when openning settings.properties - " << err << endl;
+        return;
+    }
+
+    char *property = new char[255];
+    char *value = new char[255];
+    property[0] = '\0';
+    value[0] = '\0';
+
+
+    int fileSize = (*disk).getOpenedFileSize();
+    err = (*disk).rewind();
+    if (err < 0) {
+        cerr << "Failed when rewinding settings.properties - " << err << endl;
+        (*disk).closeFile();
+        return;
+    }
+    bool propertyFound = false;
+    for (int byteCounter = 0; byteCounter < fileSize; byteCounter++)
+    {
+        char c = (*disk).read();
+        if (c == '\n' || c == '\0')
+        {
+            if (propertyFound == true)
+            {
+                break;
+            }
+            property[0] = '\0';
+            value[0] = '\0';
+        } else {
+            if (propertyFound)
+                strcat(value,new char[2]{c, '\0'});
+            else
+                strcat(property,new char[2]{c, '\0'});
+
+            if (!propertyFound && strcmp(property,"lastOpennedFile") == 0)
+            {
+                value[0] = '\0';
+                propertyFound = true;
+                cout << "Propriedade encontrada" << endl;
+                (*disk).read();
+                byteCounter++;
+                continue;
+            } else {
+                cout << property << value << endl;
+            }
+        }
+    }
+    setLastOpennedDocument(value);
+
+    (*disk).closeFile();
+}
+
+void AppGlobals::setLastOpennedDocument(const char * filename) {
+    char * fnPtr = new char[strlen(filename)+1];
+    fnPtr[0] = '\0';
+    strcpy(fnPtr, filename);
+
+    _lastOpennedDocument = fnPtr;
+}
+
+char * AppGlobals::getLastOpennedDocument()
+{
+    return _lastOpennedDocument;
+}
 
 
 void AppGlobals::setEnableObjDelLog(const bool opt)
@@ -103,7 +212,8 @@ AppGlobals& AppGlobals::getInstance()
 }
 
 AppGlobals::AppGlobals():
-    _enableObjDelLog(false)
+_enableObjDelLog(false),
+_lastOpennedDocument(0)
 {
 
 }

@@ -52,7 +52,9 @@ public:
     virtual int openFile(const char *, const char *, int);
     virtual void closeFile();
     virtual void write(const char);
+    virtual void writeLn(const char *);
     virtual char read();
+    virtual int rewind();
     virtual int getOpenedFileSize();
 
     virtual lfs_size_t getBlockDeviceCount() = 0;
