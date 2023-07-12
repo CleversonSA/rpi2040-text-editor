@@ -13,9 +13,6 @@ using std::strlen;
 using std::strtok;
 using std::atoi;
 
-#include "csa_object.hpp"
-#include "core/doc_character.hpp"
-#include "core/doc_row.hpp"
 #include "app_globals.hpp"
 #include "core/document.hpp"
 #include "video/framebuffer.hpp"
@@ -23,17 +20,13 @@ using std::atoi;
 #include "core_collection.hpp"
 
 #include "core/text_render_engine.hpp"
-#include "engine/msgbox_engine.hpp"
-#include "engine/inputbox_engine.hpp"
-#include "engine/splashbox_engine.hpp"
-#include "engine/menu_engine.hpp"
-#include "engine/textview_engine.hpp"
 #include "engine/keyboard_engine.hpp"
 #include "engine/video_engine.hpp"
 #include "engine/disk_engine.h"
 #include "core/text_persistence_engine.hpp"
 #include "core/open_file_menu.hpp"
 #include "core/main_menu.hpp"
+#include "core/new_file_menu.hpp"
 
 #include "widgets/lcd4x20_msgbox.hpp"
 #include "widgets/lcd4x20_inputbox.hpp"
@@ -41,13 +34,7 @@ using std::atoi;
 #include "widgets/lcd4x20_menu.hpp"
 #include "widgets/lcd4x20_textview.hpp"
 
-#include "video/console_video.hpp"
-
-
-#include "utils/VT100_utils.hpp"
 #include "rpi2040/rpi2040_uart.hpp"
-#include "rpi2040/rpi2040_uart_keyboard.hpp"
-#include "rpi2040/rpi2040_uart_video.hpp"
 #include "rpi2040/rpi2040_text_engine.hpp"
 #include "rpi2040/rpi2040_usb_keyboard.hpp"
 #include "rpi2040/rpi2040_disk_engine.hpp"
@@ -55,7 +42,6 @@ using std::atoi;
 #include "rpi2040/rpi2040_utils_engine.hpp"
 
 #include "bsp/board.h"
-#include "tusb.h"
 
 /**
  * Prepare all resources to be used specific for Raspberry PI PICO 2040 board
@@ -64,6 +50,7 @@ void prepareRpi2040();
 void showIntroWindow();
 void loadFileWindow();
 void startDocumentWindow();
+void showNewDocumentWindow();
 void startUartDebug();
 
 
@@ -94,15 +81,29 @@ int main() {
 
     AppGlobals::getInstance().loadConstants();
 
-    if (AppGlobals::getInstance().getLastOpennedDocument() != 0
-        && !strcmp(AppGlobals::getInstance().getLastOpennedDocument(),"") == 0)
-    {
-        cout << "Loading file [" << AppGlobals::getInstance().getLastOpennedDocument() << "]" << endl;
-        loadFileWindow();
-        AppGlobals::getInstance().setLastOpennedDocument(0);
-        AppGlobals::getInstance().saveConstants();
-    } else {
+    if (!AppGlobals::getInstance().isNewFileCalled()) {
+
+        if (AppGlobals::getInstance().getLastOpennedDocument() != 0
+            && !strcmp(AppGlobals::getInstance().getLastOpennedDocument(), "") == 0) {
+            cout << "Loading file [" << AppGlobals::getInstance().getLastOpennedDocument() << "]" << endl;
+            loadFileWindow();
+            AppGlobals::getInstance().setLastOpennedDocument(0);
+            AppGlobals::getInstance().saveConstants();
+        } else {
+            showIntroWindow();
+        }
+
+    } else if (!AppGlobals::getInstance().isNewFileCalled() &&
+            (AppGlobals::getInstance().getLastOpennedDocument() == 0 ||
+            strcmp(AppGlobals::getInstance().getLastOpennedDocument(), "") == 0)) {
+
         showIntroWindow();
+
+    } else if (AppGlobals::getInstance().isNewFileCalled()) {
+
+        AppGlobals::getInstance().setNewFileCalled(false);
+        AppGlobals::getInstance().saveConstants();
+        showNewDocumentWindow();
     }
 
     startDocumentWindow();
@@ -181,9 +182,28 @@ void showIntroWindow()
 }
 
 
+void showNewDocumentWindow()
+{
+    char tmp[50];
+
+    sprintf(tmp, "Preparing new file...");
+
+    (*ResourceCollection::getInstance().getSplashBoxEngine())
+            .reset()
+            .setTitle("New file")
+            .setMessage(tmp)
+            .render();
+
+    (*ResourceCollection::getInstance().getVideoEngine()).display();
+    (*ResourceCollection::getInstance().getUtils()).sleepMs(1000);
+
+}
+
+
+
 void prepareRpi2040()
 {
-    Document *currentDocument = new Document();
+    Document *currentDocument = new Document;
     FrameBuffer *fb = new FrameBuffer(AppGlobals::FRAMEBUFFER_MAX_ROWS, AppGlobals::FRAMEBUFFER_MAX_COLS);
     
     Rpi2040UsbKeyboard::getInstance().setup();
@@ -217,13 +237,15 @@ void prepareRpi2040()
     ResourceCollection::getInstance().setUtilsEngine(utilsEngine);
     ResourceCollection::getInstance().setDiskEngine(rpi2040DiskEngine);
 
-    OpenFileMenu *openFileMenu = new OpenFileMenu();
-    MainMenu *mainMenu = new MainMenu();
+    OpenFileMenu *openFileMenu = new OpenFileMenu;
+    MainMenu *mainMenu = new MainMenu;
+    NewFileMenu *newFileMenu = new NewFileMenu;
 
     CoreCollection::getInstance().setCurrentDocument(currentDocument);
     CoreCollection::getInstance().setTextPersistenceEngine(textPersistenceEngine);
     CoreCollection::getInstance().setTextRenderEngine(rpi2040TextEngine);
     CoreCollection::getInstance().setOpenFileMenu(openFileMenu);
     CoreCollection::getInstance().setMainMenu(mainMenu);
+    CoreCollection::getInstance().setNewFileMenu(newFileMenu);
 
 }

@@ -24,15 +24,19 @@ using std::cout;
 using std::endl;
 
 #include "../app_globals.hpp"
-#include "../csa_object.hpp"
 #include "main_menu_keyboard_callback.hpp"
-#include "../engine/widget_engine.hpp"
-#include "../engine/menu_engine.hpp"
 #include "../core_collection.hpp"
 #include "../resource_collection.hpp"
 
 void MainMenuKeyboardCallback::execute(WidgetEngine * widgetEngine)
 {
+
+    if (strcmp((*widgetEngine).getResultCharValue1(),"NEW_FILE") == 0)
+    {
+        // FIX-ME: This will cause stack overflow
+        (*CoreCollection::getInstance().getNewFileMenu()).run();
+        return;
+    }
 
     if (strcmp((*widgetEngine).getResultCharValue1(),"OPEN_FILE") == 0)
     {

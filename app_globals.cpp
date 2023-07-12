@@ -30,11 +30,23 @@ using std::strlen;
 
 AppGlobals * AppGlobals::_me = 0;
 
-const char AppGlobals::APP_VERSION[] = "0.7.5";
+const char AppGlobals::APP_VERSION[] = "0.8.0";
 
 const char AppGlobals::MENU_ITEM_DELIM[] = "|";
 const char AppGlobals::MENU_ITEM_DETAIL_DELIM[] = ";";
 const char AppGlobals::STORAGE_DOCUMENTS_DIR[] = "/My Briefcase";
+
+
+void AppGlobals::setNewFileCalled(bool newFileCalled)
+{
+    _newFileCalled = newFileCalled;
+}
+
+
+bool AppGlobals::isNewFileCalled() const
+{
+    return _newFileCalled;
+}
 
 
 void AppGlobals::saveConstants()
@@ -60,6 +72,13 @@ void AppGlobals::saveConstants()
        strcat(tmp, "lastOpennedFile");strcat(tmp, "=");strcat(tmp, _lastOpennedDocument);strcat(tmp, "\n");
    }
 
+   if (isNewFileCalled())
+   {
+       strcat(tmp, "isNewFileCalled=1\n");
+   } else {
+       strcat(tmp, "isNewFileCalled=0\n");
+   }
+
    (*disk).writeLn(tmp);
    (*disk).closeFile();
 
@@ -76,6 +95,13 @@ void AppGlobals::loadConstants()
     }
 
     setLastOpennedDocument(loadProperty(disk, "lastOpennedFile"));
+
+    char * result = loadProperty(disk, "isNewFileCalled");
+    if (result !=0 && strcmp(result, "1") ==0) {
+        setNewFileCalled(true);
+    } else {
+        setNewFileCalled(false);
+    }
 
     (*disk).closeFile();
 }

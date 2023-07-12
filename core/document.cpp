@@ -30,6 +30,19 @@ using std::sprintf;
 #include "document.hpp"
 #include "../app_globals.hpp"
 
+
+void Document::setDocumentChanged(bool docChanged)
+{
+    _documentChanged = docChanged;
+}
+
+
+bool Document::hasDocumentChanged() const
+{
+    return _documentChanged;
+}
+
+
 void Document::destroy() {
 
     DocRow* docPtr = getStartRowPtr();
@@ -585,5 +598,6 @@ _currentRowPtr(0),
 _enableLineWarp(false)
 {
     addNewLine();
+    setDocumentChanged(false);
 }
 

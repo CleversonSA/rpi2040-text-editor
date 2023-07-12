@@ -24,22 +24,49 @@ using std::cout;
 using std::endl;
 
 #include "../app_globals.hpp"
-#include "../csa_object.hpp"
 #include "open_file_menu_keyboard_callback.hpp"
-#include "../engine/widget_engine.hpp"
-#include "../engine/menu_engine.hpp"
+#include "../engine/msgbox_engine.hpp"
+
+
+void OpenFileMenuKeyboardCallback::setSourceHandler (int sourceHandler)
+{
+    _sourceHandler = sourceHandler;
+}
+
+int OpenFileMenuKeyboardCallback::getSourceHandler() const
+{
+    return _sourceHandler;
+}
 
 void OpenFileMenuKeyboardCallback::execute(WidgetEngine * widgetEngine)
 {
+    if (getSourceHandler() == OpenFileMenuKeyboardCallback::MSGBOX_SAVE_CHANGES)
+    {
+        switch((*widgetEngine).getResultIntValue())
+        {
+            case MsgBoxEngine::BTN_YES:
+                break;
 
-     if (strcmp((*widgetEngine).getResultCharValue1(),"DIR") == 0)
-     {
-         // FIX-ME: This will cause stack overflow
-         (*_openFileMenuPtr).run();
-         return;
-     }
+            case MsgBoxEngine::BTN_NO:
+                //I see callbacks....how often? Everytime
+                (*_openFileMenuPtr).showMenu();
+                break;
 
-    (*_openFileMenuPtr).open((*widgetEngine).getResultCharValue1());
+            case MsgBoxEngine::BTN_CANCEL:
+            default:
+                (*_openFileMenuPtr).backToDocument();
+                break;
+        }
+
+    } else {
+        if (strcmp((*widgetEngine).getResultCharValue1(), "DIR") == 0) {
+            // FIX-ME: This will cause stack overflow
+            (*_openFileMenuPtr).run();
+            return;
+        }
+
+        (*_openFileMenuPtr).open((*widgetEngine).getResultCharValue1());
+    }
 
 }
 
@@ -64,7 +91,8 @@ OpenFileMenuKeyboardCallback::~OpenFileMenuKeyboardCallback()
 
 OpenFileMenuKeyboardCallback::OpenFileMenuKeyboardCallback(OpenFileMenu * openFileMenuPtr):
 WidgetCallback(),
-_openFileMenuPtr(openFileMenuPtr)
+_openFileMenuPtr(openFileMenuPtr),
+_sourceHandler(0)
 {
 
 }

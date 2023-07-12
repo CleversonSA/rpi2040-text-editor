@@ -20,74 +20,62 @@ using std::endl;
 #include <iomanip>
 using std::setw;
 
-#include "open_file_menu.hpp"
-#include "../engine/splashbox_engine.hpp"
-#include "../engine/msgbox_engine.hpp"
+#include "new_file_menu.hpp"
+#include "document.hpp"
 #include "../resource_collection.hpp"
 #include "../core_collection.hpp"
-#include "open_file_menu_keyboard_callback.hpp"
-#include "text_persistence_engine.hpp"
-#include "document.hpp"
+#include "new_file_menu_keyboard_callback.hpp"
+#include "text_render_engine.hpp"
 
-void OpenFileMenu::run()
+
+void NewFileMenu::backToDocument()
 {
+
+    TextRenderEngine *component = CoreCollection::getInstance().getTextRenderEngine();
+    VideoEngine *video = ResourceCollection::getInstance().getVideoEngine();
+    KeyboardEngine *keyboardEngine = ResourceCollection::getInstance().getKeyboardEngine();
+
+    (*component)
+            .render();
+    (*component)
+            .run(video, keyboardEngine);
+}
+
+
+void NewFileMenu::run()
+{
+
+    NewFileMenuKeyboardCallback *cb = new NewFileMenuKeyboardCallback(this);
+
     VideoEngine *video =  ResourceCollection::getInstance().getVideoEngine();
     KeyboardEngine *keyboard = ResourceCollection::getInstance().getKeyboardEngine();
     Document *doc = CoreCollection::getInstance().getCurrentDocument();
-    MsgBoxEngine *msgbox = ResourceCollection::getInstance().getMsgBoxEngine();
 
+    MsgBoxEngine *msgBoxEngine = ResourceCollection::getInstance().getMsgBoxEngine();
 
     if ((*doc).hasDocumentChanged()) {
-        //I see memory leaks...how often? Everytime!
-        OpenFileMenuKeyboardCallback *cb = new OpenFileMenuKeyboardCallback(this);
-        (*cb).setSourceHandler(OpenFileMenuKeyboardCallback::MSGBOX_SAVE_CHANGES);
-        (*msgbox)
+        (*msgBoxEngine)
             .reset()
-            .setTitle("Open file")
+            .setTitle("New file")
             .setMessage("Save current changes?")
             .setIconType(MsgBoxEngine::QUESTION_ICON)
             .setButtonType(MsgBoxEngine::YESNOCANCEL_BUTTON)
             .setCallback(cb)
             .render()
             .run(video, keyboard);
-
     } else {
-        showMenu();
+        prepareNewDocument();
     }
-
-}
-
-void OpenFileMenu::showMenu()
-{
-
-    OpenFileMenuKeyboardCallback *cb = new OpenFileMenuKeyboardCallback(this);
-
-    DiskEngine *disk = ResourceCollection::getInstance().getDiskEngine();
-    MenuEngine *menu = ResourceCollection::getInstance().getMenuEngine();
-    VideoEngine *video =  ResourceCollection::getInstance().getVideoEngine();
-    KeyboardEngine *keyboard = ResourceCollection::getInstance().getKeyboardEngine();
-
-    char *filesStr = (*disk).dir(AppGlobals::STORAGE_DOCUMENTS_DIR);
-
-    cout << "Arquivos: " << filesStr << endl;
-
-    (*menu)
-        .reset()
-        .setTitle("Open file")
-        .parseMenuString(filesStr)
-        .setCallback(cb)
-        .render()
-        .run(video, keyboard);
 
     delete cb;
 }
 
-void OpenFileMenu::open(char * fileName)
-{
+void NewFileMenu::prepareNewDocument() {
     UtilsEngine *utils = ResourceCollection::getInstance().getUtils();
     VideoEngine *video = ResourceCollection::getInstance().getVideoEngine();
 
-    AppGlobals::getInstance().setLastOpennedDocument(fileName);
+    AppGlobals::getInstance().setLastOpennedDocument(0);
+    AppGlobals::getInstance().setNewFileCalled(true);
     AppGlobals::getInstance().saveConstants();
 
     /**
@@ -101,41 +89,27 @@ void OpenFileMenu::open(char * fileName)
     (*video).reset();
     (*utils).sleepMs(1000);
     (*utils).softReset();
-
 }
 
-void OpenFileMenu::backToDocument()
+void NewFileMenu::toString()
 {
-
-    TextRenderEngine *component = CoreCollection::getInstance().getTextRenderEngine();
-    VideoEngine *video = ResourceCollection::getInstance().getVideoEngine();
-    KeyboardEngine *keyboardEngine = ResourceCollection::getInstance().getKeyboardEngine();
-
-    (*component)
-            .render();
-    (*component)
-            .run(video, keyboardEngine);
-}
-
-void OpenFileMenu::toString()
-{
-    cout << "[OpenFileMenu] [UID=" << CSAObject::getSerialVersionUID() << "] [SIZE=" << sizeof((*this)) <<"] "
+    cout << "[NewFileMenu] [UID=" << CSAObject::getSerialVersionUID() << "] [SIZE=" << sizeof((*this)) <<"] "
          << endl;
 }
 
-int OpenFileMenu::getMemSize()
+int NewFileMenu::getMemSize()
 {
     return sizeof((*this));
 }
 
-OpenFileMenu::~OpenFileMenu()
+NewFileMenu::~NewFileMenu()
 {
     if(AppGlobals::getInstance().getEnableObjDelLog() == true) {
-        cout << "[OpenFileMenu] [destUID=" << CSAObject::getSerialVersionUID() << "]" << endl;
+        cout << "[NewFileMenu] [destUID=" << CSAObject::getSerialVersionUID() << "]" << endl;
     }
 }
 
-OpenFileMenu::OpenFileMenu():
+NewFileMenu::NewFileMenu():
 CSAObject()
 {
 

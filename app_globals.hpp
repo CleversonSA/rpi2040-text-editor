@@ -55,6 +55,8 @@ class AppGlobals
         bool getEnableObjDelLog() const;
         void setLastOpennedDocument(const char *);
         char * getLastOpennedDocument();
+        void setNewFileCalled(bool);
+        bool isNewFileCalled() const;
 
         void loadConstants();
         void saveConstants();
@@ -68,6 +70,7 @@ class AppGlobals
 
         bool _enableObjDelLog = true;
         char * _lastOpennedDocument;
+        bool _newFileCalled = false;
 
 };
 

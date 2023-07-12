@@ -23,6 +23,7 @@ limitations under the License.
 #include "core/text_persistence_engine.hpp"
 #include "core/open_file_menu.hpp"
 #include "core/main_menu.hpp"
+#include "core/new_file_menu.hpp"
 
 /*
   General resource holder to manager singletons about the app core instances
@@ -41,12 +42,14 @@ public:
     TextPersistenceEngine * getTextPersistenceEngine();
     OpenFileMenu * getOpenFileMenu();
     MainMenu * getMainMenu();
+    NewFileMenu * getNewFileMenu();
 
     void setCurrentDocument(Document *);
     void setTextRenderEngine(TextRenderEngine *);
     void setTextPersistenceEngine(TextPersistenceEngine *);
     void setOpenFileMenu(OpenFileMenu *);
     void setMainMenu(MainMenu *);
+    void setNewFileMenu(NewFileMenu *);
 
     virtual void toString(); // Yes, you know, Java feelings rs
     virtual int getMemSize();
@@ -61,6 +64,7 @@ private:
     TextRenderEngine * _textRenderEnginePtr;
     Document * _currentDocumentPtr;
     MainMenu * _mainMenuPtr;
+    NewFileMenu * _newFileMenuPtr;
 
 };
 

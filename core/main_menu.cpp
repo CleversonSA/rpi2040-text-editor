@@ -21,9 +21,7 @@ using std::endl;
 using std::setw;
 
 #include "main_menu.hpp"
-#include "../engine/menu_engine.hpp"
 #include "../resource_collection.hpp"
-#include "../core_collection.hpp"
 #include "main_menu_keyboard_callback.hpp"
 
 void MainMenu::run()
@@ -40,32 +38,32 @@ void MainMenu::run()
 
     strcat(mainMenuStr, "NEW_FILE");
     strcat(mainMenuStr, AppGlobals::MENU_ITEM_DETAIL_DELIM);
-    strcat(mainMenuStr, "New file");
+    strcat(mainMenuStr, "New document");
     strcat(mainMenuStr, AppGlobals::MENU_ITEM_DELIM);
 
     strcat(mainMenuStr, "OPEN_FILE");
     strcat(mainMenuStr, AppGlobals::MENU_ITEM_DETAIL_DELIM);
-    strcat(mainMenuStr, "Open file");
+    strcat(mainMenuStr, "Open...");
     strcat(mainMenuStr, AppGlobals::MENU_ITEM_DELIM);
 
     strcat(mainMenuStr, "SAVE_FILE");
     strcat(mainMenuStr, AppGlobals::MENU_ITEM_DETAIL_DELIM);
-    strcat(mainMenuStr, "Save file");
+    strcat(mainMenuStr, "Save..");
     strcat(mainMenuStr, AppGlobals::MENU_ITEM_DELIM);
 
     strcat(mainMenuStr, "SAVE_FILE_AS");
     strcat(mainMenuStr, AppGlobals::MENU_ITEM_DETAIL_DELIM);
-    strcat(mainMenuStr, "Save file as...");
+    strcat(mainMenuStr, "Save doc as...");
     strcat(mainMenuStr, AppGlobals::MENU_ITEM_DELIM);
 
     strcat(mainMenuStr, "ABOUT");
     strcat(mainMenuStr, AppGlobals::MENU_ITEM_DETAIL_DELIM);
-    strcat(mainMenuStr, "About...");
+    strcat(mainMenuStr, "About");
     strcat(mainMenuStr, AppGlobals::MENU_ITEM_DELIM);
 
     strcat(mainMenuStr, "BACK_DOC");
     strcat(mainMenuStr, AppGlobals::MENU_ITEM_DETAIL_DELIM);
-    strcat(mainMenuStr, "Back to doc...");
+    strcat(mainMenuStr, "<< Back to edit...");
     strcat(mainMenuStr, AppGlobals::MENU_ITEM_DELIM);
 
     (*menu)
