@@ -25,6 +25,15 @@ using std::setw;
 
 CoreCollection * CoreCollection::_me = 0;
 
+SaveAsMenu * CoreCollection::getSaveAsMenu()
+{
+    return _saveAsMenuPtr;
+}
+
+void CoreCollection::setSaveAsMenu(SaveAsMenu * saveAsMenu) {
+    _saveAsMenuPtr = saveAsMenu;
+}
+
 void CoreCollection::setNewFileMenu(NewFileMenu * newFileMenu)
 {
     _newFileMenuPtr = newFileMenu;

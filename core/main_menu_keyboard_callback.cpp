@@ -30,28 +30,47 @@ using std::endl;
 
 void MainMenuKeyboardCallback::execute(WidgetEngine * widgetEngine)
 {
+    // HIT ESC
+    if ((*widgetEngine).getResultBoolValue() == false ) {
+        if (strcmp((*widgetEngine).getResultCharValue1(), "SAVE_FILE") == 0) {
+            // FIX-ME: This will cause stack overflow
+            (*CoreCollection::getInstance().getSaveAsMenu()).run(false);
+            return;
+        }
 
-    if (strcmp((*widgetEngine).getResultCharValue1(),"NEW_FILE") == 0)
-    {
-        // FIX-ME: This will cause stack overflow
-        (*CoreCollection::getInstance().getNewFileMenu()).run();
-        return;
-    }
 
-    if (strcmp((*widgetEngine).getResultCharValue1(),"OPEN_FILE") == 0)
-    {
-        // FIX-ME: This will cause stack overflow
-        (*CoreCollection::getInstance().getOpenFileMenu()).run();
-        return;
-    }
+        if (strcmp((*widgetEngine).getResultCharValue1(), "SAVE_FILE_AS") == 0) {
+            // FIX-ME: This will cause stack overflow
+            (*CoreCollection::getInstance().getSaveAsMenu()).run(true);
+            return;
+        }
 
-    if (strcmp((*widgetEngine).getResultCharValue1(),"BACK_DOC") == 0)
-    {
+        if (strcmp((*widgetEngine).getResultCharValue1(), "NEW_FILE") == 0) {
+            // FIX-ME: This will cause stack overflow
+            (*CoreCollection::getInstance().getNewFileMenu()).run();
+            return;
+        }
+
+        if (strcmp((*widgetEngine).getResultCharValue1(), "OPEN_FILE") == 0) {
+            // FIX-ME: This will cause stack overflow
+            (*CoreCollection::getInstance().getOpenFileMenu()).run();
+            return;
+        }
+
+        if (strcmp((*widgetEngine).getResultCharValue1(), "_BACK_") == 0) {
+            // FIX-ME: This will cause stack overflow
+            (*CoreCollection::getInstance().getTextRenderEngine()).run(
+                    ResourceCollection::getInstance().getVideoEngine(),
+                    ResourceCollection::getInstance().getKeyboardEngine()
+            );
+            return;
+        }
+    } else {
         // FIX-ME: This will cause stack overflow
         (*CoreCollection::getInstance().getTextRenderEngine()).run(
                 ResourceCollection::getInstance().getVideoEngine(),
                 ResourceCollection::getInstance().getKeyboardEngine()
-                );
+        );
         return;
     }
 

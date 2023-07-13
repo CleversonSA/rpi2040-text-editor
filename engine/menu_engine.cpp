@@ -30,6 +30,10 @@ using std::strtok;
 #include "keyboard_engine.hpp"
 #include "../keyboard/menu_keyboard_callback.hpp"
 
+bool MenuEngine::getResultBoolValue()
+{
+    return _cancelTriggered;
+}
 
 char * MenuEngine::getResultCharValue1()
 {
@@ -39,6 +43,14 @@ char * MenuEngine::getResultCharValue1()
 char * MenuEngine::getResultCharValue2()
 {
     return getSelectedMenuItemLabel();
+}
+
+void MenuEngine::setCancelTriggered(bool cancelTriggered)  {
+    _cancelTriggered = cancelTriggered;
+}
+
+bool MenuEngine::hasCancelTriggered() const {
+    return _cancelTriggered;
 }
 
 void MenuEngine::run(VideoEngine *videoEngine, KeyboardEngine *keyboardEngine)
@@ -233,6 +245,14 @@ MenuEngine & MenuEngine::selectItem()
     return (*this);
 }
 
+MenuEngine & MenuEngine::selectBackItem()
+{
+    setCancelTriggered(true);
+    (*_widgetCallback).execute(this);
+
+    return (*this);
+}
+
 MenuEngine & MenuEngine::setCallback(WidgetCallback *widgetCallback)
 {
     _widgetCallback = widgetCallback;
@@ -253,6 +273,7 @@ MenuEngine & MenuEngine::reset()
     setMenuItemCount(0);
     setMenuItemPos(0);
     _widgetCallback = 0;
+    setCancelTriggered(false);
 
     return (*this);
 }
@@ -268,7 +289,8 @@ MenuEngine::~MenuEngine()
 MenuEngine::MenuEngine():
 WidgetEngine(),
 _menuItemPos(0),
-_title(0)
+_title(0),
+_cancelTriggered(false)
 {
 
 }

@@ -26,6 +26,14 @@ using std::setw;
 #include "../core_collection.hpp"
 #include "new_file_menu_keyboard_callback.hpp"
 #include "text_render_engine.hpp"
+#include "../core/document.hpp"
+
+void NewFileMenu::saveDocument() {
+    Document *doc = CoreCollection::getInstance().getCurrentDocument();
+
+    (*CoreCollection::getInstance().getSaveAsMenu()).saveSilent((*doc).getDocFileName());
+    prepareNewDocument();
+}
 
 
 void NewFileMenu::backToDocument()

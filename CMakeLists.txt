@@ -66,12 +66,16 @@ set(SOURCES
         core/main_menu.hpp
         core/new_file_menu.cpp
         core/new_file_menu.hpp
+        core/save_as_menu.cpp
+        core/save_as_menu.hpp
         core/open_file_menu_keyboard_callback.cpp
         core/open_file_menu_keyboard_callback.hpp
         core/main_menu_keyboard_callback.cpp
         core/main_menu_keyboard_callback.hpp
         core/new_file_menu_keyboard_callback.cpp
         core/new_file_menu_keyboard_callback.hpp
+        core/save_as_menu_keyboard_callback.cpp
+        core/save_as_menu_keyboard_callback.hpp
         rpi2040/rpi2040_text_engine.cpp
         rpi2040/rpi2040_text_engine.hpp
         engine/textview_engine.cpp

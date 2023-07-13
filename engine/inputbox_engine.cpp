@@ -57,8 +57,11 @@ void InputBoxEngine::run(VideoEngine *videoEngine, KeyboardEngine *keyboardEngin
     (*kcb).setVideoEngine(videoEngine);
     (*kcb).setInputboxEngine(this);
 
+    cout << "initialized input" << endl;
     (*keyboardEngine).setup();
+    cout << "initialized setup" << endl;
     (*keyboardEngine).setCallback(kcb);
+    cout << "initialized call" << endl;
     (*keyboardEngine).loop();
 
     delete kcb;
@@ -152,8 +155,10 @@ InputBoxEngine & InputBoxEngine::triggerBackspace()
 
 InputBoxEngine & InputBoxEngine::setUserInput(char * userInput)
 {
-    _userInput = userInput;
+    _userInput = new char[getMaxInputSize()];
 
+    strcpy(_userInput, userInput);
+    
     return (*this);
 }
 

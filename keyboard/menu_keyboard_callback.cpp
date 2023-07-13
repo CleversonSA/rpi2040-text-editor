@@ -74,6 +74,9 @@ bool MenuKeyboardCallback::execute(const int keyboardCode, const char rawChar)
             (*getMenuEngine()).selectItem();
             return true;
             break;
+        case KeyboardEngine::KEY_ESCAPE:
+            (*getMenuEngine()).selectBackItem();
+            return true;
         default:
             break;
     }

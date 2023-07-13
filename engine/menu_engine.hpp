@@ -43,17 +43,22 @@ class MenuEngine: public WidgetEngine
         char * getSelectedMenuItemValue() const;
         char * getMenuItemLabel(const int) const;
         char * getMenuItemValue(const int) const;
+        bool hasCancelTriggered() const;
+        void setCancelTriggered(bool);
+
         char ** getMenuItems();
         MenuEngine & reset();
         MenuEngine & cursorMoveUp();
         MenuEngine & cursorMoveDown();
         MenuEngine & selectItem();
+        MenuEngine & selectBackItem();
 
         virtual MenuEngine & render() = 0;
 
         virtual void run(VideoEngine *, KeyboardEngine *);
         virtual char * getResultCharValue1();
         virtual char * getResultCharValue2();
+        virtual bool getResultBoolValue();
 
     private:
 
@@ -66,6 +71,7 @@ class MenuEngine: public WidgetEngine
         int _menuItemCount;
         char * _title;
         WidgetCallback* _widgetCallback;
+        bool _cancelTriggered;
 };
 
 #endif // DOCUMENT

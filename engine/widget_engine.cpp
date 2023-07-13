@@ -26,6 +26,10 @@ using std::strcpy;
 
 #include "widget_engine.hpp"
 
+bool WidgetEngine::getResultBoolValue()
+{
+    return false;
+}
 
 int WidgetEngine::getResultIntValue()
 {

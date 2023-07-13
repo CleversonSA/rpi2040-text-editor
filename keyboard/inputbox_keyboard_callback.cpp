@@ -56,6 +56,7 @@ InputBoxEngine * InputboxKeyboardCallback::getInputboxEngine()
 bool InputboxKeyboardCallback::execute(const int keyboardCode, const char rawChar)
 {
 
+    cout << keyboardCode << endl;
     switch(keyboardCode)
     {
         case KeyboardEngine::KEY_ANY:

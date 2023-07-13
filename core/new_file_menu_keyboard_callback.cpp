@@ -34,6 +34,7 @@ void NewFileMenuKeyboardCallback::execute(WidgetEngine * widgetEngine)
     switch((*widgetEngine).getResultIntValue())
     {
         case MsgBoxEngine::BTN_YES:
+            (*_newFileMenuPtr).saveDocument();
             break;
 
         case MsgBoxEngine::BTN_NO:

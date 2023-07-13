@@ -61,7 +61,7 @@ void MainMenu::run()
     strcat(mainMenuStr, "About");
     strcat(mainMenuStr, AppGlobals::MENU_ITEM_DELIM);
 
-    strcat(mainMenuStr, "BACK_DOC");
+    strcat(mainMenuStr, "_BACK_");
     strcat(mainMenuStr, AppGlobals::MENU_ITEM_DETAIL_DELIM);
     strcat(mainMenuStr, "<< Back to edit...");
     strcat(mainMenuStr, AppGlobals::MENU_ITEM_DELIM);

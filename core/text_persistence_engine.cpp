@@ -53,6 +53,8 @@ int TextPersistenceEngine::load(const char *fileName)
     Document *docNew = new Document;
     (*docNew).addNewLine();
     (*docNew).type(" ");
+    (*docNew).cursorMoveBegin();
+    (*docNew).setDocumentChanged(false);
     setDocument(docNew);
 
     CoreCollection::getInstance().setCurrentDocument(docNew);
@@ -77,6 +79,8 @@ int TextPersistenceEngine::load(const char *fileName)
     cout << "File READ " << endl;
 
     (*getDiskEngine()).closeFile();
+
+    (*getDocument()).cursorMoveBegin();
 
     return 0;
 }

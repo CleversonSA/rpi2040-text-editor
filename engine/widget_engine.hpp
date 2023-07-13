@@ -35,6 +35,7 @@ class WidgetEngine: public CSAObject
         virtual int getResultIntValue();
         virtual char * getResultCharValue1();
         virtual char * getResultCharValue2();
+        virtual bool getResultBoolValue();
 
     private:
 

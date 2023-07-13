@@ -59,13 +59,20 @@ void OpenFileMenuKeyboardCallback::execute(WidgetEngine * widgetEngine)
         }
 
     } else {
-        if (strcmp((*widgetEngine).getResultCharValue1(), "DIR") == 0) {
-            // FIX-ME: This will cause stack overflow
-            (*_openFileMenuPtr).run();
-            return;
-        }
+        //Hit ESC
+        if ((*widgetEngine).getResultBoolValue()) {
 
-        (*_openFileMenuPtr).open((*widgetEngine).getResultCharValue1());
+            (*_openFileMenuPtr).backToDocument();
+
+        } else {
+            if (strcmp((*widgetEngine).getResultCharValue1(), "DIR") == 0) {
+                // FIX-ME: This will cause stack overflow
+                (*_openFileMenuPtr).run();
+                return;
+            }
+
+            (*_openFileMenuPtr).open((*widgetEngine).getResultCharValue1());
+        }
     }
 
 }

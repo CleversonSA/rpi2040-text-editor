@@ -572,6 +572,14 @@ DocRow * Document::getCurrentRowPtr() const
     return _currentRowPtr;
 }
 
+bool Document::isDefaultDocFilename() const {
+    if (strcmp(_docFileName, "new_file.txt") == 0)
+    {
+        return true;
+    }
+    return false;
+}
+
 void Document::toString()
 {
     cout << "[Document] [UID=" << CSAObject::getSerialVersionUID() << "] [SIZE=" << sizeof((*this)) <<"] "
@@ -598,6 +606,7 @@ _currentRowPtr(0),
 _enableLineWarp(false)
 {
     addNewLine();
+    cursorMoveBegin();
     setDocumentChanged(false);
 }
 

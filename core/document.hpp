@@ -38,6 +38,7 @@ class Document: public CSAObject
         DocRow * getCurrentRowPtr() const;
         bool isEnabledLineWarp() const;
         bool hasDocumentChanged() const;
+        bool isDefaultDocFilename() const;
 
         DocRow * rowAt(int);
         Document & addNewLine();

@@ -13,8 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef NEWFILEMENU
-#define NEWFILEMENU
+#ifndef SAVEASMENU
+#define SAVEASMENU
 
 #include "../csa_object.hpp"
 #include "../engine/keyboard_engine.hpp"
@@ -24,25 +24,31 @@ limitations under the License.
 #include "../engine/menu_engine.hpp"
 
 /*
-  Menu selection or dialog for new file
+  Menu selection or dialog for SAVE text file (Save and Save AS)
 */
-class NewFileMenu : public CSAObject
+class SaveAsMenu : public CSAObject
 {
 public:
 
-    NewFileMenu();
-    ~NewFileMenu();
+    SaveAsMenu();
+    ~SaveAsMenu();
 
-    void run();
+    void run(bool);
+    void showInputfileName();
+    void showConfirmOverwite();
+    void save(char *);
+    void saveSilent(char *);
     void backToDocument();
-    void prepareNewDocument();
-    void saveDocument();
+
+    void setFileNameToSave(char *);
+    char * getFileNameToSave();
 
     virtual void toString(); // Yes, you know, Java feelings rs
     virtual int getMemSize();
 
 private:
 
+    char * _fileNameToSave;
 
 
 };

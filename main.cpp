@@ -27,6 +27,7 @@ using std::atoi;
 #include "core/open_file_menu.hpp"
 #include "core/main_menu.hpp"
 #include "core/new_file_menu.hpp"
+#include "core/save_as_menu.hpp"
 
 #include "widgets/lcd4x20_msgbox.hpp"
 #include "widgets/lcd4x20_inputbox.hpp"
@@ -240,6 +241,7 @@ void prepareRpi2040()
     OpenFileMenu *openFileMenu = new OpenFileMenu;
     MainMenu *mainMenu = new MainMenu;
     NewFileMenu *newFileMenu = new NewFileMenu;
+    SaveAsMenu *saveAsMenu = new SaveAsMenu;
 
     CoreCollection::getInstance().setCurrentDocument(currentDocument);
     CoreCollection::getInstance().setTextPersistenceEngine(textPersistenceEngine);
@@ -247,5 +249,6 @@ void prepareRpi2040()
     CoreCollection::getInstance().setOpenFileMenu(openFileMenu);
     CoreCollection::getInstance().setMainMenu(mainMenu);
     CoreCollection::getInstance().setNewFileMenu(newFileMenu);
+    CoreCollection::getInstance().setSaveAsMenu(saveAsMenu);
 
 }
