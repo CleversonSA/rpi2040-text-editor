@@ -53,6 +53,7 @@ void loadFileWindow();
 void startDocumentWindow();
 void showNewDocumentWindow();
 void startUartDebug();
+void initDefaultFolders();
 
 
 //======================================================================
@@ -74,6 +75,13 @@ int main() {
     prepareRpi2040();
 
     cout << "Resources initialized OK" << endl;
+
+    //======================================================================
+    // Default folders initialization
+    //======================================================================
+    initDefaultFolders();
+
+    cout << "Folders initialized OK" << endl;
 
     //======================================================================
     // Core initialization
@@ -114,6 +122,17 @@ int main() {
 //======================================================================
 // End Main kernel of app
 //======================================================================
+
+void initDefaultFolders()
+{
+   DiskEngine (*disk) = ResourceCollection::getInstance().getDiskEngine();
+
+   int err = (*disk).touch(AppGlobals::getInstance().STORAGE_DOCUMENTS_DIR, "empty.info");
+   if (err < 0) {
+       (*disk).mkdir("",AppGlobals::getInstance().STORAGE_DOCUMENTS_DIR);
+   }
+}
+
 
 void startUartDebug()
 {

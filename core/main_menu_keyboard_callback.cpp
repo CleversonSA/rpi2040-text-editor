@@ -27,11 +27,18 @@ using std::endl;
 #include "main_menu_keyboard_callback.hpp"
 #include "../core_collection.hpp"
 #include "../resource_collection.hpp"
+#include "../core/main_menu.hpp"
 
 void MainMenuKeyboardCallback::execute(WidgetEngine * widgetEngine)
 {
     // HIT ESC
     if ((*widgetEngine).getResultBoolValue() == false ) {
+        if (strcmp((*widgetEngine).getResultCharValue1(), "FILE") == 0) {
+            // FIX-ME: This will cause stack overflow
+            (*_mainMenuPtr).showFileMenu();
+            return;
+        }
+
         if (strcmp((*widgetEngine).getResultCharValue1(), "SAVE_FILE") == 0) {
             // FIX-ME: This will cause stack overflow
             (*CoreCollection::getInstance().getSaveAsMenu()).run(false);

@@ -37,6 +37,7 @@ class OpenFileMenu : public CSAObject
         void showMenu();
         void open(char *);
         void backToDocument();
+        void saveDocument();
 
         virtual void toString(); // Yes, you know, Java feelings rs
         virtual int getMemSize();

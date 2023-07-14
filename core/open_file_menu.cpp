@@ -57,6 +57,14 @@ void OpenFileMenu::run()
 
 }
 
+void OpenFileMenu::saveDocument() {
+    Document *doc = CoreCollection::getInstance().getCurrentDocument();
+
+    (*CoreCollection::getInstance().getSaveAsMenu()).saveSilent((*doc).getDocFileName());
+    showMenu();
+}
+
+
 void OpenFileMenu::showMenu()
 {
 

@@ -45,6 +45,8 @@ void OpenFileMenuKeyboardCallback::execute(WidgetEngine * widgetEngine)
         switch((*widgetEngine).getResultIntValue())
         {
             case MsgBoxEngine::BTN_YES:
+                cout << "SALVANDO " << endl;
+                (*_openFileMenuPtr).saveDocument();
                 break;
 
             case MsgBoxEngine::BTN_NO:

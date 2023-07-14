@@ -26,12 +26,15 @@ using std::setw;
 
 void MainMenu::run()
 {
+    showMainMenu();
+}
 
-    MainMenuKeyboardCallback *cb = new MainMenuKeyboardCallback(this);
+void MainMenu::showFileMenu() {
 
     MenuEngine *menu = ResourceCollection::getInstance().getMenuEngine();
     VideoEngine *video =  ResourceCollection::getInstance().getVideoEngine();
     KeyboardEngine *keyboard = ResourceCollection::getInstance().getKeyboardEngine();
+    MainMenuKeyboardCallback *cb = new MainMenuKeyboardCallback(this);
 
     char *mainMenuStr = new char[255];
     mainMenuStr[0] = '\0';
@@ -48,12 +51,58 @@ void MainMenu::run()
 
     strcat(mainMenuStr, "SAVE_FILE");
     strcat(mainMenuStr, AppGlobals::MENU_ITEM_DETAIL_DELIM);
-    strcat(mainMenuStr, "Save..");
+    strcat(mainMenuStr, "Save");
     strcat(mainMenuStr, AppGlobals::MENU_ITEM_DELIM);
 
     strcat(mainMenuStr, "SAVE_FILE_AS");
     strcat(mainMenuStr, AppGlobals::MENU_ITEM_DETAIL_DELIM);
-    strcat(mainMenuStr, "Save doc as...");
+    strcat(mainMenuStr, "Save As...");
+    strcat(mainMenuStr, AppGlobals::MENU_ITEM_DELIM);
+
+    strcat(mainMenuStr, "_BACK_");
+    strcat(mainMenuStr, AppGlobals::MENU_ITEM_DETAIL_DELIM);
+    strcat(mainMenuStr, "Back to edit");
+    strcat(mainMenuStr, AppGlobals::MENU_ITEM_DELIM);
+
+    (*menu)
+            .reset()
+            .setTitle("File")
+            .parseMenuString(mainMenuStr)
+            .setCallback(cb)
+            .render()
+            .run(video, keyboard);
+
+    delete cb;
+
+}
+
+void MainMenu::showMainMenu() {
+    MenuEngine *menu = ResourceCollection::getInstance().getMenuEngine();
+    VideoEngine *video =  ResourceCollection::getInstance().getVideoEngine();
+    KeyboardEngine *keyboard = ResourceCollection::getInstance().getKeyboardEngine();
+    MainMenuKeyboardCallback *cb = new MainMenuKeyboardCallback(this);
+
+    char *mainMenuStr = new char[255];
+    mainMenuStr[0] = '\0';
+
+    strcat(mainMenuStr, "FILE");
+    strcat(mainMenuStr, AppGlobals::MENU_ITEM_DETAIL_DELIM);
+    strcat(mainMenuStr, "File...");
+    strcat(mainMenuStr, AppGlobals::MENU_ITEM_DELIM);
+
+    strcat(mainMenuStr, "DOCUMENT");
+    strcat(mainMenuStr, AppGlobals::MENU_ITEM_DETAIL_DELIM);
+    strcat(mainMenuStr, "Document...");
+    strcat(mainMenuStr, AppGlobals::MENU_ITEM_DELIM);
+
+    strcat(mainMenuStr, "SETTINGS");
+    strcat(mainMenuStr, AppGlobals::MENU_ITEM_DETAIL_DELIM);
+    strcat(mainMenuStr, "Settings...");
+    strcat(mainMenuStr, AppGlobals::MENU_ITEM_DELIM);
+
+    strcat(mainMenuStr, "UTILS");
+    strcat(mainMenuStr, AppGlobals::MENU_ITEM_DETAIL_DELIM);
+    strcat(mainMenuStr, "Utilities...");
     strcat(mainMenuStr, AppGlobals::MENU_ITEM_DELIM);
 
     strcat(mainMenuStr, "ABOUT");
@@ -63,7 +112,7 @@ void MainMenu::run()
 
     strcat(mainMenuStr, "_BACK_");
     strcat(mainMenuStr, AppGlobals::MENU_ITEM_DETAIL_DELIM);
-    strcat(mainMenuStr, "<< Back to edit...");
+    strcat(mainMenuStr, "Back to edit");
     strcat(mainMenuStr, AppGlobals::MENU_ITEM_DELIM);
 
     (*menu)

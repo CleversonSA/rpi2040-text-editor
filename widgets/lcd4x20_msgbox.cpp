@@ -68,30 +68,30 @@ MsgBoxEngine & LCD4X20MsgBox::render()
     case(MsgBoxEngine::QUESTION_ICON):
         (*fb)
             .write({"??|              |??"}, 20)
-            .write({"?                  ?"}, 20)
-            .write({"?                  ?"}, 20)
-            .write({"??----------------??"}, 20);
+            .write({"|                  |"}, 20)
+            .write({"|                  |"}, 20)
+            .write({"?------------------?"}, 20);
         break;
     case(MsgBoxEngine::EXCLAMATION_ICON):
         (*fb)
             .write({"!!|              |!!"}, 20)
-            .write({"!                  !"}, 20)
-            .write({"!                  !"}, 20)
-            .write({"!!----------------!!"}, 20);
+            .write({"|                  |"}, 20)
+            .write({"|                  |"}, 20)
+            .write({"!------------------!"}, 20);
         break;
     case(MsgBoxEngine::ERROR_ICON):
         (*fb)
             .write({"##|              |##"}, 20)
-            .write({"#                  #"}, 20)
-            .write({"#                  #"}, 20)
-            .write({"##----------------##"}, 20);
+            .write({"|                  |"}, 20)
+            .write({"|                  |"}, 20)
+            .write({"#------------------#"}, 20);
         break;
     case(MsgBoxEngine::INFO_ICON):
         (*fb)
             .write({"ii|              |ii"}, 20)
-            .write({"i                  i"}, 20)
-            .write({"i                  i"}, 20)
-            .write({"ii----------------ii"}, 20);
+            .write({"|                  |"}, 20)
+            .write({"|                  |"}, 20)
+            .write({"i------------------i"}, 20);
         break;
     default:
         (*fb)

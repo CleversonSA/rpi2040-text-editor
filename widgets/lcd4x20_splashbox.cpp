@@ -66,30 +66,30 @@ SplashBoxEngine & LCD4X20Splashbox::render()
     case(SplashBoxEngine::QUESTION_ICON):
         (*fb)
             .write({"??|              |??"}, 20)
-            .write({"?                  ?"}, 20)
-            .write({"?                  ?"}, 20)
-            .write({"??----------------??"}, 20);
+            .write({"|                  |"}, 20)
+            .write({"|                  |"}, 20)
+            .write({"?------------------?"}, 20);
         break;
     case(SplashBoxEngine::EXCLAMATION_ICON):
         (*fb)
             .write({"!!|              |!!"}, 20)
-            .write({"!                  !"}, 20)
-            .write({"!                  !"}, 20)
-            .write({"!!----------------!!"}, 20);
+            .write({"|                  |"}, 20)
+            .write({"|                  |"}, 20)
+            .write({"!------------------!"}, 20);
         break;
     case(SplashBoxEngine::ERROR_ICON):
         (*fb)
             .write({"##|              |##"}, 20)
-            .write({"#                  #"}, 20)
-            .write({"#                  #"}, 20)
-            .write({"##----------------##"}, 20);
+            .write({"|                  |"}, 20)
+            .write({"|                  |"}, 20)
+            .write({"#------------------#"}, 20);
         break;
     case(SplashBoxEngine::INFO_ICON):
         (*fb)
             .write({"ii|              |ii"}, 20)
-            .write({"i                  i"}, 20)
-            .write({"i                  i"}, 20)
-            .write({"ii----------------ii"}, 20);
+            .write({"|                  |"}, 20)
+            .write({"|                  |"}, 20)
+            .write({"i------------------i"}, 20);
         break;
     default:
         (*fb)

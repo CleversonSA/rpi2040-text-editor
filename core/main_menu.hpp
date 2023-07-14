@@ -32,11 +32,17 @@ public:
     ~MainMenu();
 
     void run();
+    void showMainMenu();
+    void showFileMenu();
+    void showDocumentMenu();
+    void showSettingsMenu();
+    void showUtilitiesMenu();
 
     virtual void toString(); // Yes, you know, Java feelings rs
     virtual int getMemSize();
 
 private:
+
 
 };
 
