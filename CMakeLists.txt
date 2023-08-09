@@ -7,6 +7,13 @@ pico_sdk_init()
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPICO_USE_MALLOC_MUTEX=1")
 #add_subdirectory(littlefs-lib)
 #add_subdirectory(stdinit-lib)
+
+# Add SD Card support. I´ll not include the full source of the project.
+# Visit the https://github.com/carlk3/no-OS-FatFS-SD-SPI-RPi-Pico repo
+# and at rpi2040_sdk execute:
+#   git clone https://github.com/carlk3/no-OS-FatFS-SD-SPI-RPi-Pico.git
+add_subdirectory(rpi2040_sdk/no-OS-FatFS-SD-SPI-RPi-Pico/FatFs_SPI build)
+
 set(SOURCES
         tusb_config.h
         rpi2040_sdk/hid_app.cpp
@@ -132,6 +139,7 @@ foreach(name IN ITEMS main)
             tinyusb_board
             hardware_flash
             hardware_i2c
+            FatFs_SPI
             )
     target_include_directories(main PRIVATE ${CMAKE_CURRENT_LIST_DIR})
     target_compile_definitions(main PRIVATE

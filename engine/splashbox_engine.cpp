@@ -44,7 +44,7 @@ char * SplashBoxEngine::getTitle() const
 
 SplashBoxEngine & SplashBoxEngine::setMessage(const char message[])
 {
-    _message = new char[strlen(message)];
+    _message = new char[strlen(message)+1];
     strcpy(_message, message);
 
     return (*this);
