@@ -17,6 +17,9 @@ limitations under the License.
 using std::cout;
 using std::endl;
 
+#include <cstring>
+using std::strcat;
+
 #include <iomanip>
 using std::setw;
 

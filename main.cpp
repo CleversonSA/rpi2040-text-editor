@@ -41,6 +41,7 @@ using std::atoi;
 #include "rpi2040/rpi2040_disk_engine.hpp"
 #include "rpi2040/rpi2040_lcd4x20_video.hpp"
 #include "rpi2040/rpi2040_utils_engine.hpp"
+#include "rpi2040/rpi2040_sdcard_disk_engine.hpp"
 
 #include "bsp/board.h"
 
@@ -55,18 +56,6 @@ void showNewDocumentWindow();
 void startUartDebug();
 void initDefaultFolders();
 
-#include <string.h>
-//
-#include "my_debug.h"
-//
-#include "hw_config.h"
-//
-#include "ff.h" /* Obtains integer types */
-//
-#include "diskio.h" /* Declarations of disk functions */
-#include "sd_card.h"
-
-void sdTest();
 
 //======================================================================
 // Main kernel of app
@@ -74,12 +63,16 @@ void sdTest();
 
 int main() {
 
-    cout << "System booting..." << endl;
-
     //======================================================================
     // UART DEBUG
     //======================================================================
-    startUartDebug();
+    //startUartDebug();
+
+    cout << "#####################################################" << endl;
+    cout << "# BARE METAL TEXT EDITOR SYSTEM                     #" << endl;
+    cout << "# Author: Cleverson S A                             #" << endl;
+    cout << "#####################################################" << endl;
+    cout << "System booting...saluton mondo!" << endl;
 
     //======================================================================
     // Platform specific initialization
@@ -126,8 +119,6 @@ int main() {
         AppGlobals::getInstance().saveConstants();
         showNewDocumentWindow();
     }
-
-    sdTest();
 
     startDocumentWindow();
 
@@ -244,6 +235,8 @@ void prepareRpi2040()
 
     Rpi2040Lcd4x20Video *rpi2040Lcd4X20Video = new Rpi2040Lcd4x20Video;
     Rpi2040DiskEngine *rpi2040DiskEngine = new Rpi2040DiskEngine;
+    Rpi2040SDCardDiskEngine * rpi2040SdCardDiskEngine = new Rpi2040SDCardDiskEngine;
+
     Rpi2040TextEngine *rpi2040TextEngine = new Rpi2040TextEngine(currentDocument, rpi2040Lcd4X20Video);
     Rpi2040UtilsEngine *utilsEngine = new Rpi2040UtilsEngine;
 
@@ -252,12 +245,22 @@ void prepareRpi2040()
     LCD4X20MsgBox *lcd4X20MsgBox = new LCD4X20MsgBox(fb);
     LCD4X20Splashbox *lcd4X20Splashbox = new LCD4X20Splashbox(fb);
     LCD4X20TextView *lcd4X20TextView = new LCD4X20TextView(fb, lcd4X20Menu);
+    TextPersistenceEngine *textPersistenceEngine = 0;
 
-    TextPersistenceEngine *textPersistenceEngine = new TextPersistenceEngine(currentDocument,
-                                                                             rpi2040DiskEngine);
+    (*rpi2040SdCardDiskEngine).setup();
+    if (!(*rpi2040SdCardDiskEngine).test()) {
+        (*rpi2040DiskEngine).setup();
+        textPersistenceEngine = new TextPersistenceEngine(currentDocument,
+                                                          rpi2040DiskEngine);
 
+        ResourceCollection::getInstance().setDiskEngine(rpi2040DiskEngine);
 
-    (*rpi2040DiskEngine).setup();
+    } else {
+        textPersistenceEngine = new TextPersistenceEngine(currentDocument,
+                                                          rpi2040SdCardDiskEngine);
+        ResourceCollection::getInstance().setDiskEngine(rpi2040SdCardDiskEngine);
+    }
+
     (*rpi2040Lcd4X20Video).setFrameBuffer(fb);
 
     ResourceCollection::getInstance().setKeyboardEngine(&Rpi2040UsbKeyboard::getInstance());
@@ -269,7 +272,6 @@ void prepareRpi2040()
     ResourceCollection::getInstance().setSplashBoxEngine(lcd4X20Splashbox);
     ResourceCollection::getInstance().setTextViewEngine(lcd4X20TextView);
     ResourceCollection::getInstance().setUtilsEngine(utilsEngine);
-    ResourceCollection::getInstance().setDiskEngine(rpi2040DiskEngine);
 
     OpenFileMenu *openFileMenu = new OpenFileMenu;
     MainMenu *mainMenu = new MainMenu;
@@ -286,143 +288,3 @@ void prepareRpi2040()
 
 }
 
-
-
-// Hardware Configuration of SPI "objects"
-// Note: multiple SD cards can be driven by one SPI if they use different slave
-// selects.
-static spi_t spis[] = {  // One for each SPI.
-        {
-                .hw_inst = spi1,  // SPI component
-                .miso_gpio = 12,  // GPIO number (not Pico pin number)
-                .mosi_gpio = 11,
-                .sck_gpio = 14,
-
-                // .baud_rate = 1000 * 1000
-                .baud_rate = 1000000
-                // .baud_rate = 25 * 1000 * 1000 // Actual frequency: 20833333.
-        }};
-
-// Hardware Configuration of the SD Card "objects"
-static sd_card_t sd_cards[] = {  // One for each SD card
-        {
-                .pcName = "0:",   // Name used to mount device
-                .spi = &spis[0],  // Pointer to the SPI driving this card
-                .ss_gpio = 13,    // The SPI slave select GPIO for this SD card
-                .use_card_detect = false,
-                .card_detect_gpio = 22,  // Card detect
-                .card_detected_true = 1  // What the GPIO read returns when a card is
-                // present.
-        }};
-
-
-
-/* ********************************************************************** */
-size_t sd_get_num() { return count_of(sd_cards); }
-sd_card_t *sd_get_by_num(size_t num) {
-    if (num <= sd_get_num()) {
-        return &sd_cards[num];
-    } else {
-        return NULL;
-    }
-}
-size_t spi_get_num() { return count_of(spis); }
-spi_t *spi_get_by_num(size_t num) {
-    if (num <= spi_get_num()) {
-        return &spis[num];
-    } else {
-        return NULL;
-    }
-}
-
-
-
-void sdTest()
-{
-    FRESULT fr;
-    FATFS fs;
-    FIL fil;
-    int ret;
-    char buf[100];
-    char filename[] = "test02.txt";
-
-    // Initialize chosen serial port
-    stdio_init_all();
-
-    // Wait for user to press 'enter' to continue
-    printf("\r\nSD card test. Press 'enter' to start.\r\n");
-    while (true) {
-        buf[0] = getchar();
-        if ((buf[0] == '\r') || (buf[0] == '\n')) {
-            break;
-        }
-    }
-
-    // Initialize SD card
-    if (!sd_init_driver()) {
-        printf("ERROR: Could not initialize SD card\r\n");
-        while (true);
-    }
-
-    // Mount drive
-    fr = f_mount(&fs, "0:", 1);
-    if (fr != FR_OK) {
-        printf("ERROR: Could not mount filesystem (%d)\r\n", fr);
-        while (true);
-    }
-
-    // Open file for writing ()
-    fr = f_open(&fil, filename, FA_WRITE | FA_CREATE_ALWAYS);
-    if (fr != FR_OK) {
-        printf("ERROR: Could not open file (%d)\r\n", fr);
-        while (true);
-    }
-
-    // Write something to file
-    ret = f_printf(&fil, "This is another test\r\n");
-    if (ret < 0) {
-        printf("ERROR: Could not write to file (%d)\r\n", ret);
-        f_close(&fil);
-        while (true);
-    }
-    ret = f_printf(&fil, "of writing to an SD card.\r\n");
-    if (ret < 0) {
-        printf("ERROR: Could not write to file (%d)\r\n", ret);
-        f_close(&fil);
-        while (true);
-    }
-
-    // Close file
-    fr = f_close(&fil);
-    if (fr != FR_OK) {
-        printf("ERROR: Could not close file (%d)\r\n", fr);
-        while (true);
-    }
-
-    // Open file for reading
-    fr = f_open(&fil, filename, FA_READ);
-    if (fr != FR_OK) {
-        printf("ERROR: Could not open file (%d)\r\n", fr);
-        while (true);
-    }
-
-    // Print every line in file over serial
-    printf("Reading from file '%s':\r\n", filename);
-    printf("---\r\n");
-    while (f_gets(buf, sizeof(buf), &fil)) {
-        printf(buf);
-    }
-    printf("\r\n---\r\n");
-
-    // Close file
-    fr = f_close(&fil);
-    if (fr != FR_OK) {
-        printf("ERROR: Could not close file (%d)\r\n", fr);
-        while (true);
-    }
-
-    // Unmount drive
-    f_unmount("0:");
-
-
-}

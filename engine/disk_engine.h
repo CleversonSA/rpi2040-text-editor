@@ -17,7 +17,6 @@ limitations under the License.
 #define DISKENGINE_DISKENGINE_H
 
 #include "../csa_object.hpp"
-#include "../littlefs/lfs.h"
 
 /*
   Abstract class for storage and manipulate simple files using LittleFS
@@ -26,52 +25,29 @@ class DiskEngine: public CSAObject
 {
 public:
 
-    /*
-     * Just a wrapper to avoid attach the core engine with LFS
-     */
-    static const int FILE_OPEN_CREATE = LFS_O_CREAT;
-    static const int FILE_OPEN_READONLY = LFS_O_RDONLY;
-    static const int FILE_OPEN_READWRITE = LFS_O_RDWR;
+    static const int FILE_OPEN_CREATE = 0x01;
+    static const int FILE_OPEN_READONLY = 0x02;
+    static const int FILE_OPEN_READWRITE = 0x04;
 
     DiskEngine();
     ~DiskEngine();
 
-    virtual int readBlockDeviceFn(const struct lfs_config *, lfs_block_t, lfs_off_t, void *, lfs_size_t) = 0;
-    virtual int programBlockDeviceFn(const struct lfs_config *, lfs_block_t, lfs_off_t, const void *, lfs_size_t) = 0;
-    virtual int eraseBlockDeviceFn(const struct lfs_config *, lfs_block_t) = 0;
-    virtual int syncBlockDeviceFn(const struct lfs_config *) = 0;
 
-    virtual char * dir(const char *);
-    virtual int mkdir(const char *, const char *);
-    virtual int del(const char *, const char *);
-    virtual int ren(const char *, const char *, const char *);
-    virtual int move(const char *, const char *, const char *);
-    virtual int copy(const char *, const char *, const char *, const char *);
-    virtual int touch(const char *, const char *);
-    virtual void type(const char *, const char *);
-    virtual int openFile(const char *, const char *, int);
-    virtual void closeFile();
-    virtual void write(const char);
-    virtual void writeLn(const char *);
-    virtual char read();
-    virtual int rewind();
-    virtual int getOpenedFileSize();
-
-    virtual lfs_size_t getBlockDeviceCount() = 0;
-
-    lfs_size_t getBlockSizeBytes() const;
-    lfs_size_t getFlashPageSize() const;
-    lfs_size_t getFlashStorageBytes() const;
-    struct lfs_config * getLFSConfigPtr();
-    lfs_t * getLfsPtr();
-    lfs_file_t * getFilePtr();
-
-    void setBlockSizeBytes(lfs_size_t blockSizeBytes );
-    void setFlashPageSize(lfs_size_t flashPageSize);
-    void setFlashStorageBytes(lfs_size_t flashStorageBytes);
-    void setLFSConfigPtr(struct lfs_config *);
-    void setLfsPtr(lfs_t *);
-    void setFilePtr(lfs_file_t *);
+    virtual char * dir(const char *) = 0;
+    virtual int mkdir(const char *, const char *) = 0;
+    virtual int del(const char *, const char *) = 0;
+    virtual int ren(const char *, const char *, const char *) = 0;
+    virtual int move(const char *, const char *, const char *) = 0;
+    virtual int copy(const char *, const char *, const char *, const char *) = 0;
+    virtual int touch(const char *, const char *) = 0;
+    virtual void type(const char *, const char *) = 0;
+    virtual int openFile(const char *, const char *, int) = 0;
+    virtual void closeFile() = 0;
+    virtual void write(const char) = 0;
+    virtual void writeLn(const char *) = 0;
+    virtual char read() = 0;
+    virtual int rewind() = 0;
+    virtual int getOpenedFileSize() = 0;
 
     virtual void indicateIOBeginStatus();
     virtual void indicateIOEndStatus();
@@ -81,7 +57,7 @@ public:
     static void setInstance(DiskEngine *);
 
     virtual void setup() = 0;
-    virtual void destroy();
+    virtual void destroy() = 0;
     virtual bool test() = 0;
 
     virtual void toString();
@@ -90,16 +66,6 @@ public:
 private:
 
     static DiskEngine * _diskEngineInstance;
-
-    lfs_size_t _flashPageSize = 256;
-    lfs_size_t _blockSizeBytes = 4096;
-    lfs_size_t _flashStorageBytes = (1408 * 1024);
-
-    // variables used by the filesystem
-    lfs_t * _lfsPtr;
-    lfs_file_t * _filePtr;
-
-    struct lfs_config * _lfsConfigPtr;
 
 };
 

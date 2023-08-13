@@ -28,7 +28,7 @@ using std::endl;
 #define HW_FLASH_STORAGE_BYTES  (1408 * 1024)
 #define HW_FLASH_STORAGE_BASE   (PICO_FLASH_SIZE_BYTES - HW_FLASH_STORAGE_BYTES) // 655360
 
-#include "littlefs/lfs.h"
+#include "../lib/littlefs/lfs.h"
 
 #include "rpi2040_disk_engine.hpp"
 #include "../app_globals.hpp"
@@ -80,13 +80,20 @@ bool Rpi2040DiskEngine::test()
 void Rpi2040DiskEngine::setup()
 {
     DiskEngine::setInstance(this);
+    LFSDiskEngine::setInstance(this);
+
+    cout << "Initializado!" << endl;
 
     (*getLFSConfigPtr()).block_count = HW_FLASH_STORAGE_BYTES / getBlockSizeBytes(); // 352
     (*getLFSConfigPtr()).cache_size = FLASH_PAGE_SIZE; // 256
     (*getLFSConfigPtr()).lookahead_size = FLASH_PAGE_SIZE;  // 256
 
+    cout << "LFS Tried to mount" << endl;
+
     // mount the filesystem
     int err = lfs_mount(getLfsPtr(), getLFSConfigPtr());
+
+    cout << "LFS Tried to mount 2" << endl;
 
     // reformat if we can't mount the filesystem
     // this should only happen on the first boot
@@ -161,7 +168,7 @@ Rpi2040DiskEngine::~Rpi2040DiskEngine()
 }
 
 Rpi2040DiskEngine::Rpi2040DiskEngine():
-   DiskEngine()
+   LFSDiskEngine()
 {
     gpio_init(AppGlobals::RPI2040_DISK_IO_LED_PIN);
     gpio_set_dir(AppGlobals::RPI2040_DISK_IO_LED_PIN, GPIO_OUT);
