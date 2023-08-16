@@ -37,6 +37,16 @@ class AppGlobals
         static const int RPI2040_USB_IO_LED_PIN = 19;
         static const int RPI2040_DISK_IO_LED_PIN = 18;
 
+        //********************************************************//
+        // CONFIGURATION FOR SD CARD ON RPI2040
+        //********************************************************//
+        static const unsigned int RPI2040_SDCARD_DISK_MISO_PIN = 12;
+        static const unsigned int RPI2040_SDCARD_DISK_MOSI_PIN = 11;
+        static const unsigned int RPI2040_SDCARD_DISK_SCK_PIN = 14;
+        static const unsigned int RPI2040_SDCARD_DISK_CS_PIN = 13;
+        static const unsigned int RPI2040_SDCARD_DISK_CD_PIN = 22;
+
+
         static const int FRAMEBUFFER_MAX_ROWS = 4;
         static const int FRAMEBUFFER_MAX_COLS = 20;
 

@@ -41,6 +41,7 @@ using std::atoi;
 #include "rpi2040/rpi2040_disk_engine.hpp"
 #include "rpi2040/rpi2040_lcd4x20_video.hpp"
 #include "rpi2040/rpi2040_utils_engine.hpp"
+#include "rpi2040/rpi2040_sdcard_disk_engine.hpp"
 
 #include "bsp/board.h"
 
@@ -62,12 +63,16 @@ void initDefaultFolders();
 
 int main() {
 
-    cout << "System booting..." << endl;
-
     //======================================================================
     // UART DEBUG
     //======================================================================
     //startUartDebug();
+
+    cout << "#####################################################" << endl;
+    cout << "# BARE METAL TEXT EDITOR SYSTEM                     #" << endl;
+    cout << "# Author: Cleverson S A                             #" << endl;
+    cout << "#####################################################" << endl;
+    cout << "System booting...saluton mondo!" << endl;
 
     //======================================================================
     // Platform specific initialization
@@ -230,6 +235,8 @@ void prepareRpi2040()
 
     Rpi2040Lcd4x20Video *rpi2040Lcd4X20Video = new Rpi2040Lcd4x20Video;
     Rpi2040DiskEngine *rpi2040DiskEngine = new Rpi2040DiskEngine;
+    Rpi2040SDCardDiskEngine * rpi2040SdCardDiskEngine = new Rpi2040SDCardDiskEngine;
+
     Rpi2040TextEngine *rpi2040TextEngine = new Rpi2040TextEngine(currentDocument, rpi2040Lcd4X20Video);
     Rpi2040UtilsEngine *utilsEngine = new Rpi2040UtilsEngine;
 
@@ -238,12 +245,22 @@ void prepareRpi2040()
     LCD4X20MsgBox *lcd4X20MsgBox = new LCD4X20MsgBox(fb);
     LCD4X20Splashbox *lcd4X20Splashbox = new LCD4X20Splashbox(fb);
     LCD4X20TextView *lcd4X20TextView = new LCD4X20TextView(fb, lcd4X20Menu);
+    TextPersistenceEngine *textPersistenceEngine = 0;
 
-    TextPersistenceEngine *textPersistenceEngine = new TextPersistenceEngine(currentDocument,
-                                                                             rpi2040DiskEngine);
+    (*rpi2040SdCardDiskEngine).setup();
+    if (!(*rpi2040SdCardDiskEngine).test()) {
+        (*rpi2040DiskEngine).setup();
+        textPersistenceEngine = new TextPersistenceEngine(currentDocument,
+                                                          rpi2040DiskEngine);
 
+        ResourceCollection::getInstance().setDiskEngine(rpi2040DiskEngine);
 
-    (*rpi2040DiskEngine).setup();
+    } else {
+        textPersistenceEngine = new TextPersistenceEngine(currentDocument,
+                                                          rpi2040SdCardDiskEngine);
+        ResourceCollection::getInstance().setDiskEngine(rpi2040SdCardDiskEngine);
+    }
+
     (*rpi2040Lcd4X20Video).setFrameBuffer(fb);
 
     ResourceCollection::getInstance().setKeyboardEngine(&Rpi2040UsbKeyboard::getInstance());
@@ -255,7 +272,6 @@ void prepareRpi2040()
     ResourceCollection::getInstance().setSplashBoxEngine(lcd4X20Splashbox);
     ResourceCollection::getInstance().setTextViewEngine(lcd4X20TextView);
     ResourceCollection::getInstance().setUtilsEngine(utilsEngine);
-    ResourceCollection::getInstance().setDiskEngine(rpi2040DiskEngine);
 
     OpenFileMenu *openFileMenu = new OpenFileMenu;
     MainMenu *mainMenu = new MainMenu;
@@ -271,3 +287,4 @@ void prepareRpi2040()
     CoreCollection::getInstance().setSaveAsMenu(saveAsMenu);
 
 }
+

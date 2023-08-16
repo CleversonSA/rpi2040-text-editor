@@ -7,6 +7,14 @@ pico_sdk_init()
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPICO_USE_MALLOC_MUTEX=1")
 #add_subdirectory(littlefs-lib)
 #add_subdirectory(stdinit-lib)
+
+# Add SD Card support. I´ll not include the full source of the project.
+# Visit the https://github.com/carlk3/no-OS-FatFS-SD-SPI-RPi-Pico repo
+# and at rpi2040_sdk execute:
+#   git clone https://github.com/carlk3/no-OS-FatFS-SD-SPI-RPi-Pico.git
+add_subdirectory(rpi2040_sdk/no-OS-FatFS-SD-SPI-RPi-Pico/FatFs_SPI build)
+
+
 set(SOURCES
         tusb_config.h
         rpi2040_sdk/hid_app.cpp
@@ -104,14 +112,18 @@ set(SOURCES
         rpi2040/rpi2040_uart_video.hpp
         rpi2040/rpi2040_usb_keyboard.cpp
         rpi2040/rpi2040_usb_keyboard.hpp
-        littlefs/lfs.c
-        littlefs/lfs.h
-        littlefs/lfs_util.c
-        littlefs/lfs_util.h
+        lib/littlefs/lfs.c
+        lib/littlefs/lfs.h
+        lib/littlefs/lfs_util.c
+        lib/littlefs/lfs_util.h
+        lib/lfs_disk_engine.cpp
+        lib/lfs_disk_engine.hpp
         engine/disk_engine.h
         engine/disk_engine.cpp
         rpi2040/rpi2040_disk_engine.hpp
         rpi2040/rpi2040_disk_engine.cpp
+        rpi2040/rpi2040_sdcard_disk_engine.cpp
+        rpi2040/rpi2040_sdcard_disk_engine.hpp
         rpi2040/rpi2040_lcd4x20_video.cpp
         rpi2040/rpi2040_lcd4x20_video.hpp
         rpi2040/rpi2040_utils_engine.cpp
@@ -132,13 +144,14 @@ foreach(name IN ITEMS main)
             tinyusb_board
             hardware_flash
             hardware_i2c
+            FatFs_SPI
             )
     target_include_directories(main PRIVATE ${CMAKE_CURRENT_LIST_DIR})
     target_compile_definitions(main PRIVATE
             PICO_STACK_SIZE=4096
             PICO_HEAP_SIZE=0x1000
             PICO_MALLOC_PANIC=1
-            PICO_DEBUG_MALLOC=1
+            #PICO_DEBUG_MALLOC=1
             )
     pico_add_extra_outputs(${name})
 endforeach()

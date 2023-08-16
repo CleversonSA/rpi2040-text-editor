@@ -17,15 +17,15 @@ limitations under the License.
 #define RPI2040_DISKENGINE_H
 
 #include "../csa_object.hpp"
-#include "../engine/disk_engine.h"
-#include "../littlefs/lfs.h"
+#include "../lib/lfs_disk_engine.hpp"
+#include "../lib/littlefs/lfs.h"
 
 
 
 /*
   Storage littleFS implementation for Rpi2040 specific
 */
-class Rpi2040DiskEngine: public DiskEngine
+class Rpi2040DiskEngine: public LFSDiskEngine
 {
 public:
 

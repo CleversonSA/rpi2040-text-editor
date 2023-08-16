@@ -17,6 +17,9 @@ limitations under the License.
 using std::cout;
 using std::endl;
 
+#include <cstring>
+using std::strcat;
+
 #include <iomanip>
 using std::setw;
 
@@ -90,7 +93,7 @@ void MainMenu::showMainMenu() {
     strcat(mainMenuStr, "File...");
     strcat(mainMenuStr, AppGlobals::MENU_ITEM_DELIM);
 
-    strcat(mainMenuStr, "DOCUMENT");
+    /*strcat(mainMenuStr, "DOCUMENT");
     strcat(mainMenuStr, AppGlobals::MENU_ITEM_DETAIL_DELIM);
     strcat(mainMenuStr, "Document...");
     strcat(mainMenuStr, AppGlobals::MENU_ITEM_DELIM);
@@ -109,6 +112,7 @@ void MainMenu::showMainMenu() {
     strcat(mainMenuStr, AppGlobals::MENU_ITEM_DETAIL_DELIM);
     strcat(mainMenuStr, "About");
     strcat(mainMenuStr, AppGlobals::MENU_ITEM_DELIM);
+     */
 
     strcat(mainMenuStr, "_BACK_");
     strcat(mainMenuStr, AppGlobals::MENU_ITEM_DETAIL_DELIM);
