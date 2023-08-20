@@ -30,7 +30,7 @@ using std::strlen;
 
 AppGlobals * AppGlobals::_me = 0;
 
-const char AppGlobals::APP_VERSION[] = "0.9.1-RC";
+const char AppGlobals::APP_VERSION[] = "0.9.1";
 
 const char AppGlobals::MENU_ITEM_DELIM[] = "|";
 const char AppGlobals::MENU_ITEM_DETAIL_DELIM[] = ";";
