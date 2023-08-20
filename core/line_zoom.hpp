@@ -13,8 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef MAINMENU
-#define MAINMENU
+#ifndef LINEZOOMMENU
+#define LINEZOOMMENU
 
 #include "../csa_object.hpp"
 #include "../engine/keyboard_engine.hpp"
@@ -22,22 +22,17 @@ limitations under the License.
 #include "../engine/menu_engine.hpp"
 
 /*
-  Menu selection or dialog for open text file for editing
+  View the current line as a text view. It´s good for small screens like 20x4 LCD
+  characteres to see all the text without horizontal scroll
 */
-class MainMenu : public CSAObject
+class LineZoom : public CSAObject
 {
 public:
 
-    MainMenu();
-    ~MainMenu();
+    LineZoom();
+    ~LineZoom();
 
     void run();
-    void showMainMenu();
-    void showFileMenu();
-    void showDocumentMenu();
-    void showSettingsMenu();
-    void showUtilitiesMenu();
-
 
     virtual void toString(); // Yes, you know, Java feelings rs
     virtual int getMemSize();

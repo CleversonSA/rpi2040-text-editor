@@ -37,6 +37,8 @@ class DocumentEngine : public WidgetEngine
         Document * getDocument();
 
         virtual void render();
+        virtual char * renderLineToStr(DocRow *);
+        virtual char * renderDocCharAsStr(DocCharacter *);
 
         virtual bool isCursorAtEndOfViewLine() const = 0;
         virtual bool isCursorAtBottomOfView() const = 0;
@@ -54,6 +56,7 @@ class DocumentEngine : public WidgetEngine
         virtual void renderEOF() = 0;
         virtual void renderCharacter(DocCharacter *) = 0;
         virtual void renderColRow(int, int, int) = 0;
+
 
 
     private:

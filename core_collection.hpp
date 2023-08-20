@@ -25,6 +25,8 @@ limitations under the License.
 #include "core/main_menu.hpp"
 #include "core/new_file_menu.hpp"
 #include "core/save_as_menu.hpp"
+#include "core/line_zoom.hpp"
+#include "core/about.hpp"
 
 /*
   General resource holder to manager singletons about the app core instances
@@ -45,6 +47,8 @@ public:
     MainMenu * getMainMenu();
     NewFileMenu * getNewFileMenu();
     SaveAsMenu * getSaveAsMenu();
+    LineZoom * getLineZoom();
+    About * getAbout();
 
     void setCurrentDocument(Document *);
     void setTextRenderEngine(TextRenderEngine *);
@@ -53,6 +57,8 @@ public:
     void setMainMenu(MainMenu *);
     void setNewFileMenu(NewFileMenu *);
     void setSaveAsMenu(SaveAsMenu *);
+    void setLineZoom(LineZoom *);
+    void setAbout(About *);
 
     virtual void toString(); // Yes, you know, Java feelings rs
     virtual int getMemSize();
@@ -69,6 +75,8 @@ private:
     MainMenu * _mainMenuPtr;
     NewFileMenu * _newFileMenuPtr;
     SaveAsMenu * _saveAsMenuPtr;
+    LineZoom * _lineZoomPtr;
+    About * _aboutPtr;
 
 };
 

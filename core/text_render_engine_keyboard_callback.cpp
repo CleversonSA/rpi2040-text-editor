@@ -27,6 +27,8 @@ using std::endl;
 #include "../resource_collection.hpp"
 
 int TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+int TextRenderEngineKeyboardCallback::_LALT_PRESSES_COUNT = 0;
+
 
 void TextRenderEngineKeyboardCallback::setVideoEngine(VideoEngine * videoEngine)
 {
@@ -65,19 +67,26 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
 
     switch(keyboardCode)
     {
+        case KeyboardEngine::KEY_F2:
+
+            (*CoreCollection::getInstance().getLineZoom()).run();
+            break;
         case KeyboardEngine::KEY_ESCAPE:
             if (TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT == 1)
             {
                 TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT =0;
+                
                 (*CoreCollection::getInstance().getMainMenu()).run();
             } else {
                 TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT ++;
+                
             }
             break;
         case KeyboardEngine::KEY_F12:
             (*getVideoEngine()).reset();
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
+            
             break;
         case KeyboardEngine::KEY_ANY:
             (*doc).type(rawChar);
@@ -85,36 +94,42 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_UP:
             (*doc).cursorMoveUp();
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_LEFT:
             (*doc).cursorMoveLeft();
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_RIGHT:
             (*doc).cursorMoveRight();
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_DOWN:
             (*doc).cursorMoveDown();
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_ENTER:
             (*doc).addNewLine();
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_BACKSPACE:
         case KeyboardEngine::KEY_DEL:
@@ -123,6 +138,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_SPACE:
             (*doc).type(' ');
@@ -130,6 +146,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_ATILDE_UC_CODE:
             (*doc).type('~').type('A');
@@ -137,6 +154,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_TILDE:
             (*doc).type('~');
@@ -144,6 +162,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_ATILDE_LC_CODE:
             (*doc).type('~').type('a');
@@ -151,6 +170,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_NTILDE_LC_CODE:
             (*doc).type('~').type('n');
@@ -158,6 +178,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_NTILDE_UC_CODE:
             (*doc).type('~').type('N');
@@ -165,6 +186,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_OTILDE_LC_CODE:
             (*doc).type('~').type('o');
@@ -172,6 +194,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_OTILDE_UC_CODE:
             (*doc).type('~').type('O');
@@ -179,6 +202,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_ACUTE:
             (*doc).type('\'');
@@ -186,6 +210,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_AGRAVE:
             (*doc).type('\'');
@@ -193,6 +218,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_ACIRC:
             (*doc).type('^');
@@ -200,6 +226,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_AUML:
             (*doc).type('o');
@@ -207,6 +234,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_AACUTE_UC_CODE:
             (*doc).type('A').type('\'');
@@ -214,6 +242,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_AACUTE_LC_CODE:
             (*doc).type('a').type('\'');
@@ -221,6 +250,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_EACUTE_UC_CODE:
             (*doc).type('E').type('\'');
@@ -228,6 +258,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_EACUTE_LC_CODE:
             (*doc).type('e').type('\'');
@@ -235,6 +266,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_IACUTE_LC_CODE:
             (*doc).type('i').type('\'');
@@ -242,6 +274,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_IACUTE_UC_CODE:
             (*doc).type('I').type('\'');
@@ -249,6 +282,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_OACUTE_UC_CODE:
             (*doc).type('O').type('\'');
@@ -256,6 +290,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_OACUTE_LC_CODE:
             (*doc).type('o').type('\'');
@@ -263,6 +298,9 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
+
+
             break;
         case KeyboardEngine::KEY_UACUTE_UC_CODE:
             (*doc).type('U').type('\'');
@@ -270,6 +308,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_UACUTE_LC_CODE:
             (*doc).type('u').type('\'');
@@ -277,6 +316,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_CEDILLA_LC_CODE:
             (*doc).type('c');
@@ -284,6 +324,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_CEDILLA_UC_CODE:
             (*doc).type('C');
@@ -291,6 +332,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_AGRAVE_UC_CODE:
             (*doc).type('\'').type('A');
@@ -298,6 +340,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_AGRAVE_LC_CODE:
             (*doc).type('\'').type('a');
@@ -305,6 +348,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_EGRAVE_UC_CODE:
             (*doc).type('\'').type('E');
@@ -312,6 +356,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_EGRAVE_LC_CODE:
             (*doc).type('\'').type('e');
@@ -319,6 +364,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_IGRAVE_UC_CODE:
             (*doc).type('\'').type('I');
@@ -326,6 +372,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_IGRAVE_LC_CODE:
             (*doc).type('\'').type('i');
@@ -333,6 +380,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_OGRAVE_UC_CODE:
             (*doc).type('\'').type('O');
@@ -340,6 +388,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_OGRAVE_LC_CODE:
             (*doc).type('\'').type('o');
@@ -347,6 +396,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_UGRAVE_UC_CODE:
             (*doc).type('\'').type('U');
@@ -354,6 +404,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_UGRAVE_LC_CODE:
             (*doc).type('\'').type('u');
@@ -361,6 +412,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_ACIRC_UC_CODE:
             (*doc).type('o').type('A');
@@ -368,6 +420,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_ACIRC_LC_CODE:
             (*doc).type('o').type('a');
@@ -375,6 +428,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_ECIRC_UC_CODE:
             (*doc).type('o').type('E');
@@ -382,6 +436,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_ECIRC_LC_CODE:
             (*doc).type('o').type('E');
@@ -389,6 +444,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_ICIRC_UC_CODE:
             (*doc).type('o').type('I');
@@ -396,6 +452,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_ICIRC_LC_CODE:
             (*doc).type('o').type('i');
@@ -403,6 +460,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_OCIRC_UC_CODE:
             (*doc).type('o').type('A');
@@ -410,6 +468,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_OCIRC_LC_CODE:
             (*doc).type('o').type('o');
@@ -417,6 +476,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_UCIRC_UC_CODE:
             (*doc).type('o').type('U');
@@ -424,6 +484,7 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         case KeyboardEngine::KEY_UCIRC_LC_CODE:
             (*doc).type('o').type(' ');
@@ -431,9 +492,11 @@ bool TextRenderEngineKeyboardCallback::execute(const int keyboardCode, const cha
             (*getTextEngine()).render();
             (*getVideoEngine()).display(TextRenderEngine::DISPLAY_CONTEXT_ID);
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
         default:
             TextRenderEngineKeyboardCallback::_ESCAPE_PRESSES_COUNT = 0;
+            
             break;
     }
 

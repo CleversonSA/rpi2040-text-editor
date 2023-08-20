@@ -28,6 +28,8 @@ using std::atoi;
 #include "core/main_menu.hpp"
 #include "core/new_file_menu.hpp"
 #include "core/save_as_menu.hpp"
+#include "core/line_zoom.hpp"
+#include "core/about.hpp"
 
 #include "widgets/lcd4x20_msgbox.hpp"
 #include "widgets/lcd4x20_inputbox.hpp"
@@ -247,6 +249,7 @@ void prepareRpi2040()
     LCD4X20TextView *lcd4X20TextView = new LCD4X20TextView(fb, lcd4X20Menu);
     TextPersistenceEngine *textPersistenceEngine = 0;
 
+
     (*rpi2040SdCardDiskEngine).setup();
     if (!(*rpi2040SdCardDiskEngine).test()) {
         (*rpi2040DiskEngine).setup();
@@ -273,10 +276,13 @@ void prepareRpi2040()
     ResourceCollection::getInstance().setTextViewEngine(lcd4X20TextView);
     ResourceCollection::getInstance().setUtilsEngine(utilsEngine);
 
+
     OpenFileMenu *openFileMenu = new OpenFileMenu;
     MainMenu *mainMenu = new MainMenu;
     NewFileMenu *newFileMenu = new NewFileMenu;
     SaveAsMenu *saveAsMenu = new SaveAsMenu;
+    LineZoom *lineZoom = new LineZoom;
+    About *about = new About;
 
     CoreCollection::getInstance().setCurrentDocument(currentDocument);
     CoreCollection::getInstance().setTextPersistenceEngine(textPersistenceEngine);
@@ -285,6 +291,8 @@ void prepareRpi2040()
     CoreCollection::getInstance().setMainMenu(mainMenu);
     CoreCollection::getInstance().setNewFileMenu(newFileMenu);
     CoreCollection::getInstance().setSaveAsMenu(saveAsMenu);
+    CoreCollection::getInstance().setLineZoom(lineZoom);
+    CoreCollection::getInstance().setAbout(about);
 
 }
 

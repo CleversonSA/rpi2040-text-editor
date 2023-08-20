@@ -13,38 +13,37 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef MAINMENU
-#define MAINMENU
+#ifndef ABOUTKEYBOARDCALLBACK
+#define ABOUTKEYBOARDCALLBACK
 
-#include "../csa_object.hpp"
-#include "../engine/keyboard_engine.hpp"
-#include "../engine/video_engine.hpp"
-#include "../engine/menu_engine.hpp"
+#include "app_globals.hpp"
+#include "csa_object.hpp"
+#include "core/about.hpp"
 
 /*
-  Menu selection or dialog for open text file for editing
+  Handle the callback of a keyboard completition for About dialog
 */
-class MainMenu : public CSAObject
+class AboutKeyboardCallback : public WidgetCallback
 {
 public:
 
-    MainMenu();
-    ~MainMenu();
+    AboutKeyboardCallback(About *);
+    ~AboutKeyboardCallback();
 
-    void run();
-    void showMainMenu();
-    void showFileMenu();
-    void showDocumentMenu();
-    void showSettingsMenu();
-    void showUtilitiesMenu();
+    virtual void execute(WidgetEngine *);
 
-
-    virtual void toString(); // Yes, you know, Java feelings rs
+    virtual void toString();
     virtual int getMemSize();
 
 private:
 
-
+    About *_aboutPtr;
 };
 
 #endif // DOCCHARACTER
+
+
+
+
+
+

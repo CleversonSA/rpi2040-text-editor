@@ -64,6 +64,18 @@ void MainMenuKeyboardCallback::execute(WidgetEngine * widgetEngine)
             return;
         }
 
+        if (strcmp((*widgetEngine).getResultCharValue1(), "OPEN_FILE") == 0) {
+            // FIX-ME: This will cause stack overflow
+            (*CoreCollection::getInstance().getOpenFileMenu()).run();
+            return;
+        }
+
+        if (strcmp((*widgetEngine).getResultCharValue1(), "ABOUT") == 0) {
+            // FIX-ME: This will cause stack overflow
+            (*CoreCollection::getInstance().getAbout()).run();
+            return;
+        }
+
         if (strcmp((*widgetEngine).getResultCharValue1(), "_BACK_") == 0) {
             // FIX-ME: This will cause stack overflow
             (*CoreCollection::getInstance().getTextRenderEngine()).run(

@@ -27,10 +27,6 @@ using std::strlen;
 using std::strcpy;
 
 #include "lcd4x20_textview.hpp"
-#include "../engine/textview_engine.hpp"
-#include "../engine/menu_engine.hpp"
-#include "../app_globals.hpp"
-#include "../video/framebuffer.hpp"
 
 void LCD4X20TextView::fitString(const char * text, const int max_size, int offset)
 {
@@ -58,6 +54,8 @@ void LCD4X20TextView::fitString(const char * text, const int max_size, int offse
 
 TextViewEngine & LCD4X20TextView::render()
 {
+    cout << "Entrou no render " << endl;
+
     FrameBuffer *fb = getFrameBuffer();
     int textLine = 1;
     bool lastPage = false;

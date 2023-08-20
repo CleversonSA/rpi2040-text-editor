@@ -23,7 +23,7 @@ limitations under the License.
 #include "widget_callback.hpp"
 #include "video_engine.hpp"
 #include "keyboard_engine.hpp"
-
+#include "widget_callback.hpp"
 
 /*
     Abstract class for Text View Engine
@@ -48,6 +48,8 @@ class TextViewEngine: public WidgetEngine
         TextViewEngine & cursorMoveDown();
         TextViewEngine & closeView();
 
+         TextViewEngine & setCallback(WidgetCallback *);
+
         virtual TextViewEngine & render() = 0;
         virtual void run(VideoEngine *, KeyboardEngine *);
 
@@ -55,6 +57,7 @@ class TextViewEngine: public WidgetEngine
 
         MenuEngine * _menuEngineInstance;
         char * _title;
+        WidgetCallback* _widgetCallback;
 };
 
 #endif // DOCUMENT

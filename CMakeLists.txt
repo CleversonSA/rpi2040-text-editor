@@ -84,6 +84,14 @@ set(SOURCES
         core/new_file_menu_keyboard_callback.hpp
         core/save_as_menu_keyboard_callback.cpp
         core/save_as_menu_keyboard_callback.hpp
+        core/line_zoom.cpp
+        core/line_zoom.hpp
+        core/line_zoom_keyboard_callback.cpp
+        core/line_zoom_keyboard_callback.hpp
+        core/about.cpp
+        core/about.hpp
+        core/about_keyboard_callback.cpp
+        core/about_keyboard_callback.hpp
         rpi2040/rpi2040_text_engine.cpp
         rpi2040/rpi2040_text_engine.hpp
         engine/textview_engine.cpp

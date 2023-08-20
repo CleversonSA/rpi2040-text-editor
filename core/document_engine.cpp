@@ -22,6 +22,8 @@ using std::setw;
 
 #include <cstring>
 using std::strlen;
+using std::strcat;
+using std::strcpy;
 
 #include <cstdio>
 using std::sprintf;
@@ -30,6 +32,70 @@ using std::sprintf;
 #include "app_globals.hpp"
 #include "doc_row.hpp"
 #include "doc_character.hpp"
+
+char * DocumentEngine::renderDocCharAsStr(DocCharacter * docCharacterPtr) {
+    char *nChar = new char[2];
+    nChar[0] = '\0';
+
+    if (docCharacterPtr != 0) {
+
+        switch((*docCharacterPtr).getChar())
+        {
+            case '\0':
+            case '\n':
+            case '\t':
+            case '\r':
+                strcpy(nChar, "");
+                break;
+            default:
+                sprintf(nChar,"%c", (*docCharacterPtr).getChar());
+                break;
+        }
+        return nChar;
+
+    } else {
+
+        strcpy(nChar, "");
+        return nChar;
+
+    }
+}
+
+char * DocumentEngine::renderLineToStr(DocRow * rPtr)
+{
+    char *strContent = new char[4096];
+    strContent[0] = '\0';
+
+    if (rPtr == 0) {
+        return strContent;
+    }
+
+    int rowLength = (*rPtr).getLength();
+    int moves = 0;
+
+    DocCharacter * cPtr = (*rPtr).getStartCharPtr();
+    if (cPtr == 0) {
+        return strContent;
+    }
+
+    while (cPtr != 0) {
+
+        strcat(strContent, renderDocCharAsStr(cPtr));
+
+        if ((*cPtr).getNextCharPtr() == 0) {
+            break;
+        }
+        moves++;
+        cPtr = (*cPtr).getNextCharPtr();
+    }
+
+    for (;moves >= 0;moves --) {
+        cPtr = (*cPtr).getPreviousCharPtr();
+    }
+
+    return strContent;
+}
+
 
 void DocumentEngine::render()
 {
@@ -49,8 +115,6 @@ void DocumentEngine::render()
     for (int r = 0; r < rowEOF; r++)
     {
         DocRow * rPtr = (*getDocument()).getCurrentRowPtr();
-        cout << "Lindo a linha "<< r << "-" << rPtr << "-" << (*getDocument()).getCurrentRowPtr() << " tam=" << (*rPtr).getLength() << endl;
-        //(*rPtr).toString();
 
         if (isCursorAtBottomOfView()
             && (lastDocRow < (r+1))) {

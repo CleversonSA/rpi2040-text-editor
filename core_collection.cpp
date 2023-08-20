@@ -25,6 +25,22 @@ using std::setw;
 
 CoreCollection * CoreCollection::_me = 0;
 
+About * CoreCollection::getAbout() {
+    return _aboutPtr;
+}
+
+void CoreCollection::setAbout(About *aboutPtr) {
+    _aboutPtr = aboutPtr;
+}
+
+LineZoom * CoreCollection::getLineZoom() {
+    return _lineZoomPtr;
+}
+
+void CoreCollection::setLineZoom(LineZoom * lineZoom) {
+    _lineZoomPtr = lineZoom;
+}
+
 SaveAsMenu * CoreCollection::getSaveAsMenu()
 {
     return _saveAsMenuPtr;
@@ -130,7 +146,9 @@ _openFileMenuPtr(0),
 _textPersistenceEnginePtr(0),
 _textRenderEnginePtr(0),
 _currentDocumentPtr(0),
-_mainMenuPtr(0)
+_mainMenuPtr(0),
+_lineZoomPtr(0),
+_aboutPtr(0)
 {
 
 }

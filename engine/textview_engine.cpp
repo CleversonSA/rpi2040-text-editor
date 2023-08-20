@@ -33,7 +33,7 @@ using std::strtok;
 
 void TextViewEngine::run(VideoEngine *videoEngine, KeyboardEngine *keyboardEngine)
 {
-    //(*videoEngine).display();
+    (*videoEngine).display();
 
     TextViewKeyboardCallback *kcb = new TextViewKeyboardCallback;
 
@@ -147,6 +147,8 @@ TextViewEngine & TextViewEngine::cursorMoveUp()
 
 TextViewEngine & TextViewEngine::closeView()
 {
+    (*_widgetCallback).execute(this);
+
     return (*this);
 }
 
@@ -154,6 +156,12 @@ TextViewEngine & TextViewEngine::closeView()
 TextViewEngine & TextViewEngine::reset()
 {
     (*_menuEngineInstance).reset();
+
+    return (*this);
+}
+
+TextViewEngine & TextViewEngine::setCallback(WidgetCallback *cb) {
+    _widgetCallback = cb;
 
     return (*this);
 }

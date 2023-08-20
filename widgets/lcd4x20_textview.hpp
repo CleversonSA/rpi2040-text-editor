@@ -17,7 +17,6 @@ limitations under the License.
 #define LCD4X20TEXTVIEW
 
 #include "../engine/textview_engine.hpp"
-#include "../engine/menu_engine.hpp"
 #include "../video/framebuffer.hpp"
 
 /*
@@ -32,7 +31,7 @@ class LCD4X20TextView: public TextViewEngine
         void setFrameBuffer(FrameBuffer *);
         FrameBuffer * getFrameBuffer() const;
 
-        virtual TextViewEngine & render();
+        virtual TextViewEngine & render() override;
 
         virtual void toString();
         virtual int getMemSize();

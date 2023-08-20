@@ -19,7 +19,6 @@ using std::endl;
 
 #include <cstring>
 using std::strcat;
-
 #include <iomanip>
 using std::setw;
 
@@ -107,12 +106,12 @@ void MainMenu::showMainMenu() {
     strcat(mainMenuStr, AppGlobals::MENU_ITEM_DETAIL_DELIM);
     strcat(mainMenuStr, "Utilities...");
     strcat(mainMenuStr, AppGlobals::MENU_ITEM_DELIM);
-
+    */
     strcat(mainMenuStr, "ABOUT");
     strcat(mainMenuStr, AppGlobals::MENU_ITEM_DETAIL_DELIM);
     strcat(mainMenuStr, "About");
     strcat(mainMenuStr, AppGlobals::MENU_ITEM_DELIM);
-     */
+
 
     strcat(mainMenuStr, "_BACK_");
     strcat(mainMenuStr, AppGlobals::MENU_ITEM_DETAIL_DELIM);
